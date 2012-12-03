@@ -1,0 +1,6 @@
+A faire :
+
+- Menu
+- Fond d'écran animé
+- Fichiers JSON de sauvegarde
+- Images
