@@ -1,0 +1,16 @@
+{
+    "name":"Spacelash",
+    "developer": {
+        "name":"Test",
+        "url":"Test"
+    },
+    "description":"Testing the paid app functions",
+    "icons":{
+        "128":"/icon.png"
+    },
+    "launch_path": "/",
+    "installs_allowed_from": ["*"]
+}
+
+
+
