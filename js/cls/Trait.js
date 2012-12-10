@@ -108,7 +108,7 @@ Trait.prototype.verifierCoupeSegment = function(oPoint1Temp, oPoint2Temp)
 			// -ax = b-y
 			// x = (b-y)/-a
 			var yIntersection = this.oPointArrivee.y;
-			var xIntersection = (pTrait-yIntersection)/-mTrait;
+			var xIntersection = (pPoint-yIntersection)/-mPoint;
 		}
 		
 		// si le trait tracé est vertical
@@ -137,7 +137,6 @@ Trait.prototype.verifierCoupeSegment = function(oPoint1Temp, oPoint2Temp)
 		var xIntersection = (pPoint - pTrait) / (mTrait - mPoint);
 		var yIntersection = mPoint*xIntersection + pPoint;
 	}
-	
 	
 	// si l'intersection des 2 droites se trouve sur les segments
 	if(xIntersection <= Math.max(this.oPointArrivee.x,this.oPointDepart.x) && xIntersection >= Math.min(this.oPointArrivee.x,this.oPointDepart.x)

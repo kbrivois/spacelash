@@ -1,22 +1,25 @@
 function Polygone (aListePointsTemp,oTexture)  
 {  
-	this.aListePointsDepart = aListePointsTemp;
-	this.aListePoints = this.aListePointsDepart;
-	this.fAireTerrainDepart = this.calculerAire();
-	this.fAireTerrainActuel = this.fAireTerrainDepart;
-	this.fAireMinimale = this.fAireTerrainDepart*0.2;
-	this.oTexture = oTexture;
+	// Points du polygone
+	this.aListePointsDepart 			= aListePointsTemp;
+	this.aListePoints 					= this.aListePointsDepart;
+	// Aire du polygone
+	this.fAireTerrainDepart 			= this.calculerAire();
+	this.fAireTerrainActuel 			= this.fAireTerrainDepart;
+	this.fAireMinimale 					= this.fAireTerrainDepart*0.2;
+	// texture
+	this.oTexture 						= oTexture;
 	// Points de coupe créés par le trait tracé par le joueur 
-	this.aPremierCoteCoupe = new Array();
-	this.aDeuxiemeCoteCoupe = new Array();
+	this.aPremierCoteCoupe 				= new Array();
+	this.aDeuxiemeCoteCoupe 			= new Array();
 	// Partie à supprimer lors d'une coupe
-	this.bDisparitionPartie = false;
-	this.fOpacitePartie = 1;
-	this.aPartieA_Supprimer = new Array();
+	this.bDisparitionPartie 			= false;
+	this.fOpacitePartie 				= 1;
+	this.aPartieA_Supprimer 			= new Array();
 	// Permet de trembler lorsque qu'un ennemi explose après avoir été touché
-	this.bTremble = false;
+	this.bTremble 						= false;
 	// si le trait touche un ennemi, on clear le terrain
-	this.bClearPolygone = false;
+	this.bClearPolygone 				= false;
 }  
 	
 Polygone.prototype.calculerAire = function()
@@ -197,7 +200,7 @@ Polygone.prototype.faireRebond = function(aListeIntersectionTerrainEnnemi, oEnne
 		vecteurNormal.x *= 10;
 		vecteurNormal.y *= 10;
 		
-		var centreImage = new Point(oEnnemi.oPosition.x + (oEnnemi.iTailleX/2) - oEnnemi.fDeplacement.x*1000, oEnnemi.oPosition.y + (oEnnemi.iTailleY/2) - oEnnemi.fDeplacement.y*1000);
+		var centreImage = new Point(oEnnemi.oPosition.x + (oEnnemi.iTailleX/2) - oEnnemi.oDeplacement.x*1000, oEnnemi.oPosition.y + (oEnnemi.iTailleY/2) - oEnnemi.oDeplacement.y*1000);
 		
 		// vecteur orthogonale à vecteurNormal
 		vecteurOrthoA_Normale = new Point(-vecteurNormal.y, vecteurNormal.x);

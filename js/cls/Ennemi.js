@@ -5,7 +5,7 @@ function Ennemi(oImageTemp, fVitesseTemp, oPositionTemp, fRotationTemp)
 	this.fVitesse = fVitesseTemp;
 	this.iTailleX = oImageTemp.width;
 	this.iTailleY = oImageTemp.height;
-	this.fDeplacement = new Point(0,0);
+	this.oDeplacement = new Point(0,0);
 	this.oPosition = oPositionTemp;
 	this.fRotationDepart = fRotationTemp;
 	this.fRotation = fRotationTemp;
@@ -25,10 +25,10 @@ Ennemi.prototype.calculerDeplacement = function()
 		
 	var fDistance = distance(oPositionDepart, oPositionArrivee);
 	
-	this.fDeplacement.x = 
+	this.oDeplacement.x = 
 			this.oVecteurDirection.x 
 			/ (fDistance/this.fVitesse);
-	this.fDeplacement.y = 
+	this.oDeplacement.y = 
 			this.oVecteurDirection.y 
 			/ (fDistance/this.fVitesse);
 }

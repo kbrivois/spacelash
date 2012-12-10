@@ -31,33 +31,36 @@ Pour déplacer l'image : image.x += vecteur_direction.x / (distance/vitesse_image
 
 // Méthode qui permet de récupérer l'intersection entre les 2 segments formés par les 4 points
 // return : aIntersection=[0:oPoint3, 1:oPoint4, 2:Point intersection] (les segments se coupent) ou null
-var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oPoint4Temp)
+var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oPoint4Temp, flag)
 {
+	if (!flag) { flag = false; } 
+	
 	var oPoint1 = new Point(oPoint1Temp.x, oPoint1Temp.y);
 	var oPoint2 = new Point(oPoint2Temp.x, oPoint2Temp.y);
 	var oPoint3 = new Point(oPoint3Temp.x, oPoint3Temp.y);
 	var oPoint4 = new Point(oPoint4Temp.x, oPoint4Temp.y);
 	
+	// segment 2
 	if(oPoint4.y - oPoint3.y != 0
 		&& oPoint4.x - oPoint3.x != 0)
 	{
 		var mTrait = (oPoint4.y - oPoint3.y) /	(oPoint4.x - oPoint3.x);
 		var pTrait = oPoint3.y - mTrait*oPoint3.x;
 	}
-	// si le trait tracé est vertical
+	// si le segment 2 est vertical
 	else if(oPoint4.x - oPoint3.x == 0)
 	{
 		var mTrait = 1;
 		var pTrait = 0;
 	}
-	// si le trait tracé est horizontal
+	// si le segment 2 est horizontal
 	else
 	{
 		var mTrait = 0;
 		var pTrait = oPoint4.y;
 	}
 
-	// Segment
+	// segment 1
 	if(oPoint2.y - oPoint1.y != 0
 		&& oPoint2.x - oPoint1.x != 0)
 	{
@@ -66,58 +69,52 @@ var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oP
 		var mPoint = (oPoint2.y - oPoint1.y) / (oPoint2.x - oPoint1.x);
 		var pPoint = oPoint2.y - mPoint*oPoint2.x;
 	}
-	// si le Segment est vertical
+	// si le segment 1 est vertical
 	else if(oPoint2.x - oPoint1.x == 0)
 	{
 		var mPoint = 1;
 		var pPoint = 0;
 	}
-	// si le Segment est horizontal
+	// si le segment 1 est horizontal
 	else
 	{
 		var mPoint = 0;
 		var pPoint = oPoint2.y;
 	}
 	
-	// on détermine le point d'intersection
-	// mTrait*x + pTrait = mPoint*x + pPoint
-	// (mTrait - mPoint)*x = pPoint - pTrait
-	// x = (pPoint - pTrait) / (mTrait - mPoint)
-	//
-	
-	// si le segment ou le trait tracé est vertical ou horizontal
+	// si le segment 1 ou le segment 2 est vertical ou horizontal
 	if(oPoint4.y - oPoint3.y == 0 || oPoint2.y - oPoint1.y == 0
 		|| oPoint4.x - oPoint3.x == 0 || oPoint2.x - oPoint1.x == 0)
 	{
-		// Trait vertical et segment horizontal
+		// segment 2 vertical et segment 1 horizontal
 		if(oPoint4.x - oPoint3.x == 0 && oPoint2.y - oPoint1.y == 0)
 		{
 			var xIntersection = oPoint4.x;
 			var yIntersection = oPoint2.y;
 		}
 		
-		// Trait vertical et segment vertical
+		// segment 2 vertical et segment 1 vertical
 		else if(oPoint4.x - oPoint3.x == 0 && oPoint2.x - oPoint1.x == 0)
 		{
 			var xIntersection = oPoint4.x;
 			var yIntersection = (oPoint2.y+oPoint1.y)/2;
 		}
 		
-		// Trait horizontal et segment vertical
+		// segment 2 horizontal et segment 1 vertical
 		else if(oPoint4.y - oPoint3.y == 0 && oPoint2.x - oPoint1.x == 0)
 		{
 			var xIntersection = oPoint2.x;
 			var yIntersection = oPoint3.y;
 		}
 		
-		// Trait horizontal et segment horizontal
+		// segment 2 horizontal et segment 1 horizontal
 		else if(oPoint4.y - oPoint3.y == 0 && oPoint2.y - oPoint1.y == 0)
 		{
 			var xIntersection = (oPoint2.x+oPoint1.x)/2;
 			var yIntersection = oPoint3.y;
 		}
 		
-		// si le trait tracé est horizontal
+		// si le segment 2 est horizontal
 		else if(oPoint4.y - oPoint3.y == 0)
 		{
 			// y = ax + b
@@ -125,24 +122,36 @@ var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oP
 			// -ax = b-y
 			// x = (b-y)/-a
 			var yIntersection = oPoint4.y;
-			var xIntersection = (pTrait-yIntersection)/-mTrait;
+			var xIntersection = (pPoint-yIntersection)/-mPoint;
+
+			/*
+			if(flag)
+			{
+				ctx.beginPath();
+				ctx.lineWidth = 2;
+				ctx.strokeStyle = "red";
+				ctx.arc(xIntersection,
+						yIntersection, 4, 0, 2 * Math.PI);
+				ctx.stroke();
+				
+				alert("toto");
+			}*/
 		}
-		
-		// si le trait tracé est vertical
+		// si le segment 2 est vertical
 		else if(oPoint4.x - oPoint3.x == 0)
 		{
 			var xIntersection = oPoint4.x;
 			var yIntersection = mPoint*xIntersection + pPoint;
 		}
 		
-		// si le segment est horizontal
+		// si le segment 1 est horizontal
 		else if(oPoint2.y - oPoint1.y == 0)
 		{
 			var yIntersection = oPoint2.y;
 			var xIntersection = (pTrait-yIntersection)/-mTrait;
 		}
 		
-		// si le segment est vertical
+		// si le segment 1 est vertical
 		else if(oPoint2.x - oPoint1.x == 0)
 		{
 			var xIntersection = oPoint2.x;
@@ -155,15 +164,38 @@ var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oP
 		var yIntersection = mPoint*xIntersection + pPoint;
 	}
 	
-	
 	// si l'intersection des 2 droites se trouve sur les segments
 	if(xIntersection <= Math.max(oPoint4.x,oPoint3.x) && xIntersection >= Math.min(oPoint4.x,oPoint3.x)
 		&& yIntersection <= Math.max(oPoint4.y,oPoint3.y) && yIntersection >= Math.min(oPoint4.y,oPoint3.y)
 		&& xIntersection <= Math.max(oPoint1.x,oPoint2.x) && xIntersection >= Math.min(oPoint1.x,oPoint2.x)
 		&& yIntersection <= Math.max(oPoint1.y,oPoint2.y) && yIntersection >= Math.min(oPoint1.y,oPoint2.y))
 	{
-	
+			
 		var aIntersection = new Array();
+		
+		/*
+		**************************************************************************************
+		* Ce qui suit : dans le cas où un ennemi tape perpendiculairement le "pic" d'un côté.
+		**************************************************************************************
+		*						 ___
+		*						|	|  <------ ennemi
+		*						|___|
+		*				  		  |\
+		*				  		  |n\
+		*				  		  |nn\
+		*	côté touché		----> |nnn\  <------- côtés du terrain
+		*	perpendiculairement	  |nnnn\
+		*				  		  |nnnnn\
+		*				  		  |nnnnnn\
+		*				  		  |nnnnnnn\
+		*				  		  |nnnnnnnn\
+		*							/\
+		*							||
+		*							||
+		*							||
+		*				    En dehors du terrain
+		*/
+		
 		// si les deux segments se rencontrent perpendiculairement en oPoint3
 		if(xIntersection >= oPoint3.x-2 && xIntersection <= oPoint3.x+2 
 			&& yIntersection >= oPoint3.y-2 && yIntersection <= oPoint3.y+2 )
@@ -174,12 +206,12 @@ var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oP
 				var mTrait = (oPoint4.y - oPoint3.y) /	(oPoint4.x - oPoint3.x);
 				var vecteurNormal = new Point(-mTrait,1);
 			}
-			// si le trait tracé est vertical
+			// si le segment 2 est vertical
 			else if(oPoint4.x - oPoint3.x == 0)
 			{
 				var vecteurNormal = new Point(1,0);
 			}
-			// si le trait tracé est horizontal
+			// si le segment 2 est horizontal
 			else
 			{
 				var vecteurNormal = new Point(0,1);
@@ -197,12 +229,12 @@ var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oP
 				var mTrait = (oPoint4.y - oPoint3.y) /	(oPoint4.x - oPoint3.x);
 				var vecteurNormal = new Point(-mTrait,1);
 			}
-			// si le trait tracé est vertical
+			// si le segment 2 est vertical
 			else if(oPoint4.x - oPoint3.x == 0)
 			{
 				var vecteurNormal = new Point(1,0);
 			}
-			// si le trait tracé est horizontal
+			// si le segment 2 est horizontal
 			else
 			{
 				var vecteurNormal = new Point(0,1);

@@ -6,15 +6,15 @@
     <title>simple_canvas_game</title>
     <meta name="description" content="">
 	
-	<script src="js/cls/Util.js" type="text/javascript"></script> 
-	<script src="js/cls/Polygone.js" type="text/javascript"></script> 
-	<script src="js/cls/Point.js" type="text/javascript"></script> 
-	<script src="js/cls/Ennemi.js" type="text/javascript"></script> 
-	<script src="js/cls/Trait.js" type="text/javascript"></script> 
-	<script src="js/cls/Partie.js" type="text/javascript"></script> 
-	<script src="js/cls/Barre.js" type="text/javascript"></script> 
+	<script src="js/cls/Util.js" type="text/javascript" defer="defer"></script> 
+	<script src="js/cls/Polygone.js" type="text/javascript" defer="defer"></script> 
+	<script src="js/cls/Point.js" type="text/javascript" defer="defer"></script> 
+	<script src="js/cls/Ennemi.js" type="text/javascript" defer="defer"></script> 
+	<script src="js/cls/Trait.js" type="text/javascript" defer="defer"></script> 
+	<script src="js/cls/Partie.js" type="text/javascript" defer="defer"></script> 
+	<script src="js/cls/Barre.js" type="text/javascript" defer="defer"></script> 
   </head>
-  <body>
+  <body style="margin:0">
   
     <!-- Using require.js, a module system for javascript, include the
          js files. This loads "main.js", which in turn can load other
@@ -22,11 +22,7 @@
          http://requirejs.org/docs/api.html#jsfiles -->
 	<script type="text/javascript"
             data-main="js/app.js"
-            src="js/lib/require.js"></script>
-
-		<audio id="souffleExplosion">
-			<source src="sons/souffleExplosion.wav" type="audio/wav">
-		</audio>
+            src="js/lib/require.js"  defer="defer"></script>
 
   </body>
 </html>

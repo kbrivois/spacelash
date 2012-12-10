@@ -2,6 +2,10 @@
 requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||  
                         window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
+/*** ================================================================================================================================================
+déclaration des variables
+====================================================================================================================================================*/
+						
 // sons
 var oSonMetal = new Audio('sons/metalhit.wav');
 var oSonSouffleExplosion = new Audio('sons/souffleExplosion2.wav');
@@ -23,7 +27,7 @@ var bAugmenterOpacite = true;
 var randomRange = function(minVal,maxVal) {
 	return Math.floor(Math.random() * (maxVal - minVal - 1)) + minVal;
 }
- 
+
 //Initialise la position des étoiles
 var initStars = function() {
 	for( var i = 0; i < stars.length; i++ ) {
@@ -51,31 +55,42 @@ var mouseMove = false;
 //points
 var aListePointsTemp = new Array();
 
-// aListePointsTemp.push(new Point(50,50));
-// aListePointsTemp.push(new Point(250,50));
-// aListePointsTemp.push(new Point(180,175));
-// aListePointsTemp.push(new Point(250,300));
-// aListePointsTemp.push(new Point(50,300));
-// aListePointsTemp.push(new Point(120,175));
-// aListePointsTemp.push(new Point(50,50));
+aListePointsTemp.push(new Point(50,50));
+aListePointsTemp.push(new Point(250,50));
+aListePointsTemp.push(new Point(180,175));
+aListePointsTemp.push(new Point(250,300));
+aListePointsTemp.push(new Point(50,300));
+aListePointsTemp.push(new Point(120,175));
+aListePointsTemp.push(new Point(50,50));
 
-aListePointsTemp.push(new Point(0,300));
-aListePointsTemp.push(new Point(150,0));
-aListePointsTemp.push(new Point(300,300));
-aListePointsTemp.push(new Point(150,150));
-aListePointsTemp.push(new Point(150,300));
-aListePointsTemp.push(new Point(75,200));
-aListePointsTemp.push(new Point(0,300));
+// aListePointsTemp.push(new Point(0,300));
+// aListePointsTemp.push(new Point(150,0));
+// aListePointsTemp.push(new Point(300,300));
+// aListePointsTemp.push(new Point(150,150));
+// aListePointsTemp.push(new Point(150,300));
+// aListePointsTemp.push(new Point(75,200));
+// aListePointsTemp.push(new Point(0,300));
 
+// nombres d'image
+var iNombresImages = 0;
+// Compteur d'images chargée
 var iCompteurImages = 0;
 
 //polygone
-// create new image object to use as pattern
 var img = new Image();
 img.src = 'img/textures/metal2.jpg';
+iNombresImages++;
 var oPolygone = new Polygone(aListePointsTemp,img);
-
 img.onload = function()
+{
+	iCompteurImages++;
+}
+
+// test
+var oCibleImage = new Image();
+oCibleImage.src = 'img/cible_ok.png';
+iNombresImages++;
+oCibleImage.onload = function()
 {
 	iCompteurImages++;
 }
@@ -83,9 +98,10 @@ img.onload = function()
 // Ennemis
 var aListeEnnemis = new Array();
 
+// Ennemi 1
 var oEnnemiImage = new Image();
 oEnnemiImage.src = "img/ennemis/fireball2.png";
-	
+iNombresImages++;
 oEnnemiImage.onload = function()
 {
 	iCompteurImages++;
@@ -100,9 +116,10 @@ oEnnemiImage.onload = function()
 	aListeEnnemis.push(oEnnemi);
 }
 
+// Ennemi 2
 var oEnnemiImage2 = new Image();
 oEnnemiImage2.src = "img/ennemis/fireball2.png";
-	
+iNombresImages++;
 oEnnemiImage2.onload = function()
 {
 	iCompteurImages++;
@@ -119,6 +136,11 @@ oEnnemiImage2.onload = function()
 
 //barre d'avancement
 var oBarreAvancement = new Barre(new Point(20,370), new Point(270,370), 15, "blue", "rgb(126,133,188)");
+
+
+/*** ================================================================================================================================================
+Evénements souris
+====================================================================================================================================================*/
 
 addEventListener("mousedown", function (e) 
 {
@@ -179,14 +201,14 @@ var reset = function () {
 	oPolygone.reset();
 };
 
-// Déplace tout le jeu quand fin du jeu
-var deplacerJeu = function () {
+
+/*** ================================================================================================================================================
+finirNiveau
+====================================================================================================================================================*/
+
+// fin du niveau
+var finirNiveau = function () {
 	
-};
-
-// Draw everything
-var partie = function () {
-
 	ctx.beginPath();
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -225,6 +247,73 @@ var partie = function () {
 	}
 	
 	oPolygone.tracer();
+	
+	// Texte aire
+	ctx.font = "20pt Calibri,Geneva,Arial";
+	ctx.fillStyle = "white";
+	ctx.fillText(Math.floor((oPolygone.fAireTerrainActuel/oPolygone.fAireTerrainDepart)*100)+" %", 20, 350);
+	
+	// on trace la barre d'avancement
+	oBarreAvancement.tracer(oPolygone);
+	
+	// Deplacement des ennemis, rebonds	
+	for(var i=0; i<aListeEnnemis.length; i++)
+	{
+		ctx.drawImage(aListeEnnemis[i].oImage, 0 , 0);
+	}
+	
+};
+
+
+/*** ================================================================================================================================================
+Partie
+====================================================================================================================================================*/
+
+var partie = function () {
+
+	// on crée le canvas
+	ctx.beginPath();
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+	
+	// On crée les étoiles
+	var halfWidth  = canvas.width / 2;
+    var halfHeight = canvas.height / 2;
+
+    for( var i = 0; i < stars.length; i++ ) 
+	{
+		stars[i].z -= 0.2;
+ 
+        if( stars[i].z <= 0 ) 
+		{
+			stars[i].x = randomRange(-25,25);
+			stars[i].y = randomRange(-25,25);
+			stars[i].z = MAX_DEPTH;
+        }
+ 
+        var k  = 128.0 / stars[i].z;
+        var px = stars[i].x * k + halfWidth;
+        var py = stars[i].y * k + halfHeight;
+ 
+        if( px >= 0 && px <= 500 && py >= 0 && py <= 400 ) 
+		{
+			var size = (1 - stars[i].z / 32.0) * 5;
+			var shade = parseInt((1 - stars[i].z / 32.0) * 255);
+			
+			ctx.beginPath();
+			//ctx.rect(px,py,size,size);
+			ctx.arc(px,py, size/2, 0, 2 * Math.PI);
+			ctx.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
+			ctx.fill();
+		}
+	}
+	
+	// on trace le polygone
+	oPolygone.tracer();
+	
+	ctx.drawImage(oCibleImage, 0, 0, 50, 50);
 	
 	/*
 	if(aPartiesCoupees != null)
@@ -272,8 +361,8 @@ var partie = function () {
 	// Deplacement des ennemis, rebonds	
 	for(var i=0; i<aListeEnnemis.length; i++)
 	{	
-		aListeEnnemis[i].oPosition.x += aListeEnnemis[i].fDeplacement.x;
-		aListeEnnemis[i].oPosition.y += aListeEnnemis[i].fDeplacement.y;
+		aListeEnnemis[i].oPosition.x += aListeEnnemis[i].oDeplacement.x;
+		aListeEnnemis[i].oPosition.y += aListeEnnemis[i].oDeplacement.y;
 	
 		ctx.save(); 
 		ctx.translate(aListeEnnemis[i].oPosition.x, aListeEnnemis[i].oPosition.y); 
@@ -320,32 +409,44 @@ var partie = function () {
 		//					|											  |
 		//					|_____________________________________________|
 		//
+		
+		oVecteurDirecteurTrait = new Point( (oTrait.oPointArrivee.x - oTrait.oPointDepart.x) / (oTrait.oPointArrivee.x - oTrait.oPointDepart.x), 
+										    (oTrait.oPointArrivee.y - oTrait.oPointDepart.y) / (oTrait.oPointArrivee.x - oTrait.oPointDepart.x) );
+		oPointArriveeVecteur = new Point( oVecteurDirecteurTrait.x + oTrait.oPointDepart.x, 
+										  oVecteurDirecteurTrait.y + oTrait.oPointDepart.y );
 			
 		// si le début du trait tracé se trouve à l'exterieur du polygone
 		if(oTrait.iDepartTraitDansPolygone == 0)
 		{
 			// si l'arrivée du trait tracé se trouve à l'intérieur du polygone
-			if(oPolygone.cn_PnPoly(oTrait.oPointArrivee) == 1 )
+			if(oPolygone.cn_PnPoly(oTrait.oPointArrivee) == 1)
 			{	
 				if(oTrait.iTraitDansPolygone == 0)
 				{
+					var iIntersection = 0;
+					
 					for(var i=0; i<oPolygone.aListePoints.length-1; i++)
 					{
 						// Rappel : aIntersection=[0:Point1 cote terrain, 1:Point2 cote terrain, 2:Point intersection]
-						var aIntersection = getIntersectionSegments(oTrait.oPointDepart, oTrait.oPointArrivee, oPolygone.aListePoints[i], oPolygone.aListePoints[i+1]);
+						var aIntersection = getIntersectionSegments(oTrait.oPointDepart, oTrait.oPointArrivee, oPolygone.aListePoints[i], oPolygone.aListePoints[i+1], true);
 						
 						if(aIntersection != null)
 						{
+							iIntersection++;
+
+							if(iIntersection == 2)
+								break;
+								
 							// on défini le point de départ du trait dans le polygone
 							oTrait.oPointDepart.x = aIntersection[2].x;
 							oTrait.oPointDepart.y = aIntersection[2].y;
+							
 							oPolygone.aPremierCoteCoupe.push(i,i+1);
-							break;
 						}
 					}
-					
 					oTrait.iTraitDansPolygone = 1;
 				}
+				
 				oTrait.tracer();
 				
 				// on vérifie si le trait touche un ennemi
@@ -371,15 +472,16 @@ var partie = function () {
 			}
 			
 			// si le trait sort du polygone
-			if(oPolygone.cn_PnPoly(oTrait.oPointArrivee) == 0 && oTrait.iTraitDansPolygone == 1 && oTrait.bToucheEnnemi == false)
-			{
+			if(oPolygone.cn_PnPoly(oTrait.oPointArrivee) == 0 && oTrait.iTraitDansPolygone == 1 && oTrait.bToucheEnnemi == false 
+				/*&& oPolygone.cn_PnPoly(oPointArriveeVecteur) == 1*/)
+			{	
 				for(var i=0; i<oPolygone.aListePoints.length-1; i++)
 				{
 					// Si le côté ne correspond pas au premier côté coupé
 					if(i != oPolygone.aPremierCoteCoupe[0])
 					{
 						// Rappel : aIntersection=[0:Point1 cote terrain, 1:Point2 cote terrain, 2:Point intersection]
-						var aIntersection = getIntersectionSegments(oTrait.oPointDepart, oTrait.oPointArrivee, oPolygone.aListePoints[i], oPolygone.aListePoints[i+1]);
+						var aIntersection = getIntersectionSegments(oTrait.oPointDepart, oTrait.oPointArrivee, oPolygone.aListePoints[i], oPolygone.aListePoints[i+1], true);
 						
 						if(aIntersection != null)
 						{
@@ -390,7 +492,7 @@ var partie = function () {
 							
 							var bCoupe = oPolygone.couperForme(oTrait.oPointDepart, oTrait.oPointArrivee, aListeEnnemis);
 							
-							// si coupe impossible, on décide de mettre le compteur de clignotement à 3
+							// si coupe impossible, on décide de mettre le compteur de clignotement à 4
 							if(!bCoupe)
 							{
 								oTrait.iCompteurFaireClignoter = 4;
@@ -594,13 +696,16 @@ var partie = function () {
 	}
 };
 
-// The main game loop
+/*** ================================================================================================================================================
+Main
+====================================================================================================================================================*/
+
 var main = function () {
 
 	var now = Date.now();
 	var delta = now - then;
 	
-	if(iCompteurImages == 3)
+	if(iCompteurImages == iNombresImages)
 	{
 		partie();
 	}
@@ -609,6 +714,6 @@ var main = function () {
 	requestAnimationFrame(main);
 };
 
-// Let's play this game!
+// On lance le jeu
 var then = Date.now();
 main();
