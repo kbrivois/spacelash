@@ -40,8 +40,9 @@ var initStars = function() {
 }
 
 // Background image
-MAX_DEPTH = 32;
-var stars = new Array(512);
+var MAX_DEPTH = 32;
+var SPEED_STARS = 0.4
+var stars = new Array(100);
 initStars();
 
 // Handle keyboard controls
@@ -220,7 +221,7 @@ var finirNiveau = function () {
 
     for( var i = 0; i < stars.length; i++ ) 
 	{
-		stars[i].z -= 0.2;
+		stars[i].z -= SPEED_STARS;
  
         if( stars[i].z <= 0 ) 
 		{
