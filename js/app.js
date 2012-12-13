@@ -58,8 +58,8 @@ var aListePointsTemp = new Array();
 aListePointsTemp.push(new Point(50,50));
 aListePointsTemp.push(new Point(250,50));
 aListePointsTemp.push(new Point(180,175));
-aListePointsTemp.push(new Point(250,300));
-aListePointsTemp.push(new Point(50,300));
+// aListePointsTemp.push(new Point(250,300));
+// aListePointsTemp.push(new Point(50,300));
 aListePointsTemp.push(new Point(120,175));
 aListePointsTemp.push(new Point(50,50));
 

@@ -10,7 +10,6 @@ function Barre(oPoint1Temp, oPoint2Temp, fTailleTemp, sCouleurTemp, sCouleurCont
 
 Barre.prototype.tracer = function(oPolygoneTemp)
 {
-
 	// Barre conteneur
 	ctx.beginPath();
 	ctx.strokeStyle = this.sCouleurConteneur; 

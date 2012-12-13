@@ -17,6 +17,16 @@ function Ennemi(oImageTemp, fVitesseTemp, oPositionTemp, fRotationTemp)
 	this.oVecteurDirection = new Point(v_x,v_y);
 }
 
+/*
+Point de départ : (0,0)
+Vecteur direction: (  1 0  )
+				   (   5   )
+Donc Point arrivée : (0+10, 0+5)
+distance entre les 2 points : 11.18
+
+Pour déplacer l'image : image.x += vecteur_direction.x / (distance/vitesse_image)
+						image.y += vecteur_direction.y / (distance/vitesse_image)
+*/
 Ennemi.prototype.calculerDeplacement = function()
 {
 	var oPositionDepart = this.oPosition;

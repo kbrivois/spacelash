@@ -7,8 +7,11 @@ function Polygone (aListePointsTemp,oTexture)
 	this.fAireTerrainDepart 			= this.calculerAire();
 	this.fAireTerrainActuel 			= this.fAireTerrainDepart;
 	this.fAireMinimale 					= this.fAireTerrainDepart*0.2;
-	// texture
+	// textures
 	this.oTexture 						= oTexture;
+	var img = new Image();
+	img.src = 'img/textures/metal2.jpg';
+	this.oTextureBords = img;
 	// Points de coupe créés par le trait tracé par le joueur 
 	this.aPremierCoteCoupe 				= new Array();
 	this.aDeuxiemeCoteCoupe 			= new Array();
@@ -171,20 +174,21 @@ Polygone.prototype.faireRebond = function(aListeIntersectionTerrainEnnemi, oEnne
 	{
 		var A = aListeIntersectionTerrainEnnemi[i][0];
 		var B = aListeIntersectionTerrainEnnemi[i][1];
+		// Point d'impact
 		var C = aListeIntersectionTerrainEnnemi[i][2];
 	
 		if(B.y - A.y != 0
 			&& B.x - A.x != 0)
 		{
 			var mTrait = (B.y - A.y) /	(B.x - A.x);
-			var vecteurNormal = new Point(-mTrait/Math.abs(mTrait),1/Math.abs(mTrait));
+			var vecteurNormal = new Point(-mTrait/Math.max(Math.abs(mTrait),Math.abs(1)),1/Math.max(Math.abs(mTrait),Math.abs(1)));
 		}
-		// si le trait tracé est vertical
+		// si le trait est vertical
 		else if(B.x - A.x == 0)
 		{
 			var vecteurNormal = new Point(1,0);
 		}
-		// si le trait tracé est horizontal
+		// si le trait est horizontal
 		else
 		{
 			var vecteurNormal = new Point(0,1);
@@ -230,7 +234,7 @@ Polygone.prototype.faireRebond = function(aListeIntersectionTerrainEnnemi, oEnne
 	
 	
 	// Si le vecteur direction n'est pas dans le terrain
-	if(this.cn_PnPoly(new Point(C.x + v_x/Math.abs(v_x), C.y + v_y/Math.abs(v_x))) == 0)
+	if(this.cn_PnPoly(new Point(C.x + v_x/Math.max(Math.abs(v_x),Math.abs(v_y)), C.y + v_y/Math.max(Math.abs(v_x),Math.abs(v_y)))) == 0)
 	{
 		v_x = -v_x;
 		v_y = -v_y;
@@ -250,8 +254,9 @@ Polygone.prototype.tracer = function()
 	
 	// create pattern
 	var ptrn = ctx.createPattern(this.oTexture,'repeat');
+	//var ptrn2 = ctx.createPattern(this.oTextureBords,'repeat');
 	ctx.fillStyle = ptrn;
-	ctx.lineWidth="2";
+	ctx.lineWidth="1";
 	ctx.strokeStyle="black";
 	ctx.beginPath();//On démarre un nouveau tracé
 	ctx.moveTo(this.aListePoints[0].x, this.aListePoints[0].y);//On se déplace au coin inférieur gauche

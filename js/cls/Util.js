@@ -18,16 +18,6 @@ var distance = function(oPoint1,oPoint2)
      
     return Math.sqrt( xs + ys );
 }
-/*
-Point de départ : (0,0)
-Vecteur direction: (  1 0  )
-				   (   5   )
-Donc Point arrivée : (0+10, 0+5)
-distance entre les 2 points : 11.18
-
-Pour déplacer l'image : image.x += vecteur_direction.x / (distance/vitesse_image)
-						image.y += vecteur_direction.y / (distance/vitesse_image)
-*/
 
 // Méthode qui permet de récupérer l'intersection entre les 2 segments formés par les 4 points
 // return : aIntersection=[0:oPoint3, 1:oPoint4, 2:Point intersection] (les segments se coupent) ou null
