@@ -1,20 +1,20 @@
 function Ennemi(oImageTemp, fVitesseTemp, oPositionTemp, fRotationTemp)  
 {   
-	this.oImage = oImageTemp;
-	this.fVitesseDepart = fVitesseTemp;
-	this.fVitesse = fVitesseTemp;
-	this.iTailleX = oImageTemp.width;
-	this.iTailleY = oImageTemp.height;
-	this.oDeplacement = new Point(0,0);
-	this.oPosition = oPositionTemp;
-	this.fRotationDepart = fRotationTemp;
-	this.fRotation = fRotationTemp;
-	this.fRotationActuelle = fRotationTemp;
+	this.oImage 				= oImageTemp;
+	this.fVitesseDepart 		= fVitesseTemp * ((fRatioLargeur+fRatioHauteur)/2);
+	this.fVitesse 				= fVitesseTemp * ((fRatioLargeur+fRatioHauteur)/2);
+	this.iTailleX 				= oImageTemp.width * fRatioLargeur;
+	this.iTailleY 				= oImageTemp.height * fRatioLargeur;
+	this.oDeplacement 			= new Point(0,0);
+	this.oPosition 				= oPositionTemp;
+	this.fRotationDepart 		= fRotationTemp;
+	this.fRotation 				= fRotationTemp;
+	this.fRotationActuelle 		= fRotationTemp;
 	
-	var v_x = (Math.random() * 20) - 10;
-	var v_y = (Math.random() * 20) - 10;
+	var v_x 					= (Math.random() * 20) - 10;
+	var v_y 					= (Math.random() * 20) - 10;
 	
-	this.oVecteurDirection = new Point(v_x,v_y);
+	this.oVecteurDirection 		= new Point(v_x,v_y);
 }
 
 /*

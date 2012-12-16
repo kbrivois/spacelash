@@ -5,13 +5,14 @@ function Trait()
 	this.iDepartTraitDansPolygone 	= 0;
 	this.iTraitDansPolygone 		= 0;
 	this.fOpacite 					= 1;
-	// True si coupe impossible entre 2 ennemis
+	// si coupe impossible entre 2 ennemis
 	this.iCompteurFaireClignoter 	= 0;
 	this.bAugmenterOpacite 			= false;
-	// True si le trait touche un ennemi
+	// si le trait touche un ennemi
 	this.bToucheEnnemi 				= false;
 	this.iEnnemiTouche 				= 0;
 	this.oPositionEnnemiTouche 		= null;
+	this.aListeBoutsTrait			= new Array();
 }
 	
 // Méthode qui permet de savoir si le segment que forme les points oPoint1 et oPoint2 touchent ou non le trait
@@ -216,60 +217,83 @@ Trait.prototype.clignoter = function()
 	}
 }
 
-// fait disparaitre le trait de + en + en le rendant plus opaque et en le déplaçant vers le bas
-// si "iCompteurFaireClignoter" = 3, le trait doit clignoter encore 3 fois, etc.
+// fait disparaitre le trait de + en + en le rendant plus opaque, en le déplaçant vers le bas et en le cassant en morceaux
 Trait.prototype.disparaitre = function()
 {
-	if(this.iCompteurFaireClignoter != 0)
+	// si le tableau de morceaux n'a toujours pas été créé
+	if(this.aListeBoutsTrait.length == 0)
 	{
-		var fOpaciteTemp = 0.1;
+		var oPointDebut = new Point(0,0);
+		var oPointFin = new Point(0,0);
 		
-		if(this.fOpacite >= 1)
-		{
-			this.bAugmenterOpacite = false;
-			this.iCompteurFaireClignoter--;
-			if(this.iCompteurFaireClignoter != 0)
-			{
-				this.fOpacite -= fOpaciteTemp;
-			}
-		}
-		else if(this.fOpacite <= 0)
-		{
-			this.fOpacite += fOpaciteTemp;
-			this.bAugmenterOpacite = true;
-		}
-		else
-		{
-			if(!this.bAugmenterOpacite)
-			{
-				if(this.fOpacite - fOpaciteTemp < 0)
-					this.fOpacite = 0;
-				else
-					this.fOpacite -= fOpaciteTemp;
-			}
-			else
-			{
-				if(this.fOpacite + fOpaciteTemp > 1)
-					this.fOpacite = 1;
-				else
-					this.fOpacite += fOpaciteTemp;
-			}
-		}
+		oPointDebut.x = oTrait.oPointDepart.x;
+		oPointDebut.y = oTrait.oPointDepart.y;
+		oPointFin.x = (oTrait.oPointDepart.x+oTrait.oPointArrivee.x) / 2;
+		oPointFin.y = (oTrait.oPointDepart.y+oTrait.oPointArrivee.y) / 2;
 		
-		ctx.save(); 
-		ctx.beginPath();
-		ctx.strokeStyle="rgba(255,0,0,"+this.fOpacite+")";
-		ctx.lineWidth=3;
-		ctx.moveTo(oTrait.oPointDepart.x,oTrait.oPointDepart.y);
-		ctx.lineTo(oTrait.oPointArrivee.x,oTrait.oPointArrivee.y);
-		ctx.stroke();
-		ctx.restore();
+		this.aListeBoutsTrait[0] = new Array( new Point(oPointDebut.x, oPointDebut.y), new Point(oPointFin.x, oPointFin.y));
 		
-		if(this.iCompteurFaireClignoter == 0)
-		{
-			this.reset();
-		}
+		oPointDebut.x = (oTrait.oPointDepart.x+oTrait.oPointArrivee.x) / 2;
+		oPointDebut.y = (oTrait.oPointDepart.y+oTrait.oPointArrivee.y) / 2;
+		oPointFin.x = oTrait.oPointArrivee.x;
+		oPointFin.y = oTrait.oPointArrivee.y;
+		
+		this.aListeBoutsTrait[1] = new Array( new Point(oPointDebut.x, oPointDebut.y), new Point(oPointFin.x, oPointFin.y));
 	}
+	
+	var fOpaciteTemp = 0.02;
+	
+	if(this.fOpacite-fOpaciteTemp <= 0)
+	{
+		this.fOpacite = 0;
+	}
+	else
+	{
+		this.fOpacite -= fOpaciteTemp;
+	}
+	
+	if(this.aListeBoutsTrait[0][0].x < this.aListeBoutsTrait[1][0].x)
+	{
+		this.aListeBoutsTrait[0][0].x -= 0.5;
+		this.aListeBoutsTrait[0][1].x -= 0.5;
+		this.aListeBoutsTrait[0][0].y++;
+		this.aListeBoutsTrait[0][1].y++;
+		
+		this.aListeBoutsTrait[1][0].x += 0.5;
+		this.aListeBoutsTrait[1][1].x += 0.5;
+		this.aListeBoutsTrait[1][0].y++;
+		this.aListeBoutsTrait[1][1].y++;
+	}
+	else
+	{
+		this.aListeBoutsTrait[0][0].x += 0.5;
+		this.aListeBoutsTrait[0][1].x += 0.5;
+		this.aListeBoutsTrait[0][0].y++;
+		this.aListeBoutsTrait[0][1].y++;
+		
+		this.aListeBoutsTrait[1][0].x -= 0.5;
+		this.aListeBoutsTrait[1][1].x -= 0.5;
+		this.aListeBoutsTrait[1][0].y++;
+		this.aListeBoutsTrait[1][1].y++;
+	}
+	
+	ctx.save(); 
+	ctx.beginPath();
+	ctx.strokeStyle="rgba(0,0,255,"+this.fOpacite+")";
+	ctx.lineWidth=3;
+	ctx.moveTo(this.aListeBoutsTrait[0][0].x,this.aListeBoutsTrait[0][0].y);
+	ctx.lineTo(this.aListeBoutsTrait[0][1].x,this.aListeBoutsTrait[0][1].y);
+	ctx.stroke();
+	ctx.restore();
+	
+	ctx.save(); 
+	ctx.beginPath();
+	ctx.strokeStyle="rgba(0,0,255,"+this.fOpacite+")";
+	ctx.lineWidth=3;
+	ctx.moveTo(this.aListeBoutsTrait[1][0].x,this.aListeBoutsTrait[1][0].y);
+	ctx.lineTo(this.aListeBoutsTrait[1][1].x,this.aListeBoutsTrait[1][1].y);
+	ctx.stroke();
+	ctx.restore();
 }
 
 
@@ -285,4 +309,8 @@ Trait.prototype.reset = function()
 	this.iCompteurFaireClignoter = 0;
 	this.fOpacite = 1;
 	this.bAugmenterOpacite = false;
+	this.bToucheEnnemi = false;
+	this.iEnnemiTouche = 0;
+	this.oPositionEnnemiTouche = null;
+	this.aListeBoutsTrait = new Array();
 }

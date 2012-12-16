@@ -1,12 +1,16 @@
-function Polygone (aListePointsTemp,oTexture)  
+function Polygone (aListePointsTemp,oTexture, fAireMinimale)  
 {  
 	// Points du polygone
-	this.aListePointsDepart 			= aListePointsTemp;
+	this.aListePointsDepart = new Array();
+	// on adapte le polygone selon la résolution
+	for(var i=0; i<aListePointsTemp.length; i++)
+		this.aListePointsDepart[i] 		= new Point(aListePointsTemp[i].x * fRatioLargeur , aListePointsTemp[i].y * fRatioHauteur);
+		
 	this.aListePoints 					= this.aListePointsDepart;
 	// Aire du polygone
 	this.fAireTerrainDepart 			= this.calculerAire();
 	this.fAireTerrainActuel 			= this.fAireTerrainDepart;
-	this.fAireMinimale 					= this.fAireTerrainDepart*0.2;
+	this.fAireMinimale 					= this.fAireTerrainDepart*fAireMinimale;
 	// textures
 	this.oTexture 						= oTexture;
 	var img = new Image();
@@ -282,9 +286,9 @@ Polygone.prototype.supprimerPartie = function()
 		}
 		else
 			this.fOpacitePartie -= 0.04;
-		
-		this.aPartieA_Supprimer[0].x++;
-		this.aPartieA_Supprimer[0].y++;
+				
+		this.aPartieA_Supprimer[0].x += fRatioLargeur;
+		this.aPartieA_Supprimer[0].y += fRatioLargeur;
 		
 		// Transparence
 		ctx.globalAlpha = this.fOpacitePartie;
@@ -298,8 +302,8 @@ Polygone.prototype.supprimerPartie = function()
 		
 		for(var i= 1; i < this.aPartieA_Supprimer.length; i++)
 		{		
-			this.aPartieA_Supprimer[i].x++;
-			this.aPartieA_Supprimer[i].y++;
+			this.aPartieA_Supprimer[i].x += fRatioLargeur;
+			this.aPartieA_Supprimer[i].y += fRatioLargeur;
 			ctx.lineTo(this.aPartieA_Supprimer[i].x, this.aPartieA_Supprimer[i].y);
 		}
 		
@@ -313,8 +317,6 @@ Polygone.prototype.supprimerPartie = function()
 			this.fOpacitePartie = 1;
 		}
 	}
-	
-	ctx.beginPath();
 }
 
 //
@@ -445,7 +447,7 @@ Polygone.prototype.cn_PnPoly = function(P)
 // Méthode de reset
 Polygone.prototype.reset = function()
 {
-	this.aListePoints = this.aListePointsDepart.clone();
+	this.aListePoints = this.aListePointsDepart;
 	this.fAireTerrainActuel = this.calculerAire();
 	this.fAireTerrainActuel = this.calculerAire();
 	this.aPremierCoteCoupe = new Array();

@@ -123,8 +123,6 @@ var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oP
 				ctx.arc(xIntersection,
 						yIntersection, 4, 0, 2 * Math.PI);
 				ctx.stroke();
-				
-				alert("toto");
 			}*/
 		}
 		// si le segment 2 est vertical
