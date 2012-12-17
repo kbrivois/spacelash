@@ -18,7 +18,7 @@ var getOffset = function(e)
     return { top: cy, left: cx };
 }
 
-var mouseclick = function(e)
+var mouseClick = function(e)
 {
 	// on récupère les coordonnées de la souris
 	if(e.offsetX || e.offsetY) 
@@ -50,7 +50,7 @@ var mouseclick = function(e)
 	}
 }
 
-var mouseunclick = function (e) 
+var mouseUnClick = function (e) 
 {
 	// Si le trait ne doit pas clignoter et qu'aucun ennemi n'a été touché
 	if(oTrait.iCompteurFaireClignoter == 0 && oTrait.bToucheEnnemi == false)
@@ -61,7 +61,7 @@ var mouseunclick = function (e)
 	}
 }
 
-var mousemovement = function(e) 
+var mouseMovement = function(e) 
 {
 	// on récupère les coordonnées de la souris
 	if(e.offsetX || e.offsetY) 
@@ -87,4 +87,47 @@ var mousemovement = function(e)
 			oTrait.oPointArrivee.y = y;
 		}
 	}
+}
+
+/*** ================================================================================================================================================
+Evénements resize
+====================================================================================================================================================*/
+
+var screenResize = function(e) 
+{
+	canvas.width = document.documentElement.clientWidth-4;
+	canvas.height = document.documentElement.clientHeight-4;
+	
+	var fNewRatioLargeur = canvas.width / 300;
+	var fNewRatioHauteur = canvas.height / 400;
+	
+	/* === Redéfinition de la barre d'avancement === */
+	var fMilieu = canvas.width/2;
+	var fPourcentageTaille = 0.8;
+	oBarreAvancement.oPoint1 = new Point(fMilieu - (fPourcentageTaille/2)*canvas.width , 370);
+	oBarreAvancement.oPoint2 = new Point(fMilieu + (fPourcentageTaille/2)*canvas.width, 370);
+	
+	/* === Redéfinition du polygone === */
+	for(var i=0; i<oPolygone.aListePointsDepart.length; i++)
+		oPolygone.aListePointsDepart[i] = new Point( (oPolygone.aListePointsDepart[i].x/fRatioLargeur)*fNewRatioLargeur , (oPolygone.aListePointsDepart[i].y/fRatioHauteur)*fNewRatioHauteur);
+	for(var i=0; i<oPolygone.aListePoints.length; i++)
+		oPolygone.aListePoints[i] = new Point( (oPolygone.aListePoints[i].x/fRatioLargeur)*fNewRatioLargeur , (oPolygone.aListePoints[i].y/fRatioHauteur)*fNewRatioHauteur);
+	
+	var fPourcentageAireMinimale = oPolygone.fAireMinimale/oPolygone.fAireTerrainDepart;
+	oPolygone.fAireTerrainDepart = oPolygone.calculerAireDepart();
+	oPolygone.fAireTerrainActuel = oPolygone.calculerAire();
+	oPolygone.fAireMinimale = oPolygone.fAireTerrainDepart*fPourcentageAireMinimale;
+	
+	/* === Redéfinition des ennemis === */
+	for(var i=0; i<aListeEnnemis.length; i++)
+	{
+		aListeEnnemis[i].fVitesseDepart = (aListeEnnemis[i].fVitesseDepart / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+		aListeEnnemis[i].fVitesse = (aListeEnnemis[i].fVitesse / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+		aListeEnnemis[i].iTailleX = (aListeEnnemis[i].iTailleX / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+		aListeEnnemis[i].iTailleY = (aListeEnnemis[i].iTailleY / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+		aListeEnnemis[i].oPosition = new Point(aListeEnnemis[i].oPosition.x*(fNewRatioLargeur/fRatioLargeur), aListeEnnemis[i].oPosition.y*(fNewRatioHauteur/fRatioHauteur))
+	}
+	
+	fRatioLargeur = fNewRatioLargeur;
+	fRatioHauteur = fNewRatioHauteur;
 }

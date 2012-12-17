@@ -5,8 +5,11 @@ function Polygone (aListePointsTemp,oTexture, fAireMinimale)
 	// on adapte le polygone selon la résolution
 	for(var i=0; i<aListePointsTemp.length; i++)
 		this.aListePointsDepart[i] 		= new Point(aListePointsTemp[i].x * fRatioLargeur , aListePointsTemp[i].y * fRatioHauteur);
-		
-	this.aListePoints 					= this.aListePointsDepart;
+
+	this.aListePoints = new Array();
+	for(var i=0; i<aListePointsTemp.length; i++)
+		this.aListePoints[i] 		= new Point(aListePointsTemp[i].x * fRatioLargeur , aListePointsTemp[i].y * fRatioHauteur);
+			
 	// Aire du polygone
 	this.fAireTerrainDepart 			= this.calculerAire();
 	this.fAireTerrainActuel 			= this.fAireTerrainDepart;
@@ -28,6 +31,24 @@ function Polygone (aListePointsTemp,oTexture, fAireMinimale)
 	// si le trait touche un ennemi, on clear le terrain
 	this.bClearPolygone 				= false;
 }  
+
+Polygone.prototype.calculerAireDepart = function()
+{
+	var DX  = new Array();
+	var DY  = new Array();
+	var A = 0;
+	
+	for ( var i=0; i < this.aListePointsDepart.length; i++)
+	{
+		DX[i] = (this.aListePointsDepart[(i+1)%this.aListePointsDepart.length].x - this.aListePointsDepart[(i+this.aListePointsDepart.length-1)%this.aListePointsDepart.length].x)/2;
+		DY[i] = (this.aListePointsDepart[(i+1)%this.aListePointsDepart.length].y - this.aListePointsDepart[(i+this.aListePointsDepart.length-1)%this.aListePointsDepart.length].y)/2;
+	}
+	
+	for ( var i=0; i < this.aListePointsDepart.length; i++)
+		A = A + (this.aListePointsDepart[i].x*DY[i] - this.aListePointsDepart[i].y*DX[i]);
+		
+	return ( Math.abs(A/2) );
+}
 	
 Polygone.prototype.calculerAire = function()
 {
@@ -447,8 +468,10 @@ Polygone.prototype.cn_PnPoly = function(P)
 // Méthode de reset
 Polygone.prototype.reset = function()
 {
-	this.aListePoints = this.aListePointsDepart;
-	this.fAireTerrainActuel = this.calculerAire();
+	this.aListePoints = new Array();
+	for(var i=0; i<aListePointsTemp.length; i++)
+		this.aListePoints[i] = new Point(aListePointsTemp[i].x * fRatioLargeur , aListePointsTemp[i].y * fRatioHauteur);
+	this.fAireTerrainDepart = this.calculerAire();
 	this.fAireTerrainActuel = this.calculerAire();
 	this.aPremierCoteCoupe = new Array();
 	this.aDeuxiemeCoteCoupe = new Array();

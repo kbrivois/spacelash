@@ -4,8 +4,8 @@ function Barre(oPoint1Temp, oPoint2Temp, fTailleTemp, sCouleurTemp, sCouleurCont
 	var fMilieu = canvas.width/2;
 	var fPourcentageTaille = 0.8;
 	
-	this.oPoint1 				= new Point(fMilieu - (fPourcentageTaille/2)*canvas.width , 370*fRatioHauteur);
-	this.oPoint2 				= new Point(fMilieu + (fPourcentageTaille/2)*canvas.width, 370*fRatioHauteur);
+	this.oPoint1 				= new Point(fMilieu - (fPourcentageTaille/2)*canvas.width , 370);
+	this.oPoint2 				= new Point(fMilieu + (fPourcentageTaille/2)*canvas.width, 370);
 	this.fTaille 				= fTailleTemp;
 	this.sCouleur 				= sCouleurTemp;
 	this.sCouleurConteneur 		= sCouleurConteurTemp;
@@ -22,16 +22,16 @@ Barre.prototype.tracer = function(oPolygoneTemp)
 	ctx.beginPath();
 	ctx.strokeStyle = this.sCouleurConteneur; 
 	ctx.lineWidth = this.fTaille*fRatioHauteur+2;
-	ctx.moveTo(this.oPoint1.x-1, this.oPoint1.y);
-	ctx.lineTo((this.oPoint2.x+1), this.oPoint2.y);
+	ctx.moveTo(this.oPoint1.x-1, this.oPoint1.y*fRatioHauteur);
+	ctx.lineTo((this.oPoint2.x+1), this.oPoint2.y*fRatioHauteur);
 	ctx.stroke();
 	
 	// Barre d'avancement
 	ctx.beginPath();
 	ctx.strokeStyle = this.sCouleur; 
 	ctx.lineWidth = this.fTaille*fRatioHauteur;
-	ctx.moveTo(this.oPoint1.x, this.oPoint1.y);
-	ctx.lineTo((oPolygoneTemp.fAireTerrainActuel/oPolygoneTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , this.oPoint2.y);
+	ctx.moveTo(this.oPoint1.x, this.oPoint1.y*fRatioHauteur);
+	ctx.lineTo((oPolygoneTemp.fAireTerrainActuel/oPolygoneTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , this.oPoint2.y*fRatioHauteur);
 	ctx.stroke();
 	
 	// Barre limite

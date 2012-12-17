@@ -21,8 +21,9 @@ var oSonStars = new Audio('sons/brake.wav');
 var canvas = document.createElement("canvas");
 canvas.id = "partie";
 var ctx = canvas.getContext("2d");
-canvas.width = 300*1.5;
-canvas.height = 400*1.5;
+canvas.width = document.documentElement.clientWidth-4;
+canvas.height = document.documentElement.clientHeight-4;
+
 document.body.appendChild(canvas);
 var fRatioLargeur = canvas.width / 300;
 var fRatioHauteur = canvas.height / 400;
@@ -31,9 +32,10 @@ var fGrandeurCercle = 0;
 var bAugmenterOpacite = true;
 // Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
 // et lancement des fonctions.
-canvas.addEventListener('mousemove', mousemovement, false);
-canvas.addEventListener('mousedown', mouseclick, false);
-canvas.addEventListener('mouseup', mouseunclick, false);
+canvas.addEventListener('mousemove', mouseMovement, false);
+canvas.addEventListener('mousedown', mouseClick, false);
+canvas.addEventListener('mouseup', mouseUnClick, false);
+window.addEventListener('resize', screenResize, false);
 
 // Retourne un nombre aléatoire entre la plage de valeur :  [minVal,maxVal]
 var randomRange = function(minVal,maxVal) {
@@ -62,6 +64,44 @@ var ajouterStars = function()
 			y: randomRange(-25,25),
 			z: randomRange(1,MAX_DEPTH)
         }
+}
+
+var dessinerStars = function()
+{
+	ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+	
+	// On crée les étoiles
+	var halfWidth  = canvas.width / 2;
+    var halfHeight = canvas.height / 2;
+
+    for( var i = 0; i < stars.length; i++ ) 
+	{
+		stars[i].z -= SPEED_STARS;
+ 
+        if( stars[i].z <= 0 ) 
+		{
+			stars[i].x = randomRange(-25,25);
+			stars[i].y = randomRange(-25,25);
+			stars[i].z = MAX_DEPTH;
+        }
+ 
+        var k  = 128.0 / stars[i].z;
+        var px = stars[i].x * k + halfWidth;
+        var py = stars[i].y * k + halfHeight;
+ 
+        if( px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height ) 
+		{
+			var size = (1 - stars[i].z / 32.0) * SIZE_STARS;
+			var shade = parseInt((1 - stars[i].z / 32.0) * 255);
+			
+			ctx.beginPath();
+			//ctx.rect(px,py,size,size);
+			ctx.arc(px,py, size/2, 0, 2 * Math.PI);
+			ctx.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
+			ctx.fill();
+		}
+	}
 }
 
 // Background image
@@ -197,8 +237,8 @@ var finirNiveau = function ()
 Partie
 ====================================================================================================================================================*/
 
-var partie = function () {
-
+var partie = function () 
+{
 	// on crée le canvas
 	ctx.beginPath();
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -206,37 +246,7 @@ var partie = function () {
     ctx.fillStyle = "rgb(0,0,0)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 	
-	// On crée les étoiles
-	var halfWidth  = canvas.width / 2;
-    var halfHeight = canvas.height / 2;
-
-    for( var i = 0; i < stars.length; i++ ) 
-	{
-		stars[i].z -= SPEED_STARS;
- 
-        if( stars[i].z <= 0 ) 
-		{
-			stars[i].x = randomRange(-25,25);
-			stars[i].y = randomRange(-25,25);
-			stars[i].z = MAX_DEPTH;
-        }
- 
-        var k  = 128.0 / stars[i].z;
-        var px = stars[i].x * k + halfWidth;
-        var py = stars[i].y * k + halfHeight;
- 
-        if( px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height ) 
-		{
-			var size = (1 - stars[i].z / 32.0) * SIZE_STARS;
-			var shade = parseInt((1 - stars[i].z / 32.0) * 255);
-			
-			ctx.beginPath();
-			//ctx.rect(px,py,size,size);
-			ctx.arc(px,py, size/2, 0, 2 * Math.PI);
-			ctx.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
-			ctx.fill();
-		}
-	}
+	dessinerStars();
 	
 	// on trace le polygone
 	oPolygone.tracer();
@@ -337,9 +347,9 @@ var partie = function () {
 		// on augmente la taille de l'étoiles, leur vitesse et leur nombre
 		if(SIZE_STARS < 8*((fRatioLargeur+fRatioHauteur)/2))
 			SIZE_STARS +=0.03;
-		if(SPEED_STARS < 0.8)
+		if(SPEED_STARS < 1.5)
 			SPEED_STARS += 0.02;
-		if(stars.length < 400)
+		if(stars.length < 600)
 		{
 			ajouterStars();
 			ajouterStars();
@@ -704,7 +714,7 @@ var partie = function () {
 			}
 		}
 	}
-};
+}
 
 /*** ================================================================================================================================================
 Main
