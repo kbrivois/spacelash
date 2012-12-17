@@ -6,6 +6,11 @@ requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimati
 déclaration des variables
 ====================================================================================================================================================*/
 
+// nombres d'image
+var iNombresImages = 0;
+// Compteur d'images chargée
+var iCompteurImages = 0;
+
 // Pour savoir si le joueur a gagné
 var GAGNE = false;
 
@@ -35,10 +40,12 @@ var bAugmenterOpacite = true;
 canvas.addEventListener('mousemove', mouseMovement, false);
 canvas.addEventListener('mousedown', mouseClick, false);
 canvas.addEventListener('mouseup', mouseUnClick, false);
+canvas.addEventListener('mouseout', mouseOutCanvas, false);
 window.addEventListener('resize', screenResize, false);
 
 // Retourne un nombre aléatoire entre la plage de valeur :  [minVal,maxVal]
-var randomRange = function(minVal,maxVal) {
+var randomRange = function(minVal,maxVal)
+{
 	return Math.floor(Math.random() * (maxVal - minVal - 1)) + minVal;
 }
 
@@ -116,11 +123,30 @@ initStars();
 var keysDown = {};
 
 // Segment tracé avec la souris
-var oTrait = new Trait();
+var oTrait = new Trait("blue");
 var mouseDown = false;
 var mouseMove = false;
+var oPositionSouris = new Point(-100,-100);
+var bSourisDansPolygone = false;
+var oCibleOk = new Image();
+oCibleOk.src = 'img/cible_ok.png';
+iNombresImages++;
+oCibleOk.onload = function()
+{
+	iCompteurImages++;
+}
+var oCibleNok = new Image();
+oCibleNok.src = 'img/cible_nok.png';
+iNombresImages++;
+oCibleNok.onload = function()
+{
+	iCompteurImages++;
+}
+var fRotationCibles = 0;
+var fTailleCibles = 35*((fRatioLargeur+fRatioHauteur)/2);
+var bAugmenterTailleCibles = true;
 
-//points
+//points du polygone
 var aListePointsTemp = new Array();
 
 aListePointsTemp.push(new Point(50,50));
@@ -139,26 +165,12 @@ aListePointsTemp.push(new Point(50,50));
 // aListePointsTemp.push(new Point(75,200));
 // aListePointsTemp.push(new Point(0,300));
 
-// nombres d'image
-var iNombresImages = 0;
-// Compteur d'images chargée
-var iCompteurImages = 0;
-
 //polygone
 var img = new Image();
 img.src = 'img/textures/metal2.jpg';
 iNombresImages++;
 var oPolygone = new Polygone(aListePointsTemp,img, 0.6);
 img.onload = function()
-{
-	iCompteurImages++;
-}
-
-// test
-var oCibleImage = new Image();
-oCibleImage.src = 'img/cible_ok.png';
-iNombresImages++;
-oCibleImage.onload = function()
 {
 	iCompteurImages++;
 }
@@ -327,6 +339,52 @@ var partie = function ()
 		}
 	}
 	
+	// si la souris se trouve dans le canvas
+	// on place la cible
+	if(bSourisDansPolygone != undefined)
+	{
+		if(fTailleCibles/((fRatioLargeur+fRatioHauteur)/2) < 28)
+			bAugmenterTailleCibles = true;
+		else if(fTailleCibles/((fRatioLargeur+fRatioHauteur)/2) > 43	)
+			bAugmenterTailleCibles = false;
+	
+		if(bAugmenterTailleCibles)
+			fTailleCibles += 0.4*((fRatioLargeur+fRatioHauteur)/2);
+		else
+			fTailleCibles -= 0.4*((fRatioLargeur+fRatioHauteur)/2);
+	
+		// si la souris se trouve dans le polygone
+		if(bSourisDansPolygone)
+		{
+			ctx.save(); 
+			ctx.translate(oPositionSouris.x-(fTailleCibles/2), oPositionSouris.y-(fTailleCibles/2)); 
+			ctx.translate(fTailleCibles/2, fTailleCibles/2); 
+			ctx.rotate(fRotationCibles);
+			ctx.drawImage(oCibleNok, -(fTailleCibles/2), -(fTailleCibles/2), fTailleCibles, fTailleCibles);
+			ctx.restore();
+			fRotationCibles += 0.05;
+		}
+		// sinon
+		else
+		{
+			ctx.save(); 
+			ctx.translate(oPositionSouris.x-(fTailleCibles/2), oPositionSouris.y-(fTailleCibles/2)); 
+			ctx.translate(fTailleCibles/2, fTailleCibles/2); 
+			ctx.rotate(fRotationCibles);
+			ctx.drawImage(oCibleOk, -(fTailleCibles/2), -(fTailleCibles/2), fTailleCibles, fTailleCibles);
+			ctx.restore();
+			if(!mouseDown)
+				fRotationCibles += 0.05;
+			else
+			{
+				ctx.beginPath();
+				ctx.arc(oPositionSouris.x, oPositionSouris.y, 4*((fRatioLargeur+fRatioHauteur)/2), 0, 2 * Math.PI);
+				ctx.fillStyle = oTrait.sCouleur;
+				ctx.fill();
+			}
+		}
+	}
+	
 	/*
 	--------------------------------------------------------------------------------------------------
 	** ----------------------------------------------------------------------- ***********************
@@ -434,7 +492,7 @@ var partie = function ()
 				if(fOpaciteGlobale + fPasOpacite >= 0.2)
 				{
 					fOpaciteGlobale = 1;
-					fGrandeurCercle = 0.05*fRatioLargeur;
+					fGrandeurCercle = 0.05*((fRatioLargeur+fRatioHauteur)/2);
 					bAugmenterOpacite = false;
 					
 					// on reset le polygone et les ennemis
@@ -450,7 +508,7 @@ var partie = function ()
 				{
 					// Transparence
 					fOpaciteGlobale += fPasOpacite;
-					fGrandeurCercle += fPasOpacite*fRatioLargeur;
+					fGrandeurCercle += fPasOpacite*((fRatioLargeur+fRatioHauteur)/2);
 				}
 				
 				var iCouleur1 = Math.floor(244-10*(fGrandeurCercle/fRatioLargeur));
@@ -460,35 +518,35 @@ var partie = function ()
 				ctx.beginPath();
 				ctx.fillStyle = "rgb("+iCouleur1+","+iCouleur2+","+iCouleur3+")";
 				ctx.arc(oTrait.oPositionEnnemiTouche.x, 
-						oTrait.oPositionEnnemiTouche.y, 200*fRatioLargeur*fGrandeurCercle, 0, 2 * Math.PI);
+						oTrait.oPositionEnnemiTouche.y, 200*((fRatioLargeur+fRatioHauteur)/2)*fGrandeurCercle, 0, 2 * Math.PI);
 				ctx.fill();
 			
 				ctx.beginPath();
 				ctx.lineWidth = 4;
 				ctx.strokeStyle = "rgb(254,230,157)";
 				ctx.arc(oTrait.oPositionEnnemiTouche.x, 
-						oTrait.oPositionEnnemiTouche.y, (200*fRatioLargeur*fGrandeurCercle), 0, 2 * Math.PI);
+						oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*fGrandeurCercle), 0, 2 * Math.PI);
 				ctx.stroke();
 				
 				ctx.beginPath();
 				ctx.lineWidth = 4;
 				ctx.strokeStyle = "rgb(251,215,109)";
 				ctx.arc(oTrait.oPositionEnnemiTouche.x, 
-						oTrait.oPositionEnnemiTouche.y, (200*fRatioLargeur*fGrandeurCercle)+4, 0, 2 * Math.PI);
+						oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*fGrandeurCercle)+4, 0, 2 * Math.PI);
 				ctx.stroke();
 				
 				ctx.beginPath();
 				ctx.lineWidth = 4;
 				ctx.strokeStyle = "rgb(248,200,61)";
 				ctx.arc(oTrait.oPositionEnnemiTouche.x, 
-						oTrait.oPositionEnnemiTouche.y, (200*fRatioLargeur*fGrandeurCercle)+8, 0, 2 * Math.PI);
+						oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*fGrandeurCercle)+8, 0, 2 * Math.PI);
 				ctx.stroke();
 				
 				ctx.beginPath();
 				ctx.lineWidth = 4;
 				ctx.strokeStyle = "rgb(248,150,10)";
 				ctx.arc(oTrait.oPositionEnnemiTouche.x, 
-						oTrait.oPositionEnnemiTouche.y, (200*fRatioLargeur*fGrandeurCercle)+8, 0, 2 * Math.PI);
+						oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*fGrandeurCercle)+8, 0, 2 * Math.PI);
 				ctx.stroke();
 			}
 			
@@ -499,7 +557,7 @@ var partie = function ()
 				
 				
 				// Premiere fois qu'on dessine le 2eme cercle, bruit de l'explosion
-				if(fGrandeurCercle == 0.05*fRatioLargeur)
+				if(fGrandeurCercle == 0.05*((fRatioLargeur+fRatioHauteur)/2))
 				{
 					oSonSouffleExplosion.pause();
 					oSonExplosion = new Audio('sons/bomb.wav');
@@ -523,7 +581,7 @@ var partie = function ()
 				if(fGrandeurCercle != 0)
 				{
 					ctx.globalAlpha = fOpaciteGlobale;
-					fGrandeurCercle += fPasOpacite*fRatioLargeur;
+					fGrandeurCercle += fPasOpacite*((fRatioLargeur+fRatioHauteur)/2);
 					
 					var iCouleur1 = Math.floor(244-10);
 					var iCouleur2 = Math.floor(239-50);
@@ -536,35 +594,35 @@ var partie = function ()
 					ctx.beginPath();
 					ctx.fillStyle = "rgb("+iCouleur1+","+iCouleur2+","+iCouleur3+")";
 					ctx.arc(oTrait.oPositionEnnemiTouche.x, 
-							oTrait.oPositionEnnemiTouche.y, (200*fRatioLargeur*fGrandeurCercle), 0, 2 * Math.PI);
+							oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*fGrandeurCercle), 0, 2 * Math.PI);
 					ctx.fill();
 					
 					ctx.beginPath();
 					ctx.lineWidth = 4;
 					ctx.strokeStyle = "rgb(254,230,157)";
 					ctx.arc(oTrait.oPositionEnnemiTouche.x, 
-							oTrait.oPositionEnnemiTouche.y, (200*fRatioLargeur*fGrandeurCercle), 0, 2 * Math.PI);
+							oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*fGrandeurCercle), 0, 2 * Math.PI);
 					ctx.stroke();
 					
 					ctx.beginPath();
 					ctx.lineWidth = 4;
 					ctx.strokeStyle = "rgb(251,215,109)";
 					ctx.arc(oTrait.oPositionEnnemiTouche.x, 
-							oTrait.oPositionEnnemiTouche.y, (200*fRatioLargeur*fGrandeurCercle)+4, 0, 2 * Math.PI);
+							oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*fGrandeurCercle)+4, 0, 2 * Math.PI);
 					ctx.stroke();
 					
 					ctx.beginPath();
 					ctx.lineWidth = 4;
 					ctx.strokeStyle = "rgb(248,200,61)";
 					ctx.arc(oTrait.oPositionEnnemiTouche.x, 
-							oTrait.oPositionEnnemiTouche.y, (200*fRatioLargeur*fGrandeurCercle)+8, 0, 2 * Math.PI);
+							oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*fGrandeurCercle)+8, 0, 2 * Math.PI);
 					ctx.stroke();
 					
 					ctx.beginPath();
 					ctx.lineWidth = 4;
 					ctx.strokeStyle = "rgb(248,150,10)";
 					ctx.arc(oTrait.oPositionEnnemiTouche.x, 
-							oTrait.oPositionEnnemiTouche.y, (200*fRatioLargeur*fGrandeurCercle)+8, 0, 2 * Math.PI);
+							oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*fGrandeurCercle)+8, 0, 2 * Math.PI);
 					ctx.stroke();
 					
 					ctx.globalAlpha = 1;

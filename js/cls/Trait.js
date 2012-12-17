@@ -1,7 +1,8 @@
-function Trait()
+function Trait(sCouleurTemp)
 {  
 	this.oPointDepart 				= new Point(0,0);  
 	this.oPointArrivee 				= new Point(0,0);
+	this.sCouleur	 				= sCouleurTemp;
 	this.iDepartTraitDansPolygone 	= 0;
 	this.iTraitDansPolygone 		= 0;
 	this.fOpacite 					= 1;
@@ -154,7 +155,7 @@ Trait.prototype.verifierCoupeSegment = function(oPoint1Temp, oPoint2Temp)
 Trait.prototype.tracer = function()
 {
 	ctx.beginPath();
-	ctx.strokeStyle='blue'; 
+	ctx.strokeStyle = this.sCouleur; 
 	ctx.lineWidth=3;
 	ctx.moveTo(oTrait.oPointDepart.x,oTrait.oPointDepart.y);
 	ctx.lineTo(oTrait.oPointArrivee.x,oTrait.oPointArrivee.y);

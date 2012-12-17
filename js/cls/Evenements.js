@@ -41,6 +41,8 @@ var mouseClick = function(e)
 		oTrait.oPointDepart.x = x
 		oTrait.oPointDepart.y = y
 		
+		// si le joueur commence à tracer le trait dans le polygone
+		// --> pas d'actions
 		if(oPolygone.cn_PnPoly(oTrait.oPointDepart) == 1)
 		{
 			oTrait.iDepartTraitDansPolygone = 1;	
@@ -77,22 +79,48 @@ var mouseMovement = function(e)
         - getOffset(document.getElementById('partie')).top;
     }
 
+	// position de la souris
+	oPositionSouris.x = x;
+	oPositionSouris.y = y;
+	
+	// si le curseur se trouve dans le polygone
+	if(oPolygone.cn_PnPoly(new Point(x, y)))
+	{
+		bSourisDansPolygone = true;
+	}
+	// sinon
+	else
+	{
+		bSourisDansPolygone = false;
+	}
+	
 	// Si le trait ne doit pas clignoter et qu'aucun ennemi n'a été touché
 	if(oTrait.iCompteurFaireClignoter == 0 && oTrait.bToucheEnnemi == false)
 	{
 		if(mouseDown)
-		{				
+		{
 			mouseMove = true;
 			oTrait.oPointArrivee.x = x;
 			oTrait.oPointArrivee.y = y;
 		}
+		if(mouseDown && oTrait.iTraitDansPolygone == 1)
+		{
+			bSourisDansPolygone = false;
+		}
 	}
 }
 
+
+var mouseOutCanvas = function(e) 
+{
+	bSourisDansPolygone = undefined;
+}
+
 /*** ================================================================================================================================================
-Evénements resize
+Evénement resize
 ====================================================================================================================================================*/
 
+// redimensionnement de la fenêtre
 var screenResize = function(e) 
 {
 	canvas.width = document.documentElement.clientWidth-4;
@@ -127,6 +155,12 @@ var screenResize = function(e)
 		aListeEnnemis[i].iTailleY = (aListeEnnemis[i].iTailleY / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
 		aListeEnnemis[i].oPosition = new Point(aListeEnnemis[i].oPosition.x*(fNewRatioLargeur/fRatioLargeur), aListeEnnemis[i].oPosition.y*(fNewRatioHauteur/fRatioHauteur))
 	}
+	
+	/* === Redimensionnement des étoiles en fond ===*/
+	SIZE_STARS = SIZE_STARS/((fRatioLargeur+fRatioHauteur)/2) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+	
+	/* === Redimensionnement des cibles ===*/
+	fTailleCibles = (fTailleCibles/((fRatioLargeur+fRatioHauteur)/2))*((fNewRatioLargeur+fNewRatioHauteur)/2);
 	
 	fRatioLargeur = fNewRatioLargeur;
 	fRatioHauteur = fNewRatioHauteur;
