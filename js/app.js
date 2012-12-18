@@ -231,6 +231,7 @@ var reset = function () {
 	fOpaciteGlobale = 0;
 	oTrait.reset();
 	oPolygone.reset();
+	oBarreAvancement.reset();
 };
 
 
@@ -501,6 +502,7 @@ var partie = function ()
 						aListeEnnemis[i].reset();
 					}
 					oPolygone.reset();
+					oBarreAvancement.reset();
 					mouseDown = false;
 					mouseMove = false;
 				}
