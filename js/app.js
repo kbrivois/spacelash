@@ -169,7 +169,7 @@ aListePointsTemp.push(new Point(50,50));
 var img = new Image();
 img.src = 'img/textures/metal2.jpg';
 iNombresImages++;
-var oPolygone = new Polygone(aListePointsTemp,img, 0.6);
+var oPolygone = new Polygone(aListePointsTemp,img, 0.2);
 img.onload = function()
 {
 	iCompteurImages++;

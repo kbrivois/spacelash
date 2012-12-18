@@ -8,17 +8,18 @@ function Barre(oPoint1Temp, oPoint2Temp, fTailleTemp, sCouleurTemp, sCouleurCont
 	this.oPoint1 					= new Point(fMilieu - (fPourcentageTaille/2)*canvas.width , 370);
 	this.oPoint2 					= new Point(fMilieu + (fPourcentageTaille/2)*canvas.width, 370);
 	this.fDiminutionProgressive		= 1;
+	this.fAirePrecedente			= this.fDiminutionProgressive;
 	this.fTaille 					= fTailleTemp;
 	this.sCouleur 					= sCouleurTemp;
 	this.sCouleurConteneur 			= sCouleurConteurTemp;
 }
 
-Barre.prototype.tracer = function()
+Barre.prototype.tracer = function(oPolygoneTemp)
 {
 	// Texte pourcentage aire restant
 	ctx.font = 20*((fRatioHauteur+fRatioLargeur)/2)+"pt Calibri,Geneva,Arial";
 	ctx.fillStyle = "white";
-	ctx.fillText(Math.floor((oPolygone.fAireTerrainActuel/oPolygone.fAireTerrainDepart)*100)+" %", this.oPoint1.x, 350*fRatioHauteur);
+	ctx.fillText(Math.floor((oPolygoneTemp.fAireTerrainActuel/oPolygoneTemp.fAireTerrainDepart)*100)+" %", this.oPoint1.x, 350*fRatioHauteur);
 
 	// Barre conteneur
 	ctx.beginPath();
@@ -34,9 +35,13 @@ Barre.prototype.tracer = function()
 	ctx.lineWidth = this.fTaille*fRatioHauteur;
 	ctx.moveTo(this.oPoint1.x, this.oPoint1.y*fRatioHauteur);
 	// s'il y a eu une coupe, on diminue progressivement la taille de la barre d'avancement
-	if(this.fDiminutionProgressive > (oPolygone.fAireTerrainActuel/oPolygone.fAireTerrainDepart))
+	if(this.fDiminutionProgressive > (oPolygoneTemp.fAireTerrainActuel/oPolygoneTemp.fAireTerrainDepart))
 	{
-		this.fDiminutionProgressive -= (1-(oPolygone.fAireTerrainActuel/oPolygone.fAireTerrainDepart)) / 50;
+		this.fDiminutionProgressive -= (1-(oPolygoneTemp.fAireTerrainActuel/(oPolygoneTemp.fAireTerrainDepart*this.fAirePrecedente))) / 50;
+	}
+	else
+	{
+		this.fAirePrecedente = this.fDiminutionProgressive;
 	}
 	ctx.lineTo((this.fDiminutionProgressive)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , this.oPoint2.y*fRatioHauteur);
 	ctx.stroke();
@@ -46,12 +51,13 @@ Barre.prototype.tracer = function()
 	ctx.strokeStyle='red'; 
 	ctx.lineWidth=4;
 	// (aire du terrain en %) * (taille de la barre totale) + this.oPoint1.x
-	ctx.moveTo((oPolygone.fAireMinimale/oPolygone.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 362.5*fRatioHauteur);
-	ctx.lineTo((oPolygone.fAireMinimale/oPolygone.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 377.5*fRatioHauteur);
+	ctx.moveTo((oPolygoneTemp.fAireMinimale/oPolygoneTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 362.5*fRatioHauteur);
+	ctx.lineTo((oPolygoneTemp.fAireMinimale/oPolygoneTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 377.5*fRatioHauteur);
 	ctx.stroke();
 }
 
 Barre.prototype.reset = function()
 {
 	this.fDiminutionProgressive	= 1;
+	this.fAirePrecedente = this.fDiminutionProgressive;
 }
