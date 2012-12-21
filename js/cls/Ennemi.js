@@ -64,7 +64,7 @@ Ennemi.prototype.ralentir = function()
 Ennemi.prototype.reset = function()
 {
 	// reset la position de l'ennemi
-	this.oPosition = oPolygone.placerEnnemi(this);
+	this.oPosition = oPartie.oPolygone.placerEnnemi(this);
 	this.fVitesse = this.fVitesseDepart;
 	this.fRotation = this.fRotationDepart;
 	// on calcule le déplacement de l'ennemi

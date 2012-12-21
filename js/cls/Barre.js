@@ -1,12 +1,12 @@
 // Barre qui indique au joueur son avancement
-function Barre(oPoint1Temp, oPoint2Temp, fTailleTemp, sCouleurTemp, sCouleurConteurTemp)  
-{   
+function Barre(oPoint1Temp, oPoint2Temp, fTailleTemp, sCouleurTemp, sCouleurConteurTemp, oPartieTemp)  
+{
 	// pour centrer la barre
-	var fMilieu = canvas.width/2;
+	var fMilieu = oPartieTemp.canvas.width/2;
 	var fPourcentageTaille = 0.8;
 	
-	this.oPoint1 					= new Point(fMilieu - (fPourcentageTaille/2)*canvas.width , 370);
-	this.oPoint2 					= new Point(fMilieu + (fPourcentageTaille/2)*canvas.width, 370);
+	this.oPoint1 					= new Point(fMilieu - (fPourcentageTaille/2)*oPartieTemp.canvas.width , 370);
+	this.oPoint2 					= new Point(fMilieu + (fPourcentageTaille/2)*oPartieTemp.canvas.width, 370);
 	this.fDiminutionProgressive		= 1;
 	this.fAirePrecedente			= this.fDiminutionProgressive;
 	this.fTaille 					= fTailleTemp;
@@ -17,23 +17,23 @@ function Barre(oPoint1Temp, oPoint2Temp, fTailleTemp, sCouleurTemp, sCouleurCont
 Barre.prototype.tracer = function(oPolygoneTemp)
 {
 	// Texte pourcentage aire restant
-	ctx.font = 20*((fRatioHauteur+fRatioLargeur)/2)+"pt Calibri,Geneva,Arial";
-	ctx.fillStyle = "white";
-	ctx.fillText(Math.floor((oPolygoneTemp.fAireTerrainActuel/oPolygoneTemp.fAireTerrainDepart)*100)+" %", this.oPoint1.x, 350*fRatioHauteur);
+	oPartie.ctx.font = 20*((fRatioHauteur+fRatioLargeur)/2)+"pt Calibri,Geneva,Arial";
+	oPartie.ctx.fillStyle = "white";
+	oPartie.ctx.fillText(Math.floor((oPolygoneTemp.fAireTerrainActuel/oPolygoneTemp.fAireTerrainDepart)*100)+" %", this.oPoint1.x, 350*fRatioHauteur);
 
 	// Barre conteneur
-	ctx.beginPath();
-	ctx.strokeStyle = this.sCouleurConteneur;
-	ctx.lineWidth = this.fTaille*fRatioHauteur+2;
-	ctx.moveTo(this.oPoint1.x-1, this.oPoint1.y*fRatioHauteur);
-	ctx.lineTo(this.oPoint2.x+1, this.oPoint2.y*fRatioHauteur);
-	ctx.stroke();
+	oPartie.ctx.beginPath();
+	oPartie.ctx.strokeStyle = this.sCouleurConteneur;
+	oPartie.ctx.lineWidth = this.fTaille*fRatioHauteur+2;
+	oPartie.ctx.moveTo(this.oPoint1.x-1, this.oPoint1.y*fRatioHauteur);
+	oPartie.ctx.lineTo(this.oPoint2.x+1, this.oPoint2.y*fRatioHauteur);
+	oPartie.ctx.stroke();
 	
 	// Barre d'avancement
-	ctx.beginPath();
-	ctx.strokeStyle = this.sCouleur; 
-	ctx.lineWidth = this.fTaille*fRatioHauteur;
-	ctx.moveTo(this.oPoint1.x, this.oPoint1.y*fRatioHauteur);
+	oPartie.ctx.beginPath();
+	oPartie.ctx.strokeStyle = this.sCouleur; 
+	oPartie.ctx.lineWidth = this.fTaille*fRatioHauteur;
+	oPartie.ctx.moveTo(this.oPoint1.x, this.oPoint1.y*fRatioHauteur);
 	// s'il y a eu une coupe, on diminue progressivement la taille de la barre d'avancement
 	if(this.fDiminutionProgressive > (oPolygoneTemp.fAireTerrainActuel/oPolygoneTemp.fAireTerrainDepart))
 	{
@@ -43,17 +43,17 @@ Barre.prototype.tracer = function(oPolygoneTemp)
 	{
 		this.fAirePrecedente = this.fDiminutionProgressive;
 	}
-	ctx.lineTo((this.fDiminutionProgressive)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , this.oPoint2.y*fRatioHauteur);
-	ctx.stroke();
+	oPartie.ctx.lineTo((this.fDiminutionProgressive)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , this.oPoint2.y*fRatioHauteur);
+	oPartie.ctx.stroke();
 	
 	// Barre limite
-	ctx.beginPath();
-	ctx.strokeStyle='red'; 
-	ctx.lineWidth=4;
+	oPartie.ctx.beginPath();
+	oPartie.ctx.strokeStyle='red'; 
+	oPartie.ctx.lineWidth=4;
 	// (aire du terrain en %) * (taille de la barre totale) + this.oPoint1.x
-	ctx.moveTo((oPolygoneTemp.fAireMinimale/oPolygoneTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 362.5*fRatioHauteur);
-	ctx.lineTo((oPolygoneTemp.fAireMinimale/oPolygoneTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 377.5*fRatioHauteur);
-	ctx.stroke();
+	oPartie.ctx.moveTo((oPolygoneTemp.fAireMinimale/oPolygoneTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 362.5*fRatioHauteur);
+	oPartie.ctx.lineTo((oPolygoneTemp.fAireMinimale/oPolygoneTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 377.5*fRatioHauteur);
+	oPartie.ctx.stroke();
 }
 
 Barre.prototype.reset = function()

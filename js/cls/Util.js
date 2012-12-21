@@ -21,10 +21,8 @@ var distance = function(oPoint1,oPoint2)
 
 // Méthode qui permet de récupérer l'intersection entre les 2 segments formés par les 4 points
 // return : aIntersection=[0:oPoint3, 1:oPoint4, 2:Point intersection] (les segments se coupent) ou null
-var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oPoint4Temp, flag)
+var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oPoint4Temp)
 {
-	if (!flag) { flag = false; } 
-	
 	var oPoint1 = new Point(oPoint1Temp.x, oPoint1Temp.y);
 	var oPoint2 = new Point(oPoint2Temp.x, oPoint2Temp.y);
 	var oPoint3 = new Point(oPoint3Temp.x, oPoint3Temp.y);
@@ -113,17 +111,6 @@ var getIntersectionSegments = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oP
 			// x = (b-y)/-a
 			var yIntersection = oPoint4.y;
 			var xIntersection = (pPoint-yIntersection)/-mPoint;
-
-			/*
-			if(flag)
-			{
-				ctx.beginPath();
-				ctx.lineWidth = 2;
-				ctx.strokeStyle = "red";
-				ctx.arc(xIntersection,
-						yIntersection, 4, 0, 2 * Math.PI);
-				ctx.stroke();
-			}*/
 		}
 		// si le segment 2 est vertical
 		else if(oPoint4.x - oPoint3.x == 0)
@@ -391,6 +378,14 @@ var dansPolygone = function(P, aListePointsTemp)
 	}
 	return (cn&1);    // 0 if even (out), and 1 if odd (in)
 }
+
+
+// Retourne un nombre aléatoire entre la plage de valeur :  [minVal,maxVal]
+var randomRange = function(minVal,maxVal)
+{
+	return Math.floor(Math.random() * (maxVal - minVal - 1)) + minVal;
+}
+
 
 Object.prototype.clone = function() {
     var fn = function (o, cloner){

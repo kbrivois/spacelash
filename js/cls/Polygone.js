@@ -8,7 +8,7 @@ function Polygone (aListePointsTemp,oTexture, fAireMinimale)
 
 	this.aListePoints = new Array();
 	for(var i=0; i<aListePointsTemp.length; i++)
-		this.aListePoints[i] 		= new Point(aListePointsTemp[i].x * fRatioLargeur , aListePointsTemp[i].y * fRatioHauteur);
+		this.aListePoints[i] 			= new Point(aListePointsTemp[i].x * fRatioLargeur , aListePointsTemp[i].y * fRatioHauteur);
 			
 	// Aire du polygone
 	this.fAireTerrainDepart 			= this.calculerAire();
@@ -71,7 +71,7 @@ Polygone.prototype.calculerAire = function()
 // Méthode qui permet de couper la forme
 // arg : les 2 points de coupe et la liste des ennemis
 // return : true ou false si la forme n'a pas pu être coupée
-Polygone.prototype.couperForme = function(oPointCoupe1Temp, oPointCoupe2Temp, aListeEnnemi)
+Polygone.prototype.couperForme = function(oPointCoupe1Temp, oPointCoupe2Temp)
 {
 	var oPointCoupe1 = new Point(oPointCoupe1Temp.x, oPointCoupe1Temp.y);
 	var oPointCoupe2 = new Point(oPointCoupe2Temp.x, oPointCoupe2Temp.y);
@@ -142,9 +142,9 @@ Polygone.prototype.couperForme = function(oPointCoupe1Temp, oPointCoupe2Temp, aL
 	var bEstDansPartie2 = false;
 	
 	// Pour chaque ennemi, on vérifie dans quelle partie il se trouve
-	for(var i=0; i<aListeEnnemis.length; i++)
+	for(var i=0; i<oPartie.aListeEnnemis.length; i++)
 	{
-		if(dansPolygone(aListeEnnemis[i].oPosition, aPartie1) == 1)
+		if(dansPolygone(oPartie.aListeEnnemis[i].oPosition, aPartie1) == 1)
 		{
 			bEstDansPartie1 = true;
 		}
@@ -275,24 +275,24 @@ Polygone.prototype.faireRebond = function(aListeIntersectionTerrainEnnemi, oEnne
 //méthode pour tracer le polygone 
 Polygone.prototype.tracer = function()  
 {
-	ctx.beginPath();
+	oPartie.ctx.beginPath();
 	
 	// create pattern
-	var ptrn = ctx.createPattern(this.oTexture,'repeat');
-	//var ptrn2 = ctx.createPattern(this.oTextureBords,'repeat');
-	ctx.fillStyle = ptrn;
-	ctx.lineWidth="1";
-	ctx.strokeStyle="black";
-	ctx.beginPath();//On démarre un nouveau tracé
-	ctx.moveTo(this.aListePoints[0].x, this.aListePoints[0].y);//On se déplace au coin inférieur gauche
+	var ptrn = oPartie.ctx.createPattern(this.oTexture,'repeat');
+	//var ptrn2 = oPartie.ctx.createPattern(this.oTextureBords,'repeat');
+	oPartie.ctx.fillStyle = ptrn;
+	oPartie.ctx.lineWidth="1";
+	oPartie.ctx.strokeStyle="black";
+	oPartie.ctx.beginPath();//On démarre un nouveau tracé
+	oPartie.ctx.moveTo(this.aListePoints[0].x, this.aListePoints[0].y);//On se déplace au coin inférieur gauche
 	
 	for(var i= 1; i < this.aListePoints.length; i++)
 	{
-		ctx.lineTo(this.aListePoints[i].x, this.aListePoints[i].y);
+		oPartie.ctx.lineTo(this.aListePoints[i].x, this.aListePoints[i].y);
 	}
 	
-	ctx.fill();
-	ctx.stroke();
+	oPartie.ctx.fill();
+	oPartie.ctx.stroke();
 }
 
 //méthode pour supprimer "this.aPartieA_Supprimer". Elle devient de + en + opaque
@@ -312,25 +312,25 @@ Polygone.prototype.supprimerPartie = function()
 		this.aPartieA_Supprimer[0].y += fRatioLargeur;
 		
 		// Transparence
-		ctx.globalAlpha = this.fOpacitePartie;
+		oPartie.ctx.globalAlpha = this.fOpacitePartie;
 		// create pattern
-		var ptrn = ctx.createPattern(this.oTexture,'repeat');
-		ctx.fillStyle = ptrn;
-		ctx.lineWidth="2";
-		ctx.strokeStyle="black";
-		ctx.beginPath();//On démarre un nouveau tracé
-		ctx.moveTo(this.aPartieA_Supprimer[0].x, this.aPartieA_Supprimer[0].y);//On se déplace au coin inférieur gauche
+		var ptrn = oPartie.ctx.createPattern(this.oTexture,'repeat');
+		oPartie.ctx.fillStyle = ptrn;
+		oPartie.ctx.lineWidth="2";
+		oPartie.ctx.strokeStyle="black";
+		oPartie.ctx.beginPath();//On démarre un nouveau tracé
+		oPartie.ctx.moveTo(this.aPartieA_Supprimer[0].x, this.aPartieA_Supprimer[0].y);//On se déplace au coin inférieur gauche
 		
 		for(var i= 1; i < this.aPartieA_Supprimer.length; i++)
 		{		
 			this.aPartieA_Supprimer[i].x += fRatioLargeur;
 			this.aPartieA_Supprimer[i].y += fRatioLargeur;
-			ctx.lineTo(this.aPartieA_Supprimer[i].x, this.aPartieA_Supprimer[i].y);
+			oPartie.ctx.lineTo(this.aPartieA_Supprimer[i].x, this.aPartieA_Supprimer[i].y);
 		}
 		
-		ctx.fill();
-		ctx.stroke();
-		ctx.globalAlpha = 1;
+		oPartie.ctx.fill();
+		oPartie.ctx.stroke();
+		oPartie.ctx.globalAlpha = 1;
 		
 		if(this.fOpacitePartie == 0)
 		{
@@ -388,7 +388,7 @@ Polygone.prototype.placerEnnemi = function(oEnnemiTemp)
 			
 			// on vérifie si l'ennemi est toujours sur le terrain
 			// Rappel : si ennemi touche un bord --> renvoie aIntersection=[0:Point1 cote terrain, 1:Point2 cote terrain, 2:Point intersection]	
-			var aListeIntersectionTerrainEnnemi = oPolygone.ennemiDansTerrain(oEnnemiTemp);
+			var aListeIntersectionTerrainEnnemi = this.ennemiDansTerrain(oEnnemiTemp);
 			
 			if(aListeIntersectionTerrainEnnemi == null)
 				return oPoint;
@@ -469,8 +469,8 @@ Polygone.prototype.cn_PnPoly = function(P)
 Polygone.prototype.reset = function()
 {
 	this.aListePoints = new Array();
-	for(var i=0; i<aListePointsTemp.length; i++)
-		this.aListePoints[i] = new Point(aListePointsTemp[i].x * fRatioLargeur , aListePointsTemp[i].y * fRatioHauteur);
+	for(var i=0; i<this.aListePointsDepart.length; i++)
+		this.aListePoints[i] = new Point(this.aListePointsDepart[i].x , this.aListePointsDepart[i].y);
 	this.fAireTerrainDepart = this.calculerAire();
 	this.fAireTerrainActuel = this.calculerAire();
 	this.aPremierCoteCoupe = new Array();

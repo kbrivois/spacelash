@@ -154,12 +154,12 @@ Trait.prototype.verifierCoupeSegment = function(oPoint1Temp, oPoint2Temp)
 // trace le trait
 Trait.prototype.tracer = function()
 {
-	ctx.beginPath();
-	ctx.strokeStyle = this.sCouleur; 
-	ctx.lineWidth=3;
-	ctx.moveTo(oTrait.oPointDepart.x,oTrait.oPointDepart.y);
-	ctx.lineTo(oTrait.oPointArrivee.x,oTrait.oPointArrivee.y);
-	ctx.stroke();
+	oPartie.ctx.beginPath();
+	oPartie.ctx.strokeStyle = this.sCouleur; 
+	oPartie.ctx.lineWidth=3;
+	oPartie.ctx.moveTo(this.oPointDepart.x,this.oPointDepart.y);
+	oPartie.ctx.lineTo(this.oPointArrivee.x,this.oPointArrivee.y);
+	oPartie.ctx.stroke();
 }
 
 // rend de plus en plus opaque le trait (et inversement) en fonction de "iCompteurFaireClignoter"
@@ -202,14 +202,14 @@ Trait.prototype.clignoter = function()
 			}
 		}
 		
-		ctx.save(); 
-		ctx.beginPath();
-		ctx.strokeStyle="rgba(255,0,0,"+this.fOpacite+")";
-		ctx.lineWidth=3;
-		ctx.moveTo(oTrait.oPointDepart.x,oTrait.oPointDepart.y);
-		ctx.lineTo(oTrait.oPointArrivee.x,oTrait.oPointArrivee.y);
-		ctx.stroke();
-		ctx.restore();
+		oPartie.ctx.save(); 
+		oPartie.ctx.beginPath();
+		oPartie.ctx.strokeStyle="rgba(255,0,0,"+this.fOpacite+")";
+		oPartie.ctx.lineWidth=3;
+		oPartie.ctx.moveTo(this.oPointDepart.x,this.oPointDepart.y);
+		oPartie.ctx.lineTo(this.oPointArrivee.x,this.oPointArrivee.y);
+		oPartie.ctx.stroke();
+		oPartie.ctx.restore();
 		
 		if(this.iCompteurFaireClignoter == 0)
 		{
@@ -227,17 +227,17 @@ Trait.prototype.disparaitre = function()
 		var oPointDebut = new Point(0,0);
 		var oPointFin = new Point(0,0);
 		
-		oPointDebut.x = oTrait.oPointDepart.x;
-		oPointDebut.y = oTrait.oPointDepart.y;
-		oPointFin.x = (oTrait.oPointDepart.x+oTrait.oPointArrivee.x) / 2;
-		oPointFin.y = (oTrait.oPointDepart.y+oTrait.oPointArrivee.y) / 2;
+		oPointDebut.x = this.oPointDepart.x;
+		oPointDebut.y = this.oPointDepart.y;
+		oPointFin.x = (this.oPointDepart.x+this.oPointArrivee.x) / 2;
+		oPointFin.y = (this.oPointDepart.y+this.oPointArrivee.y) / 2;
 		
 		this.aListeBoutsTrait[0] = new Array( new Point(oPointDebut.x, oPointDebut.y), new Point(oPointFin.x, oPointFin.y));
 		
-		oPointDebut.x = (oTrait.oPointDepart.x+oTrait.oPointArrivee.x) / 2;
-		oPointDebut.y = (oTrait.oPointDepart.y+oTrait.oPointArrivee.y) / 2;
-		oPointFin.x = oTrait.oPointArrivee.x;
-		oPointFin.y = oTrait.oPointArrivee.y;
+		oPointDebut.x = (this.oPointDepart.x+this.oPointArrivee.x) / 2;
+		oPointDebut.y = (this.oPointDepart.y+this.oPointArrivee.y) / 2;
+		oPointFin.x = this.oPointArrivee.x;
+		oPointFin.y = this.oPointArrivee.y;
 		
 		this.aListeBoutsTrait[1] = new Array( new Point(oPointDebut.x, oPointDebut.y), new Point(oPointFin.x, oPointFin.y));
 	}
@@ -278,23 +278,23 @@ Trait.prototype.disparaitre = function()
 		this.aListeBoutsTrait[1][1].y++;
 	}
 	
-	ctx.save(); 
-	ctx.beginPath();
-	ctx.strokeStyle="rgba(0,0,255,"+this.fOpacite+")";
-	ctx.lineWidth=3;
-	ctx.moveTo(this.aListeBoutsTrait[0][0].x,this.aListeBoutsTrait[0][0].y);
-	ctx.lineTo(this.aListeBoutsTrait[0][1].x,this.aListeBoutsTrait[0][1].y);
-	ctx.stroke();
-	ctx.restore();
+	oPartie.ctx.save(); 
+	oPartie.ctx.beginPath();
+	oPartie.ctx.strokeStyle="rgba(0,0,255,"+this.fOpacite+")";
+	oPartie.ctx.lineWidth=3;
+	oPartie.ctx.moveTo(this.aListeBoutsTrait[0][0].x,this.aListeBoutsTrait[0][0].y);
+	oPartie.ctx.lineTo(this.aListeBoutsTrait[0][1].x,this.aListeBoutsTrait[0][1].y);
+	oPartie.ctx.stroke();
+	oPartie.ctx.restore();
 	
-	ctx.save(); 
-	ctx.beginPath();
-	ctx.strokeStyle="rgba(0,0,255,"+this.fOpacite+")";
-	ctx.lineWidth=3;
-	ctx.moveTo(this.aListeBoutsTrait[1][0].x,this.aListeBoutsTrait[1][0].y);
-	ctx.lineTo(this.aListeBoutsTrait[1][1].x,this.aListeBoutsTrait[1][1].y);
-	ctx.stroke();
-	ctx.restore();
+	oPartie.ctx.save(); 
+	oPartie.ctx.beginPath();
+	oPartie.ctx.strokeStyle="rgba(0,0,255,"+this.fOpacite+")";
+	oPartie.ctx.lineWidth=3;
+	oPartie.ctx.moveTo(this.aListeBoutsTrait[1][0].x,this.aListeBoutsTrait[1][0].y);
+	oPartie.ctx.lineTo(this.aListeBoutsTrait[1][1].x,this.aListeBoutsTrait[1][1].y);
+	oPartie.ctx.stroke();
+	oPartie.ctx.restore();
 }
 
 

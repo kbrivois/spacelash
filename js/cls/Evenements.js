@@ -1,7 +1,3 @@
-/*** ================================================================================================================================================
-Evénements souris pour la partie
-====================================================================================================================================================*/
-
 // On récupère la position de l'élément canvas pour pouvoir
 // récupérer la position de la souris à l'intérieur du canvas.
 var getOffset = function(e) 
@@ -18,7 +14,11 @@ var getOffset = function(e)
     return { top: cy, left: cx };
 }
 
-var mouseClick = function(e)
+/*** ================================================================================================================================================
+Evénements souris pour la partie
+====================================================================================================================================================*/
+
+var mouseClickPartie = function(e)
 {
 	// on récupère les coordonnées de la souris
 	if(e.offsetX || e.offsetY) 
@@ -35,35 +35,35 @@ var mouseClick = function(e)
     }  
 	
 	// Si le trait ne doit pas clignoter et qu'aucun ennemi n'a été touché
-	if(oTrait.iCompteurFaireClignoter == 0 && oTrait.bToucheEnnemi == false)
+	if(oPartie.oTrait.iCompteurFaireClignoter == 0 && oPartie.oTrait.bToucheEnnemi == false)
 	{
-		mouseDown = true;
-		oTrait.oPointDepart.x = x
-		oTrait.oPointDepart.y = y
+		oPartie.mouseDown = true;
+		oPartie.oTrait.oPointDepart.x = x
+		oPartie.oTrait.oPointDepart.y = y
 		
 		// si le joueur commence à tracer le trait dans le polygone
 		// --> pas d'actions
-		if(oPolygone.cn_PnPoly(oTrait.oPointDepart) == 1)
+		if(oPartie.oPolygone.cn_PnPoly(oPartie.oTrait.oPointDepart) == 1)
 		{
-			oTrait.iDepartTraitDansPolygone = 1;	
-			oTrait.oPointDepart.x = 0;
-			oTrait.oPointDepart.y = 0;
+			oPartie.oTrait.iDepartTraitDansPolygone = 1;	
+			oPartie.oTrait.oPointDepart.x = 0;
+			oPartie.oTrait.oPointDepart.y = 0;
 		}
 	}
 }
 
-var mouseUnClick = function (e) 
+var mouseUnClickPartie = function (e) 
 {
 	// Si le trait ne doit pas clignoter et qu'aucun ennemi n'a été touché
-	if(oTrait.iCompteurFaireClignoter == 0 && oTrait.bToucheEnnemi == false)
+	if(oPartie.oTrait.iCompteurFaireClignoter == 0 && oPartie.oTrait.bToucheEnnemi == false)
 	{
-		mouseDown = false;
-		mouseMove = false;
-		oTrait.reset();
+		oPartie.mouseDown = false;
+		oPartie.mouseMove = false;
+		oPartie.oTrait.reset();
 	}
 }
 
-var mouseMovement = function(e) 
+var mouseMovementPartie = function(e) 
 {
 	// on récupère les coordonnées de la souris
 	if(e.offsetX || e.offsetY) 
@@ -80,87 +80,101 @@ var mouseMovement = function(e)
     }
 
 	// position de la souris
-	oPositionSouris.x = x;
-	oPositionSouris.y = y;
+	oPartie.oPositionSouris.x = x;
+	oPartie.oPositionSouris.y = y;
 	
 	// si le curseur se trouve dans le polygone
-	if(oPolygone.cn_PnPoly(new Point(x, y)))
+	if(oPartie.oPolygone.cn_PnPoly(new Point(x, y)))
 	{
-		bSourisDansPolygone = true;
+		oPartie.bSourisDansPolygone = true;
 	}
 	// sinon
 	else
 	{
-		bSourisDansPolygone = false;
+		oPartie.bSourisDansPolygone = false;
 	}
 	
 	// Si le trait ne doit pas clignoter et qu'aucun ennemi n'a été touché
-	if(oTrait.iCompteurFaireClignoter == 0 && oTrait.bToucheEnnemi == false)
+	if(oPartie.oTrait.iCompteurFaireClignoter == 0 && oPartie.oTrait.bToucheEnnemi == false)
 	{
-		if(mouseDown)
+		if(oPartie.mouseDown)
 		{
-			mouseMove = true;
-			oTrait.oPointArrivee.x = x;
-			oTrait.oPointArrivee.y = y;
+			oPartie.mouseMove = true;
+			oPartie.oTrait.oPointArrivee.x = x;
+			oPartie.oTrait.oPointArrivee.y = y;
 		}
-		if(mouseDown && oTrait.iTraitDansPolygone == 1)
+		if(oPartie.mouseDown && oPartie.oTrait.iTraitDansPolygone == 1)
 		{
-			bSourisDansPolygone = false;
+			oPartie.bSourisDansPolygone = false;
 		}
 	}
 }
 
 
-var mouseOutCanvas = function(e) 
+var mouseOutCanvasPartie = function(e) 
 {
-	bSourisDansPolygone = undefined;
+	oPartie.bSourisDansPolygone = undefined;
 }
 
 /*** ================================================================================================================================================
-Evénement resize
+Evénement resize Partie
 ====================================================================================================================================================*/
 
 // redimensionnement de la fenêtre
-var screenResize = function(e) 
+var screenResizePartie = function(e) 
 {
-	canvas.width = document.documentElement.clientWidth-4;
-	canvas.height = document.documentElement.clientHeight-4;
+	oPartie.canvas.width = document.documentElement.clientWidth-4;
+	oPartie.canvas.height = document.documentElement.clientHeight-4;
 	
-	var fNewRatioLargeur = canvas.width / 300;
-	var fNewRatioHauteur = canvas.height / 400;
+	var fNewRatioLargeur = oPartie.canvas.width / 300;
+	var fNewRatioHauteur = oPartie.canvas.height / 400;
 	
 	/* === Redéfinition de la barre d'avancement === */
-	var fMilieu = canvas.width/2;
+	var fMilieu = oPartie.canvas.width/2;
 	var fPourcentageTaille = 0.8;
-	oBarreAvancement.oPoint1 = new Point(fMilieu - (fPourcentageTaille/2)*canvas.width , 370);
-	oBarreAvancement.oPoint2 = new Point(fMilieu + (fPourcentageTaille/2)*canvas.width, 370);
+	oPartie.oBarreAvancement.oPoint1 = new Point(fMilieu - (fPourcentageTaille/2)*oPartie.canvas.width , 370);
+	oPartie.oBarreAvancement.oPoint2 = new Point(fMilieu + (fPourcentageTaille/2)*oPartie.canvas.width, 370);
 	
 	/* === Redéfinition du polygone === */
-	for(var i=0; i<oPolygone.aListePointsDepart.length; i++)
-		oPolygone.aListePointsDepart[i] = new Point( (oPolygone.aListePointsDepart[i].x/fRatioLargeur)*fNewRatioLargeur , (oPolygone.aListePointsDepart[i].y/fRatioHauteur)*fNewRatioHauteur);
-	for(var i=0; i<oPolygone.aListePoints.length; i++)
-		oPolygone.aListePoints[i] = new Point( (oPolygone.aListePoints[i].x/fRatioLargeur)*fNewRatioLargeur , (oPolygone.aListePoints[i].y/fRatioHauteur)*fNewRatioHauteur);
+	for(var i=0; i<oPartie.oPolygone.aListePointsDepart.length; i++)
+		oPartie.oPolygone.aListePointsDepart[i] = new Point( (oPartie.oPolygone.aListePointsDepart[i].x/fRatioLargeur)*fNewRatioLargeur , (oPartie.oPolygone.aListePointsDepart[i].y/fRatioHauteur)*fNewRatioHauteur);
+	for(var i=0; i<oPartie.oPolygone.aListePoints.length; i++)
+		oPartie.oPolygone.aListePoints[i] = new Point( (oPartie.oPolygone.aListePoints[i].x/fRatioLargeur)*fNewRatioLargeur , (oPartie.oPolygone.aListePoints[i].y/fRatioHauteur)*fNewRatioHauteur);
 	
-	var fPourcentageAireMinimale = oPolygone.fAireMinimale/oPolygone.fAireTerrainDepart;
-	oPolygone.fAireTerrainDepart = oPolygone.calculerAireDepart();
-	oPolygone.fAireTerrainActuel = oPolygone.calculerAire();
-	oPolygone.fAireMinimale = oPolygone.fAireTerrainDepart*fPourcentageAireMinimale;
+	var fPourcentageAireMinimale = oPartie.oPolygone.fAireMinimale/oPartie.oPolygone.fAireTerrainDepart;
+	oPartie.oPolygone.fAireTerrainDepart = oPartie.oPolygone.calculerAireDepart();
+	oPartie.oPolygone.fAireTerrainActuel = oPartie.oPolygone.calculerAire();
+	oPartie.oPolygone.fAireMinimale = oPartie.oPolygone.fAireTerrainDepart*fPourcentageAireMinimale;
 	
 	/* === Redéfinition des ennemis === */
-	for(var i=0; i<aListeEnnemis.length; i++)
+	for(var i=0; i<oPartie.aListeEnnemis.length; i++)
 	{
-		aListeEnnemis[i].fVitesseDepart = (aListeEnnemis[i].fVitesseDepart / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
-		aListeEnnemis[i].fVitesse = (aListeEnnemis[i].fVitesse / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
-		aListeEnnemis[i].iTailleX = (aListeEnnemis[i].iTailleX / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
-		aListeEnnemis[i].iTailleY = (aListeEnnemis[i].iTailleY / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
-		aListeEnnemis[i].oPosition = new Point(aListeEnnemis[i].oPosition.x*(fNewRatioLargeur/fRatioLargeur), aListeEnnemis[i].oPosition.y*(fNewRatioHauteur/fRatioHauteur))
+		oPartie.aListeEnnemis[i].fVitesseDepart = (oPartie.aListeEnnemis[i].fVitesseDepart / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+		oPartie.aListeEnnemis[i].fVitesse = (oPartie.aListeEnnemis[i].fVitesse / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+		oPartie.aListeEnnemis[i].iTailleX = (oPartie.aListeEnnemis[i].iTailleX / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+		oPartie.aListeEnnemis[i].iTailleY = (oPartie.aListeEnnemis[i].iTailleY / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+		oPartie.aListeEnnemis[i].oPosition = new Point(oPartie.aListeEnnemis[i].oPosition.x*(fNewRatioLargeur/fRatioLargeur), oPartie.aListeEnnemis[i].oPosition.y*(fNewRatioHauteur/fRatioHauteur))
 	}
 	
 	/* === Redimensionnement des étoiles en fond ===*/
-	SIZE_STARS = SIZE_STARS/((fRatioLargeur+fRatioHauteur)/2) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+	oPartie.SIZE_STARS = oPartie.SIZE_STARS/((fRatioLargeur+fRatioHauteur)/2) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
 	
 	/* === Redimensionnement des cibles ===*/
-	fTailleCibles = (fTailleCibles/((fRatioLargeur+fRatioHauteur)/2))*((fNewRatioLargeur+fNewRatioHauteur)/2);
+	oPartie.fTailleCibles = (oPartie.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2))*((fNewRatioLargeur+fNewRatioHauteur)/2);
+	
+	/* === Redimensionnement des portes ===*/
+	// gauche
+	oPartie.fLargeurPorteGauche = oPartie.canvas.width/2;
+	oPartie.fHauteurPorteGauche = oPartie.canvas.height;
+	oPartie.oPositionPorteGauche = new Point((oPartie.oPositionPorteGauche.x/fRatioLargeur) * fNewRatioLargeur, 0);
+	// droite
+	oPartie.fLargeurPorteDroite = oPartie.canvas.width/2;
+	oPartie.fHauteurPorteDroite = oPartie.canvas.height;
+	oPartie.oPositionPorteDroite = new Point((oPartie.oPositionPorteDroite.x/fRatioLargeur) * fNewRatioLargeur, 0);
+	// bas
+	oPartie.fLargeurPorteBas = oPartie.oPorteBas.width * (oPartie.fLargeurPorteDroite/oPartie.oPorteDroite.width);
+	oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
+	oPartie.oPositionPorteBas = new Point((oPartie.oPositionPorteBas.x/fRatioLargeur) * fNewRatioLargeur, (oPartie.oPositionPorteBas.y/fRatioHauteur) * fNewRatioHauteur);
 	
 	fRatioLargeur = fNewRatioLargeur;
 	fRatioHauteur = fNewRatioHauteur;
