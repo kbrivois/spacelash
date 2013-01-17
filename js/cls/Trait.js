@@ -154,12 +154,12 @@ Trait.prototype.verifierCoupeSegment = function(oPoint1Temp, oPoint2Temp)
 // trace le trait
 Trait.prototype.tracer = function()
 {
-	oPartie.ctx.beginPath();
-	oPartie.ctx.strokeStyle = this.sCouleur; 
-	oPartie.ctx.lineWidth=3;
-	oPartie.ctx.moveTo(this.oPointDepart.x,this.oPointDepart.y);
-	oPartie.ctx.lineTo(this.oPointArrivee.x,this.oPointArrivee.y);
-	oPartie.ctx.stroke();
+	ctx.beginPath();
+	ctx.strokeStyle = this.sCouleur; 
+	ctx.lineWidth=3;
+	ctx.moveTo(this.oPointDepart.x,this.oPointDepart.y);
+	ctx.lineTo(this.oPointArrivee.x,this.oPointArrivee.y);
+	ctx.stroke();
 }
 
 // rend de plus en plus opaque le trait (et inversement) en fonction de "iCompteurFaireClignoter"
@@ -202,14 +202,14 @@ Trait.prototype.clignoter = function()
 			}
 		}
 		
-		oPartie.ctx.save(); 
-		oPartie.ctx.beginPath();
-		oPartie.ctx.strokeStyle="rgba(255,0,0,"+this.fOpacite+")";
-		oPartie.ctx.lineWidth=3;
-		oPartie.ctx.moveTo(this.oPointDepart.x,this.oPointDepart.y);
-		oPartie.ctx.lineTo(this.oPointArrivee.x,this.oPointArrivee.y);
-		oPartie.ctx.stroke();
-		oPartie.ctx.restore();
+		ctx.save(); 
+		ctx.beginPath();
+		ctx.strokeStyle="rgba(255,0,0,"+this.fOpacite+")";
+		ctx.lineWidth=3;
+		ctx.moveTo(this.oPointDepart.x,this.oPointDepart.y);
+		ctx.lineTo(this.oPointArrivee.x,this.oPointArrivee.y);
+		ctx.stroke();
+		ctx.restore();
 		
 		if(this.iCompteurFaireClignoter == 0)
 		{
@@ -278,23 +278,23 @@ Trait.prototype.disparaitre = function()
 		this.aListeBoutsTrait[1][1].y++;
 	}
 	
-	oPartie.ctx.save(); 
-	oPartie.ctx.beginPath();
-	oPartie.ctx.strokeStyle="rgba(0,0,255,"+this.fOpacite+")";
-	oPartie.ctx.lineWidth=3;
-	oPartie.ctx.moveTo(this.aListeBoutsTrait[0][0].x,this.aListeBoutsTrait[0][0].y);
-	oPartie.ctx.lineTo(this.aListeBoutsTrait[0][1].x,this.aListeBoutsTrait[0][1].y);
-	oPartie.ctx.stroke();
-	oPartie.ctx.restore();
+	ctx.save(); 
+	ctx.beginPath();
+	ctx.strokeStyle="rgba(0,0,255,"+this.fOpacite+")";
+	ctx.lineWidth=3;
+	ctx.moveTo(this.aListeBoutsTrait[0][0].x,this.aListeBoutsTrait[0][0].y);
+	ctx.lineTo(this.aListeBoutsTrait[0][1].x,this.aListeBoutsTrait[0][1].y);
+	ctx.stroke();
+	ctx.restore();
 	
-	oPartie.ctx.save(); 
-	oPartie.ctx.beginPath();
-	oPartie.ctx.strokeStyle="rgba(0,0,255,"+this.fOpacite+")";
-	oPartie.ctx.lineWidth=3;
-	oPartie.ctx.moveTo(this.aListeBoutsTrait[1][0].x,this.aListeBoutsTrait[1][0].y);
-	oPartie.ctx.lineTo(this.aListeBoutsTrait[1][1].x,this.aListeBoutsTrait[1][1].y);
-	oPartie.ctx.stroke();
-	oPartie.ctx.restore();
+	ctx.save(); 
+	ctx.beginPath();
+	ctx.strokeStyle="rgba(0,0,255,"+this.fOpacite+")";
+	ctx.lineWidth=3;
+	ctx.moveTo(this.aListeBoutsTrait[1][0].x,this.aListeBoutsTrait[1][0].y);
+	ctx.lineTo(this.aListeBoutsTrait[1][1].x,this.aListeBoutsTrait[1][1].y);
+	ctx.stroke();
+	ctx.restore();
 }
 
 

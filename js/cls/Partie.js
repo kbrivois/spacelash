@@ -4,11 +4,9 @@ function Partie()
 	déclaration des variables
 	====================================================================================================================================================*/
 
-	// nombres d'image
-	this.iNombresImages = 0;
-	// Compteur d'images chargée
-	this.iCompteurImages = 0;
-
+	iCompteurImages = 0;
+	iNombresImages = 0;
+	
 	// ------------------------ sons
 	this.oSonMetal = new Audio('sons/metalhit.wav');
 	this.oSonSouffleExplosion = new Audio('sons/souffleExplosion2.wav');
@@ -16,15 +14,7 @@ function Partie()
 	this.oSonEnnemiTouche = new Audio('sons/ennemiTouche.wav');
 	this.oSonCoupe = new Audio('sons/swordCut.wav');
 	this.oSonStars = new Audio('sons/brake.wav');
-				
-	// ------------------------ Création du canvas
-	this.canvas = document.createElement("canvas");
-	this.canvas.id = "partie";
-	this.ctx = this.canvas.getContext("2d");
-	this.canvas.width = document.documentElement.clientWidth-4;
-	this.canvas.height = document.documentElement.clientHeight-4;
-
-	document.body.appendChild(this.canvas);
+	
 	this.fOpaciteGlobale = 0;
 	this.fGrandeurCercle = 0;
 	this.bAugmenterOpacite = true;
@@ -37,7 +27,7 @@ function Partie()
 	this.MAX_DEPTH = 32;
 	this.SPEED_STARS = 0.2;
 	this.SIZE_STARS = 5*((fRatioLargeur+fRatioHauteur)/2);
-	this.stars = new Array(100);
+	this.stars = new Array(50);
 	this.initStars();
 
 	// ------------------------ Variables liées à la victoire du joueur
@@ -47,56 +37,50 @@ function Partie()
 	
 	this.oPorteGauche = new Image();
 	this.oPorteGauche.src = 'img/gauche_porte.png';
-	this.iNombresImages++;
+	iNombresImages++;
 	this.oPorteGauche.onload = function()
 	{
-		oPartie.iCompteurImages++;
+		iCompteurImages++;
 	}
-	this.fLargeurPorteGauche = this.canvas.width/2;
-	this.fHauteurPorteGauche = this.canvas.height;
+	this.fLargeurPorteGauche = canvas.width/2;
+	this.fHauteurPorteGauche = canvas.height;
 	this.oPositionPorteGauche = new Point(-this.fLargeurPorteGauche,0);
 	// droite
 	this.oPorteDroite = new Image();
 	this.oPorteDroite.src = 'img/droite_porte.png';
-	this.iNombresImages++;
+	iNombresImages++;
 	this.oPorteDroite.onload = function()
 	{
-		oPartie.iCompteurImages++;
+		iCompteurImages++;
 	}
-	this.fLargeurPorteDroite = this.canvas.width/2;
-	this.fHauteurPorteDroite = this.canvas.height;
-	this.oPositionPorteDroite = new Point(this.canvas.width,0);
+	this.fLargeurPorteDroite = canvas.width/2;
+	this.fHauteurPorteDroite = canvas.height;
+	this.oPositionPorteDroite = new Point(canvas.width,0);
 	// bas
 	this.oPorteBas = new Image();
 	this.oPorteBas.src = 'img/bas_porte.png';
-	this.iNombresImages++;
+	iNombresImages++;
 	this.oPorteBas.onload = function()
 	{
-		oPartie.iCompteurImages++;
+		iCompteurImages++;
 	}
-	this.fLargeurPorteBas = this.oPorteBas.width * (this.fLargeurPorteDroite/this.oPorteDroite.width);
-	this.fHauteurPorteBas = this.oPorteBas.height * (this.fHauteurPorteDroite/this.oPorteDroite.height);
-	this.oPositionPorteBas = new Point((this.canvas.width/2)-(this.fLargeurPorteBas/2),this.canvas.height);
 
 	// ------------------------ Segment tracé avec la souris
 	this.oTrait = new Trait("blue");
-	this.mouseDown = false;
-	this.mouseMove = false;
-	this.oPositionSouris = new Point(-100,-100);
 	this.bSourisDansPolygone = false;
 	this.oCibleOk = new Image();
 	this.oCibleOk.src = 'img/cible_ok.png';
-	this.iNombresImages++;
+	iNombresImages++;
 	this.oCibleOk.onload = function()
 	{
-		oPartie.iCompteurImages++;
+		iCompteurImages++;
 	}
 	this.oCibleNok = new Image();
 	this.oCibleNok.src = 'img/cible_nok.png';
-	this.iNombresImages++;
+	iNombresImages++;
 	this.oCibleNok.onload = function()
 	{
-		oPartie.iCompteurImages++;
+		iCompteurImages++;
 	}
 	this.fRotationCibles = 0;
 	this.fTailleCibles = 35*((fRatioLargeur+fRatioHauteur)/2);
@@ -105,29 +89,29 @@ function Partie()
 	// ------------------------ polygone
 	var aListePointsTemp = new Array();
 
-	// aListePointsTemp.push(new Point(50,50));
-	// aListePointsTemp.push(new Point(250,50));
-	// aListePointsTemp.push(new Point(180,175));
-	// aListePointsTemp.push(new Point(250,300));
-	// aListePointsTemp.push(new Point(50,300));
-	// aListePointsTemp.push(new Point(120,175));
-	// aListePointsTemp.push(new Point(50,50));
+	aListePointsTemp.push(new Point(50,50));
+	aListePointsTemp.push(new Point(250,50));
+	aListePointsTemp.push(new Point(180,175));
+	aListePointsTemp.push(new Point(250,300));
+	aListePointsTemp.push(new Point(50,300));
+	aListePointsTemp.push(new Point(120,175));
+	aListePointsTemp.push(new Point(50,50));
 
-	aListePointsTemp.push(new Point(0,300));
-	aListePointsTemp.push(new Point(150,0));
-	aListePointsTemp.push(new Point(300,300));
-	aListePointsTemp.push(new Point(150,150));
-	aListePointsTemp.push(new Point(150,300));
-	aListePointsTemp.push(new Point(75,200));
-	aListePointsTemp.push(new Point(0,300));
+	// aListePointsTemp.push(new Point(0,300));
+	// aListePointsTemp.push(new Point(150,0));
+	// aListePointsTemp.push(new Point(300,300));
+	// aListePointsTemp.push(new Point(150,150));
+	// aListePointsTemp.push(new Point(150,300));
+	// aListePointsTemp.push(new Point(75,200));
+	// aListePointsTemp.push(new Point(0,300));
 
 	var img = new Image();
 	img.src = 'img/textures/metal2.jpg';
-	this.iNombresImages++;
-	this.oPolygone = new Polygone(aListePointsTemp,img, 0.6);
+	iNombresImages++;
+	this.oPolygone = new Polygone(aListePointsTemp,img, 0.2);
 	img.onload = function()
 	{
-		oPartie.iCompteurImages++;
+		iCompteurImages++;
 	}
 
 	// ------------------------ Ennemis
@@ -138,20 +122,20 @@ function Partie()
 	var oEnnemiImage = new Image();
 	oEnnemiImage.src = "img/ennemis/fireball2.png";
 	this.aListeImagesEnnemis.push(oEnnemiImage);
-	this.iNombresImages++;
+	iNombresImages++;
 	oEnnemiImage.onload = function()
 	{
-		oPartie.iCompteurImages++;
+		iCompteurImages++;
 	}
 
 	// Ennemi 2
 	var oEnnemiImage2 = new Image();
 	oEnnemiImage2.src = "img/ennemis/fireball2.png";
 	this.aListeImagesEnnemis.push(oEnnemiImage2);
-	this.iNombresImages++;
+	iNombresImages++;
 	oEnnemiImage2.onload = function()
 	{
-		oPartie.iCompteurImages++;
+		iCompteurImages++;
 	}
 
 	// ------------------------ barre d'avancement
@@ -200,13 +184,10 @@ Partie.prototype.ajouterStars = function()
 *** ========================================================================================================================================== 
 **/
 Partie.prototype.dessinerStars = function()
-{
-	this.ctx.fillStyle = "rgb(0,0,0)";
-	this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
-	
+{	
 	// On crée les étoiles
-	var halfWidth  = this.canvas.width / 2;
-	var halfHeight = this.canvas.height / 2;
+	var halfWidth  = canvas.width / 2;
+	var halfHeight = canvas.height / 2;
 
 	for( var i = 0; i < this.stars.length; i++ ) 
 	{
@@ -223,16 +204,16 @@ Partie.prototype.dessinerStars = function()
 		var px = this.stars[i].x * k + halfWidth;
 		var py = this.stars[i].y * k + halfHeight;
  
-		if( px >= 0 && px <= this.canvas.width && py >= 0 && py <= this.canvas.height ) 
+		if( px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height ) 
 		{
 			var size = (1 - this.stars[i].z / 32.0) * this.SIZE_STARS;
 			var shade = parseInt((1 - this.stars[i].z / 32.0) * 255);
 			
-			this.ctx.beginPath();
+			ctx.beginPath();
 			//ctx.rect(px,py,size,size);
-			this.ctx.arc(px,py, size/2, 0, 2 * Math.PI);
-			this.ctx.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
-			this.ctx.fill();
+			ctx.arc(px,py, size/2, 0, 2 * Math.PI);
+			ctx.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
+			ctx.fill();
 		}
 	}
 }
@@ -245,11 +226,11 @@ Partie.prototype.dessinerStars = function()
 Partie.prototype.lancer = function()
 {
 	// on crée le canvas
-	this.ctx.beginPath();
-	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	ctx.beginPath();
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    this.ctx.fillStyle = "rgb(0,0,0)";
-    this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
+    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 		
 	// si les portes ne sont pas encore fermées
 	if(this.oPositionPorteGauche.x < 0)
@@ -268,16 +249,16 @@ Partie.prototype.lancer = function()
 			this.aListeEnnemis[i].oPosition.x += this.aListeEnnemis[i].oDeplacement.x;
 			this.aListeEnnemis[i].oPosition.y += this.aListeEnnemis[i].oDeplacement.y;
 		
-			this.ctx.save(); 
-			this.ctx.translate(this.aListeEnnemis[i].oPosition.x, this.aListeEnnemis[i].oPosition.y); 
-			this.ctx.translate(this.aListeEnnemis[i].iTailleX/2, this.aListeEnnemis[i].iTailleY/2); 
-			this.ctx.rotate(this.aListeEnnemis[i].fRotationActuelle);
-			this.ctx.drawImage(this.aListeEnnemis[i].oImage, 
+			ctx.save(); 
+			ctx.translate(this.aListeEnnemis[i].oPosition.x, this.aListeEnnemis[i].oPosition.y); 
+			ctx.translate(this.aListeEnnemis[i].iTailleX/2, this.aListeEnnemis[i].iTailleY/2); 
+			ctx.rotate(this.aListeEnnemis[i].fRotationActuelle);
+			ctx.drawImage(this.aListeEnnemis[i].oImage, 
 							  -this.aListeEnnemis[i].iTailleX/2, 
 							  -this.aListeEnnemis[i].iTailleY/2, 
 							  this.aListeEnnemis[i].iTailleX, 
 							  this.aListeEnnemis[i].iTailleX);
-			this.ctx.restore();
+			ctx.restore();
 			
 			this.aListeEnnemis[i].fRotationActuelle = (this.aListeEnnemis[i].fRotationActuelle + this.aListeEnnemis[i].fRotation);
 			
@@ -289,10 +270,10 @@ Partie.prototype.lancer = function()
 			{
 				// rebond
 				this.oPolygone.faireRebond(aListeIntersectionTerrainEnnemi, this.aListeEnnemis[i]);
-				this.oSonMetal.pause();
-				this.oSonMetal = new Audio('sons/metalhit.wav');
-				this.oSonMetal.volume = 0.05;
-				this.oSonMetal.play();
+				// this.oSonMetal.pause();
+				// this.oSonMetal = new Audio('sons/metalhit.wav');
+				// this.oSonMetal.volume = 0.05;
+				// this.oSonMetal.play();
 			}
 		}
 		
@@ -313,38 +294,38 @@ Partie.prototype.lancer = function()
 			// si la souris se trouve dans le polygone
 			if(this.bSourisDansPolygone)
 			{
-				this.ctx.save(); 
-				this.ctx.translate(this.oPositionSouris.x-(this.fTailleCibles/2), this.oPositionSouris.y-(this.fTailleCibles/2)); 
-				this.ctx.translate(this.fTailleCibles/2, this.fTailleCibles/2); 
-				this.ctx.rotate(this.fRotationCibles);
-				this.ctx.drawImage(this.oCibleNok, -(this.fTailleCibles/2), -(this.fTailleCibles/2), this.fTailleCibles, this.fTailleCibles);
-				this.ctx.restore();
+				ctx.save(); 
+				ctx.translate(oPositionSouris.x-(this.fTailleCibles/2), oPositionSouris.y-(this.fTailleCibles/2)); 
+				ctx.translate(this.fTailleCibles/2, this.fTailleCibles/2); 
+				ctx.rotate(this.fRotationCibles);
+				ctx.drawImage(this.oCibleNok, -(this.fTailleCibles/2), -(this.fTailleCibles/2), this.fTailleCibles, this.fTailleCibles);
+				ctx.restore();
 				this.fRotationCibles += 0.05;
 			}
 			// sinon
 			else
 			{
-				this.ctx.save(); 
-				this.ctx.translate(this.oPositionSouris.x-(this.fTailleCibles/2), this.oPositionSouris.y-(this.fTailleCibles/2)); 
-				this.ctx.translate(this.fTailleCibles/2, this.fTailleCibles/2); 
-				this.ctx.rotate(this.fRotationCibles);
-				this.ctx.drawImage(this.oCibleOk, -(this.fTailleCibles/2), -(this.fTailleCibles/2), this.fTailleCibles, this.fTailleCibles);
-				this.ctx.restore();
-				if(!this.mouseDown)
+				ctx.save(); 
+				ctx.translate(oPositionSouris.x-(this.fTailleCibles/2), oPositionSouris.y-(this.fTailleCibles/2)); 
+				ctx.translate(this.fTailleCibles/2, this.fTailleCibles/2); 
+				ctx.rotate(this.fRotationCibles);
+				ctx.drawImage(this.oCibleOk, -(this.fTailleCibles/2), -(this.fTailleCibles/2), this.fTailleCibles, this.fTailleCibles);
+				ctx.restore();
+				if(!mouseDown)
 					this.fRotationCibles += 0.05;
 				else
 				{
-					this.ctx.beginPath();
-					this.ctx.arc(this.oPositionSouris.x, this.oPositionSouris.y, 4*((fRatioLargeur+fRatioHauteur)/2), 0, 2 * Math.PI);
-					this.ctx.fillStyle = this.oTrait.sCouleur;
-					this.ctx.fill();
+					ctx.beginPath();
+					ctx.arc(oPositionSouris.x, oPositionSouris.y, 4*((fRatioLargeur+fRatioHauteur)/2), 0, 2 * Math.PI);
+					ctx.fillStyle = this.oTrait.sCouleur;
+					ctx.fill();
 				}
 			}
 		}
 	}
 	
 	// si l'aire minimale a été atteinte
-	if(!this.GAGNE && this.oPolygone.fAireTerrainActuel < this.oPolygone.fAireMinimale)
+	if(!this.GAGNE && this.oPolygone.fAireTerrainActuel <= this.oPolygone.fAireMinimale)
 	{
 		this.GAGNE = true;
 	}
@@ -389,25 +370,25 @@ Partie.prototype.lancer = function()
 					this.oPositionPorteGauche.x += fRatioLargeur*3;
 			}
 			// On ferme de plus en plus la porte droite
-			if(this.oPositionPorteDroite.x > this.canvas.width/2)
+			if(this.oPositionPorteDroite.x > canvas.width/2)
 			{
-				if(this.oPositionPorteDroite.x - fRatioLargeur*3 < this.canvas.width/2)
-					this.oPositionPorteDroite.x -= this.oPositionPorteDroite.x - this.canvas.width/2;
+				if(this.oPositionPorteDroite.x - fRatioLargeur*3 < canvas.width/2)
+					this.oPositionPorteDroite.x -= this.oPositionPorteDroite.x - canvas.width/2;
 				else
 					this.oPositionPorteDroite.x -= fRatioLargeur*3;
 			}
 			// On ferme de plus en plus la porte bas
-			if(this.oPositionPorteBas.y > this.canvas.height-this.fHauteurPorteBas)
+			if(this.oPositionPorteBas.y > canvas.height-this.fHauteurPorteBas)
 			{
-				if(this.oPositionPorteBas.y - fRatioHauteur*3 < this.canvas.height-this.fHauteurPorteBas)
-					this.oPositionPorteBas.y -= this.oPositionPorteBas.y - (this.canvas.height-this.fHauteurPorteBas);
+				if(this.oPositionPorteBas.y - fRatioHauteur*3 < canvas.height-this.fHauteurPorteBas)
+					this.oPositionPorteBas.y -= this.oPositionPorteBas.y - (canvas.height-this.fHauteurPorteBas);
 				else
 					this.oPositionPorteBas.y -= fRatioHauteur*3;
 			}
 			
-			this.ctx.drawImage(this.oPorteGauche, this.oPositionPorteGauche.x, this.oPositionPorteGauche.y, this.fLargeurPorteGauche, this.fHauteurPorteGauche);
-			this.ctx.drawImage(this.oPorteDroite, this.oPositionPorteDroite.x, this.oPositionPorteDroite.y, this.fLargeurPorteDroite, this.fHauteurPorteDroite);
-			this.ctx.drawImage(this.oPorteBas, this.oPositionPorteBas.x, this.oPositionPorteBas.y, this.fLargeurPorteBas, this.fHauteurPorteBas);
+			ctx.drawImage(this.oPorteGauche, this.oPositionPorteGauche.x, this.oPositionPorteGauche.y, this.fLargeurPorteGauche, this.fHauteurPorteGauche);
+			ctx.drawImage(this.oPorteDroite, this.oPositionPorteDroite.x, this.oPositionPorteDroite.y, this.fLargeurPorteDroite, this.fHauteurPorteDroite);
+			ctx.drawImage(this.oPorteBas, this.oPositionPorteBas.x, this.oPositionPorteBas.y, this.fLargeurPorteBas, this.fHauteurPorteBas);
 		}
 		
 		// si les ennemis ne sont pas à l'arrêt, on ralenti les ennemis
@@ -478,8 +459,8 @@ Partie.prototype.lancer = function()
 					}
 					this.oPolygone.reset();
 					this.oBarreAvancement.reset();
-					this.mouseDown = false;
-					this.mouseMove = false;
+					mouseDown = false;
+					mouseMove = false;
 				}
 				else
 				{
@@ -492,39 +473,39 @@ Partie.prototype.lancer = function()
 				var iCouleur2 = Math.floor(239-50*(this.fGrandeurCercle/fRatioLargeur));
 				var iCouleur3 = Math.floor(221-110*(this.fGrandeurCercle/fRatioLargeur));
 				
-				this.ctx.beginPath();
-				this.ctx.fillStyle = "rgb("+iCouleur1+","+iCouleur2+","+iCouleur3+")";
-				this.ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
+				ctx.beginPath();
+				ctx.fillStyle = "rgb("+iCouleur1+","+iCouleur2+","+iCouleur3+")";
+				ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
 						this.oTrait.oPositionEnnemiTouche.y, 200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle, 0, 2 * Math.PI);
-				this.ctx.fill();
+				ctx.fill();
 			
-				this.ctx.beginPath();
-				this.ctx.lineWidth = 4;
-				this.ctx.strokeStyle = "rgb(254,230,157)";
-				this.ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
+				ctx.beginPath();
+				ctx.lineWidth = 4;
+				ctx.strokeStyle = "rgb(254,230,157)";
+				ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
 						this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle), 0, 2 * Math.PI);
-				this.ctx.stroke();
+				ctx.stroke();
 				
-				this.ctx.beginPath();
-				this.ctx.lineWidth = 4;
-				this.ctx.strokeStyle = "rgb(251,215,109)";
-				this.ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
+				ctx.beginPath();
+				ctx.lineWidth = 4;
+				ctx.strokeStyle = "rgb(251,215,109)";
+				ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
 						this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+4, 0, 2 * Math.PI);
-				this.ctx.stroke();
+				ctx.stroke();
 				
-				this.ctx.beginPath();
-				this.ctx.lineWidth = 4;
-				this.ctx.strokeStyle = "rgb(248,200,61)";
-				this.ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
+				ctx.beginPath();
+				ctx.lineWidth = 4;
+				ctx.strokeStyle = "rgb(248,200,61)";
+				ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
 						this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+8, 0, 2 * Math.PI);
-				this.ctx.stroke();
+				ctx.stroke();
 				
-				this.ctx.beginPath();
-				this.ctx.lineWidth = 4;
-				this.ctx.strokeStyle = "rgb(248,150,10)";
-				this.ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
+				ctx.beginPath();
+				ctx.lineWidth = 4;
+				ctx.strokeStyle = "rgb(248,150,10)";
+				ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
 						this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+8, 0, 2 * Math.PI);
-				this.ctx.stroke();
+				ctx.stroke();
 			}
 			
 			// Deuxieme explosion (cercle grandit vite, devient opaque et lumière blanche en fond)
@@ -557,52 +538,52 @@ Partie.prototype.lancer = function()
 
 				if(this.fGrandeurCercle != 0)
 				{
-					this.ctx.globalAlpha = this.fOpaciteGlobale;
+					ctx.globalAlpha = this.fOpaciteGlobale;
 					this.fGrandeurCercle += fPasOpacite*((fRatioLargeur+fRatioHauteur)/2);
 					
 					var iCouleur1 = Math.floor(244-10);
 					var iCouleur2 = Math.floor(239-50);
 					var iCouleur3 = Math.floor(221-110);
 					
-					this.ctx.beginPath();
-					this.ctx.fillStyle = 'rgb(255, 255, 255)';
-					this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+					ctx.beginPath();
+					ctx.fillStyle = 'rgb(255, 255, 255)';
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
 					
-					this.ctx.beginPath();
-					this.ctx.fillStyle = "rgb("+iCouleur1+","+iCouleur2+","+iCouleur3+")";
-					this.ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
+					ctx.beginPath();
+					ctx.fillStyle = "rgb("+iCouleur1+","+iCouleur2+","+iCouleur3+")";
+					ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
 								this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle), 0, 2 * Math.PI);
-					this.ctx.fill();
+					ctx.fill();
 					
-					this.ctx.beginPath();
-					this.ctx.lineWidth = 4;
-					this.ctx.strokeStyle = "rgb(254,230,157)";
-					this.ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
+					ctx.beginPath();
+					ctx.lineWidth = 4;
+					ctx.strokeStyle = "rgb(254,230,157)";
+					ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
 							this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle), 0, 2 * Math.PI);
-					this.ctx.stroke();
+					ctx.stroke();
 					
-					this.ctx.beginPath();
-					this.ctx.lineWidth = 4;
-					this.ctx.strokeStyle = "rgb(251,215,109)";
-					this.ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
+					ctx.beginPath();
+					ctx.lineWidth = 4;
+					ctx.strokeStyle = "rgb(251,215,109)";
+					ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
 							this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+4, 0, 2 * Math.PI);
-					this.ctx.stroke();
+					ctx.stroke();
 					
-					this.ctx.beginPath();
-					this.ctx.lineWidth = 4;
-					this.ctx.strokeStyle = "rgb(248,200,61)";
-					this.ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
+					ctx.beginPath();
+					ctx.lineWidth = 4;
+					ctx.strokeStyle = "rgb(248,200,61)";
+					ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
 							this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+8, 0, 2 * Math.PI);
-					this.ctx.stroke();
+					ctx.stroke();
 					
-					this.ctx.beginPath();
-					this.ctx.lineWidth = 4;
-					this.ctx.strokeStyle = "rgb(248,150,10)";
-					this.ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
+					ctx.beginPath();
+					ctx.lineWidth = 4;
+					ctx.strokeStyle = "rgb(248,150,10)";
+					ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
 							this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+8, 0, 2 * Math.PI);
-					this.ctx.stroke();
+					ctx.stroke();
 					
-					this.ctx.globalAlpha = 1;
+					ctx.globalAlpha = 1;
 				}
 			}
 		}
@@ -733,14 +714,14 @@ Partie.prototype.lancer = function()
 					if(!bCoupe)
 					{
 						this.oTrait.iCompteurFaireClignoter = 4;
-						this.mouseDown = false;
-						this.mouseMove = false;
+						mouseDown = false;
+						mouseMove = false;
 					}
 					else
 					{
 						this.oTrait.reset();
-						this.mouseDown = false;
-						this.mouseMove = false;
+						mouseDown = false;
+						mouseMove = false;
 						this.oSonCoupe.pause();
 						this.oSonCoupe = new Audio('sons/swordCut.wav');
 						this.oSonCoupe.volume = 0.3;
@@ -752,8 +733,8 @@ Partie.prototype.lancer = function()
 					this.oPolygone.aPremierCoteCoupe = new Array();
 					this.oPolygone.aDeuxiemeCoteCoupe = new Array();
 					this.oTrait.reset();
-					this.mouseDown = false;
-					this.mouseMove = false;
+					mouseDown = false;
+					mouseMove = false;
 				}
 				
 			}
@@ -773,8 +754,8 @@ Partie.prototype.reset = function()
 		this.aListeEnnemis[i].reset();
 	}
 	
-	this.mouseDown = false;
-	this.mouseMove = false;
+	mouseDown = false;
+	mouseMove = false;
 	this.fTailleGrosseEtoile = 0;
 	this.fOpaciteGlobale = 0;
 	this.oTrait.reset();

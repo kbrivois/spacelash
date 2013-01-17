@@ -275,24 +275,24 @@ Polygone.prototype.faireRebond = function(aListeIntersectionTerrainEnnemi, oEnne
 //méthode pour tracer le polygone 
 Polygone.prototype.tracer = function()  
 {
-	oPartie.ctx.beginPath();
+	ctx.beginPath();
 	
 	// create pattern
-	var ptrn = oPartie.ctx.createPattern(this.oTexture,'repeat');
-	//var ptrn2 = oPartie.ctx.createPattern(this.oTextureBords,'repeat');
-	oPartie.ctx.fillStyle = ptrn;
-	oPartie.ctx.lineWidth="1";
-	oPartie.ctx.strokeStyle="black";
-	oPartie.ctx.beginPath();//On démarre un nouveau tracé
-	oPartie.ctx.moveTo(this.aListePoints[0].x, this.aListePoints[0].y);//On se déplace au coin inférieur gauche
+	var ptrn = ctx.createPattern(this.oTexture,'repeat');
+	//var ptrn2 = ctx.createPattern(this.oTextureBords,'repeat');
+	ctx.fillStyle = ptrn;
+	ctx.lineWidth="1";
+	ctx.strokeStyle="black";
+	ctx.beginPath();//On démarre un nouveau tracé
+	ctx.moveTo(this.aListePoints[0].x, this.aListePoints[0].y);//On se déplace au coin inférieur gauche
 	
 	for(var i= 1; i < this.aListePoints.length; i++)
 	{
-		oPartie.ctx.lineTo(this.aListePoints[i].x, this.aListePoints[i].y);
+		ctx.lineTo(this.aListePoints[i].x, this.aListePoints[i].y);
 	}
 	
-	oPartie.ctx.fill();
-	oPartie.ctx.stroke();
+	ctx.fill();
+	ctx.stroke();
 }
 
 //méthode pour supprimer "this.aPartieA_Supprimer". Elle devient de + en + opaque
@@ -312,25 +312,25 @@ Polygone.prototype.supprimerPartie = function()
 		this.aPartieA_Supprimer[0].y += fRatioLargeur;
 		
 		// Transparence
-		oPartie.ctx.globalAlpha = this.fOpacitePartie;
+		ctx.globalAlpha = this.fOpacitePartie;
 		// create pattern
-		var ptrn = oPartie.ctx.createPattern(this.oTexture,'repeat');
-		oPartie.ctx.fillStyle = ptrn;
-		oPartie.ctx.lineWidth="2";
-		oPartie.ctx.strokeStyle="black";
-		oPartie.ctx.beginPath();//On démarre un nouveau tracé
-		oPartie.ctx.moveTo(this.aPartieA_Supprimer[0].x, this.aPartieA_Supprimer[0].y);//On se déplace au coin inférieur gauche
+		var ptrn = ctx.createPattern(this.oTexture,'repeat');
+		ctx.fillStyle = ptrn;
+		ctx.lineWidth="2";
+		ctx.strokeStyle="black";
+		ctx.beginPath();//On démarre un nouveau tracé
+		ctx.moveTo(this.aPartieA_Supprimer[0].x, this.aPartieA_Supprimer[0].y);//On se déplace au coin inférieur gauche
 		
 		for(var i= 1; i < this.aPartieA_Supprimer.length; i++)
 		{		
 			this.aPartieA_Supprimer[i].x += fRatioLargeur;
 			this.aPartieA_Supprimer[i].y += fRatioLargeur;
-			oPartie.ctx.lineTo(this.aPartieA_Supprimer[i].x, this.aPartieA_Supprimer[i].y);
+			ctx.lineTo(this.aPartieA_Supprimer[i].x, this.aPartieA_Supprimer[i].y);
 		}
 		
-		oPartie.ctx.fill();
-		oPartie.ctx.stroke();
-		oPartie.ctx.globalAlpha = 1;
+		ctx.fill();
+		ctx.stroke();
+		ctx.globalAlpha = 1;
 		
 		if(this.fOpacitePartie == 0)
 		{
@@ -340,11 +340,6 @@ Polygone.prototype.supprimerPartie = function()
 	}
 }
 
-//
-Polygone.prototype.trembler = function()  
-{
-	this.bTremble;
-}
 //méthode pour placer l'ennemi aléatoirement sur le polygone
 // arg : objet oEnnemiTemp
 // return : objet oPoint (position de l'ennemi)

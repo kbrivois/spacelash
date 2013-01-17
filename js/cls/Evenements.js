@@ -14,6 +14,16 @@ var getOffset = function(e)
     return { top: cy, left: cx };
 }
 
+
+/* ================================================================================================================================
+============================================================================================================================================
+====================================================================================================================================================
+Evénements pour la partie
+====================================================================================================================================================
+============================================================================================================================================
+=====================================================================================================================================*/
+
+
 /*** ================================================================================================================================================
 Evénements souris pour la partie
 ====================================================================================================================================================*/
@@ -37,7 +47,7 @@ var mouseClickPartie = function(e)
 	// Si le trait ne doit pas clignoter et qu'aucun ennemi n'a été touché
 	if(oPartie.oTrait.iCompteurFaireClignoter == 0 && oPartie.oTrait.bToucheEnnemi == false)
 	{
-		oPartie.mouseDown = true;
+		mouseDown = true;
 		oPartie.oTrait.oPointDepart.x = x
 		oPartie.oTrait.oPointDepart.y = y
 		
@@ -57,8 +67,8 @@ var mouseUnClickPartie = function (e)
 	// Si le trait ne doit pas clignoter et qu'aucun ennemi n'a été touché
 	if(oPartie.oTrait.iCompteurFaireClignoter == 0 && oPartie.oTrait.bToucheEnnemi == false)
 	{
-		oPartie.mouseDown = false;
-		oPartie.mouseMove = false;
+		mouseDown = false;
+		mouseMove = false;
 		oPartie.oTrait.reset();
 	}
 }
@@ -80,8 +90,8 @@ var mouseMovementPartie = function(e)
     }
 
 	// position de la souris
-	oPartie.oPositionSouris.x = x;
-	oPartie.oPositionSouris.y = y;
+	oPositionSouris.x = x;
+	oPositionSouris.y = y;
 	
 	// si le curseur se trouve dans le polygone
 	if(oPartie.oPolygone.cn_PnPoly(new Point(x, y)))
@@ -97,13 +107,13 @@ var mouseMovementPartie = function(e)
 	// Si le trait ne doit pas clignoter et qu'aucun ennemi n'a été touché
 	if(oPartie.oTrait.iCompteurFaireClignoter == 0 && oPartie.oTrait.bToucheEnnemi == false)
 	{
-		if(oPartie.mouseDown)
+		if(mouseDown)
 		{
-			oPartie.mouseMove = true;
+			mouseMove = true;
 			oPartie.oTrait.oPointArrivee.x = x;
 			oPartie.oTrait.oPointArrivee.y = y;
 		}
-		if(oPartie.mouseDown && oPartie.oTrait.iTraitDansPolygone == 1)
+		if(mouseDown && oPartie.oTrait.iTraitDansPolygone == 1)
 		{
 			oPartie.bSourisDansPolygone = false;
 		}
@@ -116,24 +126,25 @@ var mouseOutCanvasPartie = function(e)
 	oPartie.bSourisDansPolygone = undefined;
 }
 
+
 /*** ================================================================================================================================================
-Evénement resize Partie
+Evénement resize
 ====================================================================================================================================================*/
 
 // redimensionnement de la fenêtre
 var screenResizePartie = function(e) 
 {
-	oPartie.canvas.width = document.documentElement.clientWidth-4;
-	oPartie.canvas.height = document.documentElement.clientHeight-4;
+	canvas.width = document.documentElement.clientWidth-4;
+	canvas.height = document.documentElement.clientHeight-4;
 	
-	var fNewRatioLargeur = oPartie.canvas.width / 300;
-	var fNewRatioHauteur = oPartie.canvas.height / 400;
+	var fNewRatioLargeur = canvas.width / 300;
+	var fNewRatioHauteur = canvas.height / 400;
 	
 	/* === Redéfinition de la barre d'avancement === */
-	var fMilieu = oPartie.canvas.width/2;
+	var fMilieu = canvas.width/2;
 	var fPourcentageTaille = 0.8;
-	oPartie.oBarreAvancement.oPoint1 = new Point(fMilieu - (fPourcentageTaille/2)*oPartie.canvas.width , 370);
-	oPartie.oBarreAvancement.oPoint2 = new Point(fMilieu + (fPourcentageTaille/2)*oPartie.canvas.width, 370);
+	oPartie.oBarreAvancement.oPoint1 = new Point(fMilieu - (fPourcentageTaille/2)*canvas.width , 370);
+	oPartie.oBarreAvancement.oPoint2 = new Point(fMilieu + (fPourcentageTaille/2)*canvas.width, 370);
 	
 	/* === Redéfinition du polygone === */
 	for(var i=0; i<oPartie.oPolygone.aListePointsDepart.length; i++)
@@ -162,19 +173,138 @@ var screenResizePartie = function(e)
 	/* === Redimensionnement des cibles ===*/
 	oPartie.fTailleCibles = (oPartie.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2))*((fNewRatioLargeur+fNewRatioHauteur)/2);
 	
-	/* === Redimensionnement des portes ===*/
-	// gauche
-	oPartie.fLargeurPorteGauche = oPartie.canvas.width/2;
-	oPartie.fHauteurPorteGauche = oPartie.canvas.height;
-	oPartie.oPositionPorteGauche = new Point((oPartie.oPositionPorteGauche.x/fRatioLargeur) * fNewRatioLargeur, 0);
-	// droite
-	oPartie.fLargeurPorteDroite = oPartie.canvas.width/2;
-	oPartie.fHauteurPorteDroite = oPartie.canvas.height;
-	oPartie.oPositionPorteDroite = new Point((oPartie.oPositionPorteDroite.x/fRatioLargeur) * fNewRatioLargeur, 0);
-	// bas
-	oPartie.fLargeurPorteBas = oPartie.oPorteBas.width * (oPartie.fLargeurPorteDroite/oPartie.oPorteDroite.width);
-	oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
-	oPartie.oPositionPorteBas = new Point((oPartie.oPositionPorteBas.x/fRatioLargeur) * fNewRatioLargeur, (oPartie.oPositionPorteBas.y/fRatioHauteur) * fNewRatioHauteur);
+	fRatioLargeur = fNewRatioLargeur;
+	fRatioHauteur = fNewRatioHauteur;
+}
+
+
+/* ================================================================================================================================
+============================================================================================================================================
+====================================================================================================================================================
+Evénements pour le menu
+====================================================================================================================================================
+============================================================================================================================================
+=====================================================================================================================================*/
+
+
+/*** ================================================================================================================================================
+Evénements souris
+====================================================================================================================================================*/
+
+var mouseClickMenu = function(e)
+{
+	// on récupère les coordonnées de la souris
+	if(e.offsetX || e.offsetY) 
+	{
+        x = e.pageX - getOffset(document.getElementById('menu')).left - window.pageXOffset;
+        y = e.pageY - getOffset(document.getElementById('menu')).top - window.pageYOffset;
+    }
+    else if(e.layerX || e.layerY) 
+	{
+        x = (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft)
+        - getOffset(document.getElementById('menu')).left - window.pageXOffset;
+        y = (e.clientY + document.body.scrollTop + document.documentElement.scrollTop)
+        - getOffset(document.getElementById('menu')).top;
+    }  
+
+	mouseDown = true;
+	
+	oPositionDepartSouris.x = x;
+	oPositionDepartSouris.y = y;
+	
+	// on vérifie si on a cliqué sur une vignette
+	oMenu.verifierSelectionVignette();
+}
+
+var mouseUnClickMenu = function (e) 
+{
+	mouseDown = false;
+	mouseMove = false;
+	
+	// on replace les écrans correctement une fois que le clic est relaché
+	oMenu.bSlideAuto = true;
+}
+
+var mouseMovementMenu = function(e) 
+{
+	// on récupère les coordonnées de la souris
+	if(e.offsetX || e.offsetY) 
+	{
+        x = e.pageX - getOffset(document.getElementById('menu')).left - window.pageXOffset;
+        y = e.pageY - getOffset(document.getElementById('menu')).top - window.pageYOffset;
+    }
+    else if(e.layerX || e.layerY) 
+	{
+        x = (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft)
+        - getOffset(document.getElementById('menu')).left - window.pageXOffset;
+        y = (e.clientY + document.body.scrollTop + document.documentElement.scrollTop)
+        - getOffset(document.getElementById('menu')).top;
+    }
+
+	if(mouseDown)
+	{
+		oPositionSouris.x = x;
+		oPositionSouris.y = y;
+		
+		oMenu.slide();
+		
+		oPositionDepartSouris.x = x;
+		oPositionDepartSouris.y = y;
+	}
+}
+
+
+var mouseOutCanvasMenu = function(e) 
+{
+	mouseDown = false;
+	mouseMove = false;
+	
+	// on replace les écrans correctement une fois que le clic est relaché
+	oMenu.bSlideAuto = true;
+}
+
+
+/*** ================================================================================================================================================
+Evénement resize Menu
+====================================================================================================================================================*/
+
+// redimensionnement de la fenêtre
+var screenResizeMenu = function(e) 
+{
+	canvas.width = document.documentElement.clientWidth-4;
+	canvas.height = document.documentElement.clientHeight-4;
+	
+	var fNewRatioLargeur = canvas.width / 300;
+	var fNewRatioHauteur = canvas.height / 400;
+	
+	// écrans
+	for(var i=0; i<oMenu.aEcransNiveauxDepart.length; i++)
+	{
+		oMenu.aEcransNiveauxDepart[i][1].x = i*canvas.width;
+	}
+	for(var i=0; i<oMenu.aEcransNiveaux.length; i++)
+	{
+		oMenu.aEcransNiveaux[i][1].x = oMenu.aEcransNiveauxDepart[i][1].x - oMenu.aEcransNiveauxDepart[oMenu.iEcranActuel][1].x;
+	}
+	
+	// vignettes
+	oMenu.iTailleVignettes = oMenu.iTailleVignettes / ((fRatioLargeur+fRatioHauteur)/2) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+	oMenu.fEcartVignettes = oMenu.fEcartVignettes / ((fRatioLargeur+fRatioHauteur)/2) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+	
+	// vignettes
+	for(var i=0; i<oMenu.aListeVignettes.length; i++)
+	{
+		// position du terrain contenu dans la vignette
+		for(var j=0; j<oMenu.aListeVignettes[i].length; j++)
+		{
+			oMenu.aListeVignettes[i][0][j].x *= fRatioLargeur;
+			oMenu.aListeVignettes[i][0][j].y *= fRatioHauteur;
+		}
+		// position de la vignette
+		// on place les vignettes au milieu (largeur)
+		oMenu.aListeVignettes[i][1].x = canvas.width/2 - ((oMenu.aListeVignettes.length-1)*(oMenu.fEcartVignettes)+oMenu.iTailleVignettes+10)/2 + (10/2+(i*oMenu.fEcartVignettes));
+		oMenu.aListeVignettes[i][1].y = 10;
+	}
 	
 	fRatioLargeur = fNewRatioLargeur;
 	fRatioHauteur = fNewRatioHauteur;
