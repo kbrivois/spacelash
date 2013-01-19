@@ -51,11 +51,11 @@ var mouseClickPartie = function(e)
 		oPartie.oTrait.oPointDepart.x = x
 		oPartie.oTrait.oPointDepart.y = y
 		
-		// si le joueur commence à tracer le trait dans le polygone
+		// si le joueur commence à tracer le trait dans le Terrain
 		// --> pas d'actions
-		if(oPartie.oPolygone.cn_PnPoly(oPartie.oTrait.oPointDepart) == 1)
+		if(oPartie.oTerrain.cn_PnPoly(oPartie.oTrait.oPointDepart) == 1)
 		{
-			oPartie.oTrait.iDepartTraitDansPolygone = 1;	
+			oPartie.oTrait.iDepartTraitDansTerrain = 1;	
 			oPartie.oTrait.oPointDepart.x = 0;
 			oPartie.oTrait.oPointDepart.y = 0;
 		}
@@ -93,15 +93,15 @@ var mouseMovementPartie = function(e)
 	oPositionSouris.x = x;
 	oPositionSouris.y = y;
 	
-	// si le curseur se trouve dans le polygone
-	if(oPartie.oPolygone.cn_PnPoly(new Point(x, y)))
+	// si le curseur se trouve dans le Terrain
+	if(oPartie.oTerrain.cn_PnPoly(new Point(x, y)))
 	{
-		oPartie.bSourisDansPolygone = true;
+		oPartie.bSourisDansTerrain = true;
 	}
 	// sinon
 	else
 	{
-		oPartie.bSourisDansPolygone = false;
+		oPartie.bSourisDansTerrain = false;
 	}
 	
 	// Si le trait ne doit pas clignoter et qu'aucun ennemi n'a été touché
@@ -113,9 +113,9 @@ var mouseMovementPartie = function(e)
 			oPartie.oTrait.oPointArrivee.x = x;
 			oPartie.oTrait.oPointArrivee.y = y;
 		}
-		if(mouseDown && oPartie.oTrait.iTraitDansPolygone == 1)
+		if(mouseDown && oPartie.oTrait.iTraitDansTerrain == 1)
 		{
-			oPartie.bSourisDansPolygone = false;
+			oPartie.bSourisDansTerrain = false;
 		}
 	}
 }
@@ -123,7 +123,7 @@ var mouseMovementPartie = function(e)
 
 var mouseOutCanvasPartie = function(e) 
 {
-	oPartie.bSourisDansPolygone = undefined;
+	oPartie.bSourisDansTerrain = undefined;
 }
 
 
@@ -140,22 +140,62 @@ var screenResizePartie = function(e)
 	var fNewRatioLargeur = canvas.width / 300;
 	var fNewRatioHauteur = canvas.height / 400;
 	
+	var fNewRatioLargeurPorte = canvas.width / 300;
+	var fNewRatioHauteurPorte = canvas.height / 400;
+	
+	if(fNewRatioLargeur > 2)
+		fNewRatioLargeur = 2;
+	if(fNewRatioHauteur > 2)
+		fNewRatioHauteur = 2;
+	
 	/* === Redéfinition de la barre d'avancement === */
 	var fMilieu = canvas.width/2;
 	var fPourcentageTaille = 0.8;
-	oPartie.oBarreAvancement.oPoint1 = new Point(fMilieu - (fPourcentageTaille/2)*canvas.width , 370);
-	oPartie.oBarreAvancement.oPoint2 = new Point(fMilieu + (fPourcentageTaille/2)*canvas.width, 370);
+	oPartie.oBarreAvancement.oPoint1 = new Point(fMilieu - (canvas.width/2)*fPourcentageTaille , 370);
+	oPartie.oBarreAvancement.oPoint2 = new Point(fMilieu + (canvas.width/2)*fPourcentageTaille, 370);
 	
-	/* === Redéfinition du polygone === */
-	for(var i=0; i<oPartie.oPolygone.aListePointsDepart.length; i++)
-		oPartie.oPolygone.aListePointsDepart[i] = new Point( (oPartie.oPolygone.aListePointsDepart[i].x/fRatioLargeur)*fNewRatioLargeur , (oPartie.oPolygone.aListePointsDepart[i].y/fRatioHauteur)*fNewRatioHauteur);
-	for(var i=0; i<oPartie.oPolygone.aListePoints.length; i++)
-		oPartie.oPolygone.aListePoints[i] = new Point( (oPartie.oPolygone.aListePoints[i].x/fRatioLargeur)*fNewRatioLargeur , (oPartie.oPolygone.aListePoints[i].y/fRatioHauteur)*fNewRatioHauteur);
+	/* === Redéfinition du Terrain === */
+	for(var i=0; i<oPartie.oTerrain.aListePointsDepart.length; i++)
+		oPartie.oTerrain.aListePointsDepart[i] = new Point( (oPartie.oTerrain.aListePointsDepart[i].x/fRatioLargeur)*fNewRatioLargeur , (oPartie.oTerrain.aListePointsDepart[i].y/fRatioHauteur)*fNewRatioHauteur);
+	for(var i=0; i<oPartie.oTerrain.aListePoints.length; i++)
+		oPartie.oTerrain.aListePoints[i] = new Point( (oPartie.oTerrain.aListePoints[i].x/fRatioLargeur)*fNewRatioLargeur , (oPartie.oTerrain.aListePoints[i].y/fRatioHauteur)*fNewRatioHauteur);
 	
-	var fPourcentageAireMinimale = oPartie.oPolygone.fAireMinimale/oPartie.oPolygone.fAireTerrainDepart;
-	oPartie.oPolygone.fAireTerrainDepart = oPartie.oPolygone.calculerAireDepart();
-	oPartie.oPolygone.fAireTerrainActuel = oPartie.oPolygone.calculerAire();
-	oPartie.oPolygone.fAireMinimale = oPartie.oPolygone.fAireTerrainDepart*fPourcentageAireMinimale;
+	var iXmin = oPartie.oTerrain.aListePointsDepart[0].x ;
+	var iXmax = oPartie.oTerrain.aListePointsDepart[0].x ;
+	var iYmin = oPartie.oTerrain.aListePointsDepart[0].y ;
+	var iYmax = oPartie.oTerrain.aListePointsDepart[0].y ;
+	
+	for(var i=1; i<oPartie.oTerrain.aListePointsDepart.length; i++)
+	{
+		if(oPartie.oTerrain.aListePointsDepart[i].x  < iXmin)
+			iXmin = oPartie.oTerrain.aListePointsDepart[i].x ;
+		if(oPartie.oTerrain.aListePointsDepart[i].x  > iXmax)
+			iXmax = oPartie.oTerrain.aListePointsDepart[i].x ;
+		if(oPartie.oTerrain.aListePointsDepart[i].y  < iYmin)
+			iYmin = oPartie.oTerrain.aListePointsDepart[i].y ;
+		if(oPartie.oTerrain.aListePointsDepart[i].y  > iYmax)
+			iYmax = oPartie.oTerrain.aListePointsDepart[i].y ;
+	}
+	
+	var iLargeurTerrain = iXmax - iXmin;
+	var iHauteurTerrain = iYmax - iYmin;
+	
+	for(var i=0; i<oPartie.oTerrain.aListePointsDepart.length; i++)
+	{
+		oPartie.oTerrain.aListePointsDepart[i].x = oPartie.oTerrain.aListePointsDepart[i].x + (canvas.width-iLargeurTerrain)/2 - iXmin;
+		oPartie.oTerrain.aListePointsDepart[i].y = oPartie.oTerrain.aListePointsDepart[i].y + (canvas.height-iHauteurTerrain)/2 - iYmin - 15*fNewRatioHauteur;
+	}
+	
+	for(var i=0; i<oPartie.oTerrain.aListePoints.length; i++)
+	{
+		oPartie.oTerrain.aListePoints[i].x = oPartie.oTerrain.aListePoints[i].x + (canvas.width-iLargeurTerrain)/2 - iXmin;
+		oPartie.oTerrain.aListePoints[i].y = oPartie.oTerrain.aListePoints[i].y + (canvas.height-iHauteurTerrain)/2 - iYmin - 15*fNewRatioHauteur;
+	}
+	
+	var fPourcentageAireMinimale = oPartie.oTerrain.fAireMinimale/oPartie.oTerrain.fAireTerrainDepart;
+	oPartie.oTerrain.fAireTerrainDepart = oPartie.oTerrain.calculerAireDepart();
+	oPartie.oTerrain.fAireTerrainActuel = oPartie.oTerrain.calculerAire();
+	oPartie.oTerrain.fAireMinimale = oPartie.oTerrain.fAireTerrainDepart*fPourcentageAireMinimale;
 	
 	/* === Redéfinition des ennemis === */
 	for(var i=0; i<oPartie.aListeEnnemis.length; i++)
@@ -164,7 +204,8 @@ var screenResizePartie = function(e)
 		oPartie.aListeEnnemis[i].fVitesse = (oPartie.aListeEnnemis[i].fVitesse / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
 		oPartie.aListeEnnemis[i].iTailleX = (oPartie.aListeEnnemis[i].iTailleX / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
 		oPartie.aListeEnnemis[i].iTailleY = (oPartie.aListeEnnemis[i].iTailleY / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
-		oPartie.aListeEnnemis[i].oPosition = new Point(oPartie.aListeEnnemis[i].oPosition.x*(fNewRatioLargeur/fRatioLargeur), oPartie.aListeEnnemis[i].oPosition.y*(fNewRatioHauteur/fRatioHauteur))
+		oPartie.aListeEnnemis[i].oPosition = new Point(oPartie.aListeEnnemis[i].oPosition.x*(fNewRatioLargeur/fRatioLargeur) + (canvas.width-iLargeurTerrain)/2 - iXmin, 
+													   oPartie.aListeEnnemis[i].oPosition.y*(fNewRatioHauteur/fRatioHauteur) + (canvas.height-iHauteurTerrain)/2 - iYmin - 15*fNewRatioHauteur);
 	}
 	
 	/* === Redimensionnement des étoiles en fond ===*/
@@ -172,6 +213,23 @@ var screenResizePartie = function(e)
 	
 	/* === Redimensionnement des cibles ===*/
 	oPartie.fTailleCibles = (oPartie.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2))*((fNewRatioLargeur+fNewRatioHauteur)/2);
+	
+	/* === Redimensionnement des portes ===*/
+	
+	// porte de gauche
+	oPartie.fLargeurPorteGauche = canvas.width/2;
+	oPartie.fHauteurPorteGauche = canvas.height;
+	oPartie.oPositionPorteGauche = new Point(-oPartie.fLargeurPorteGauche,0);
+	
+	// porte de droite
+	oPartie.fLargeurPorteDroite = canvas.width/2;
+	oPartie.fHauteurPorteDroite = canvas.height;
+	oPartie.oPositionPorteDroite = new Point(canvas.width,0);
+	
+	// porte du bas
+	oPartie.fLargeurPorteBas = oPartie.oPorteBas.width * (oPartie.fLargeurPorteDroite/oPartie.oPorteDroite.width);
+	oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
+	oPartie.oPositionPorteBas = new Point((canvas.width/2)-(oPartie.fLargeurPorteBas/2),canvas.height);
 	
 	fRatioLargeur = fNewRatioLargeur;
 	fRatioHauteur = fNewRatioHauteur;
@@ -184,7 +242,7 @@ var screenResizePartie = function(e)
 Evénements pour le menu
 ====================================================================================================================================================
 ============================================================================================================================================
-=====================================================================================================================================*/
+=================================================================================================================================== */
 
 
 /*** ================================================================================================================================================

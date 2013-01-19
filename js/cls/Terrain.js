@@ -1,16 +1,46 @@
-function Polygone (aListePointsTemp,oTexture, fAireMinimale)  
+function Terrain (aListePointsTemp,oTexture, fAireMinimale)  
 {  
-	// Points du polygone
+	// Points du Terrain
 	this.aListePointsDepart = new Array();
-	// on adapte le polygone selon la résolution
-	for(var i=0; i<aListePointsTemp.length; i++)
-		this.aListePointsDepart[i] 		= new Point(aListePointsTemp[i].x * fRatioLargeur , aListePointsTemp[i].y * fRatioHauteur);
-
 	this.aListePoints = new Array();
+	
+	// ------------ on adapte le Terrain selon la résolution et on le centre
+	
+	// on centre le terrain
+	var iXmin = aListePointsTemp[0].x * fRatioLargeur;
+	var iXmax = aListePointsTemp[0].x * fRatioLargeur;
+	var iYmin = aListePointsTemp[0].y * fRatioHauteur;
+	var iYmax = aListePointsTemp[0].y * fRatioHauteur;
+	
+	for(var i=1; i<aListePointsTemp.length; i++)
+	{
+		if(aListePointsTemp[i].x * fRatioLargeur < iXmin)
+			iXmin = aListePointsTemp[i].x * fRatioLargeur;
+		if(aListePointsTemp[i].x * fRatioLargeur > iXmax)
+			iXmax = aListePointsTemp[i].x * fRatioLargeur;
+		if(aListePointsTemp[i].y * fRatioHauteur < iYmin)
+			iYmin = aListePointsTemp[i].y * fRatioHauteur;
+		if(aListePointsTemp[i].y * fRatioHauteur > iYmax)
+			iYmax = aListePointsTemp[i].y * fRatioHauteur;
+	}
+	
+	var iLargeurTerrain = iXmax - iXmin;
+	var iHauteurTerrain = iYmax - iYmin;
+	
 	for(var i=0; i<aListePointsTemp.length; i++)
-		this.aListePoints[i] 			= new Point(aListePointsTemp[i].x * fRatioLargeur , aListePointsTemp[i].y * fRatioHauteur);
-			
-	// Aire du polygone
+	{
+		aListePointsTemp[i].x = aListePointsTemp[i].x*fRatioLargeur + (canvas.width-iLargeurTerrain)/2 - iXmin;
+		aListePointsTemp[i].y = aListePointsTemp[i].y*fRatioHauteur + (canvas.height-iHauteurTerrain)/2 - iYmin - 15*fRatioHauteur;;
+		
+		this.aListePointsDepart[i] 		= new Point(aListePointsTemp[i].x, aListePointsTemp[i].y);
+	}
+
+	for(var i=0; i<aListePointsTemp.length; i++)
+	{
+		this.aListePoints[i] 			= new Point(aListePointsTemp[i].x, aListePointsTemp[i].y);
+	}
+	
+	// Aire du Terrain
 	this.fAireTerrainDepart 			= this.calculerAire();
 	this.fAireTerrainActuel 			= this.fAireTerrainDepart;
 	this.fAireMinimale 					= this.fAireTerrainDepart*fAireMinimale;
@@ -28,11 +58,9 @@ function Polygone (aListePointsTemp,oTexture, fAireMinimale)
 	this.aPartieA_Supprimer 			= new Array();
 	// Permet de trembler lorsque qu'un ennemi explose après avoir été touché
 	this.bTremble 						= false;
-	// si le trait touche un ennemi, on clear le terrain
-	this.bClearPolygone 				= false;
 }  
 
-Polygone.prototype.calculerAireDepart = function()
+Terrain.prototype.calculerAireDepart = function()
 {
 	var DX  = new Array();
 	var DY  = new Array();
@@ -50,7 +78,7 @@ Polygone.prototype.calculerAireDepart = function()
 	return ( Math.abs(A/2) );
 }
 	
-Polygone.prototype.calculerAire = function()
+Terrain.prototype.calculerAire = function()
 {
 	var DX  = new Array();
 	var DY  = new Array();
@@ -71,7 +99,7 @@ Polygone.prototype.calculerAire = function()
 // Méthode qui permet de couper la forme
 // arg : les 2 points de coupe et la liste des ennemis
 // return : true ou false si la forme n'a pas pu être coupée
-Polygone.prototype.couperForme = function(oPointCoupe1Temp, oPointCoupe2Temp)
+Terrain.prototype.couperForme = function(oPointCoupe1Temp, oPointCoupe2Temp)
 {
 	var oPointCoupe1 = new Point(oPointCoupe1Temp.x, oPointCoupe1Temp.y);
 	var oPointCoupe2 = new Point(oPointCoupe2Temp.x, oPointCoupe2Temp.y);
@@ -144,7 +172,7 @@ Polygone.prototype.couperForme = function(oPointCoupe1Temp, oPointCoupe2Temp)
 	// Pour chaque ennemi, on vérifie dans quelle partie il se trouve
 	for(var i=0; i<oPartie.aListeEnnemis.length; i++)
 	{
-		if(dansPolygone(oPartie.aListeEnnemis[i].oPosition, aPartie1) == 1)
+		if(dansTerrain(oPartie.aListeEnnemis[i].oPosition, aPartie1) == 1)
 		{
 			bEstDansPartie1 = true;
 		}
@@ -191,7 +219,7 @@ Polygone.prototype.couperForme = function(oPointCoupe1Temp, oPointCoupe2Temp)
 	return true;
 }
 
-Polygone.prototype.faireRebond = function(aListeIntersectionTerrainEnnemi, oEnnemi)
+Terrain.prototype.faireRebond = function(aListeIntersectionTerrainEnnemi, oEnnemi)
 {
 	var aListeNewVecteur = new Array();
 
@@ -272,8 +300,8 @@ Polygone.prototype.faireRebond = function(aListeIntersectionTerrainEnnemi, oEnne
 	oEnnemi.calculerDeplacement();
 }
 
-//méthode pour tracer le polygone 
-Polygone.prototype.tracer = function()  
+//méthode pour tracer le Terrain 
+Terrain.prototype.tracer = function()  
 {
 	ctx.beginPath();
 	
@@ -296,7 +324,7 @@ Polygone.prototype.tracer = function()
 }
 
 //méthode pour supprimer "this.aPartieA_Supprimer". Elle devient de + en + opaque
-Polygone.prototype.supprimerPartie = function()  
+Terrain.prototype.supprimerPartie = function()  
 {
 	if(this.bDisparitionPartie)
 	{
@@ -340,10 +368,10 @@ Polygone.prototype.supprimerPartie = function()
 	}
 }
 
-//méthode pour placer l'ennemi aléatoirement sur le polygone
+//méthode pour placer l'ennemi aléatoirement sur le Terrain
 // arg : objet oEnnemiTemp
 // return : objet oPoint (position de l'ennemi)
-Polygone.prototype.placerEnnemi = function(oEnnemiTemp)
+Terrain.prototype.placerEnnemi = function(oEnnemiTemp)
 {
 	var iDedans = 0;
 	var oPoint = new Point();
@@ -372,7 +400,7 @@ Polygone.prototype.placerEnnemi = function(oEnnemiTemp)
 		oPoint.x = ( Math.random() * (iXmax-iXmin) ) + iXmin;
 		oPoint.y = ( Math.random() * (iYmax-iYmin) ) + iYmin;
 		
-		// on vérifie si le point pris au hasard se trouve dans le polygone
+		// on vérifie si le point pris au hasard se trouve dans le Terrain
 		// (ce point sera équivalent au coin haut gauche de l'image de l'ennemi)
 		iDedans = this.cn_PnPoly(oPoint);
 		
@@ -396,7 +424,7 @@ Polygone.prototype.placerEnnemi = function(oEnnemiTemp)
 //méthode pour vérifier si l'ennemi est dans le terrain
 // arg : objet oEnnemiTemp
 // return : oIntersection (ennemi touche un bord du terrain) ou null 
-Polygone.prototype.ennemiDansTerrain = function(oEnnemiTemp)
+Terrain.prototype.ennemiDansTerrain = function(oEnnemiTemp)
 {	
 	var oCoinHautGauche = new Point(oEnnemiTemp.oPosition.x, oEnnemiTemp.oPosition.y);
 	var oCoinHautDroit = new Point(oEnnemiTemp.oPosition.x + oEnnemiTemp.iTailleX, oEnnemiTemp.oPosition.y);
@@ -441,8 +469,8 @@ Polygone.prototype.ennemiDansTerrain = function(oEnnemiTemp)
 	}
 }
 
-// Méthode qui va permettre de savoir si le point donné en argument est situé dans le polygone
-Polygone.prototype.cn_PnPoly = function(P)
+// Méthode qui va permettre de savoir si le point donné en argument est situé dans le Terrain
+Terrain.prototype.cn_PnPoly = function(P)
 {
 	var cn = 0;    // the crossing number counter
 	var i = 0;
@@ -461,7 +489,7 @@ Polygone.prototype.cn_PnPoly = function(P)
 }  
 
 // Méthode de reset
-Polygone.prototype.reset = function()
+Terrain.prototype.reset = function()
 {
 	this.aListePoints = new Array();
 	for(var i=0; i<this.aListePointsDepart.length; i++)

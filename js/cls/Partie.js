@@ -7,6 +7,11 @@ function Partie()
 	iCompteurImages = 0;
 	iNombresImages = 0;
 	
+	if(fRatioLargeur > 2)
+		fRatioLargeur = 2;
+	if(fRatioHauteur > 2)
+		fRatioHauteur = 2;
+	
 	// ------------------------ sons
 	this.oSonMetal = new Audio('sons/metalhit.wav');
 	this.oSonSouffleExplosion = new Audio('sons/souffleExplosion2.wav');
@@ -27,14 +32,14 @@ function Partie()
 	this.MAX_DEPTH = 32;
 	this.SPEED_STARS = 0.2;
 	this.SIZE_STARS = 5*((fRatioLargeur+fRatioHauteur)/2);
-	this.stars = new Array(50);
+	this.stars = new Array(30);
 	this.initStars();
 
 	// ------------------------ Variables liées à la victoire du joueur
 	this.GAGNE = false;
+	
 	// Porte en metal
 	// gauche
-	
 	this.oPorteGauche = new Image();
 	this.oPorteGauche.src = 'img/gauche_porte.png';
 	iNombresImages++;
@@ -67,7 +72,7 @@ function Partie()
 
 	// ------------------------ Segment tracé avec la souris
 	this.oTrait = new Trait("blue");
-	this.bSourisDansPolygone = false;
+	this.bSourisDansTerrain = false;
 	this.oCibleOk = new Image();
 	this.oCibleOk.src = 'img/cible_ok.png';
 	iNombresImages++;
@@ -86,7 +91,7 @@ function Partie()
 	this.fTailleCibles = 35*((fRatioLargeur+fRatioHauteur)/2);
 	this.bAugmenterTailleCibles = true;
 
-	// ------------------------ polygone
+	// ------------------------ Terrain
 	var aListePointsTemp = new Array();
 
 	aListePointsTemp.push(new Point(50,50));
@@ -104,11 +109,11 @@ function Partie()
 	// aListePointsTemp.push(new Point(150,300));
 	// aListePointsTemp.push(new Point(75,200));
 	// aListePointsTemp.push(new Point(0,300));
-
+	
 	var img = new Image();
 	img.src = 'img/textures/metal2.jpg';
 	iNombresImages++;
-	this.oPolygone = new Polygone(aListePointsTemp,img, 0.2);
+	this.oTerrain = new Terrain(aListePointsTemp,img, 0.4);
 	img.onload = function()
 	{
 		iCompteurImages++;
@@ -237,11 +242,11 @@ Partie.prototype.lancer = function()
 	{
 		this.dessinerStars();
 		
-		// on trace le polygone
-		this.oPolygone.tracer();
+		// on trace le Terrain
+		this.oTerrain.tracer();
 		
 		// on trace la barre d'avancement
-		this.oBarreAvancement.tracer(this.oPolygone);
+		this.oBarreAvancement.tracer(this.oTerrain);
 		
 		// Deplacement des ennemis, rebonds	
 		for(var i=0; i<this.aListeEnnemis.length; i++)
@@ -264,12 +269,12 @@ Partie.prototype.lancer = function()
 			
 			// on vérifie si l'ennemi est toujours sur le terrain
 			// Rappel : si ennemiDansTerrain --> renvoie aIntersection=[0:Point1 cote terrain, 1:Point2 cote terrain, 2:Point intersection]	
-			var aListeIntersectionTerrainEnnemi = this.oPolygone.ennemiDansTerrain(this.aListeEnnemis[i]);
+			var aListeIntersectionTerrainEnnemi = this.oTerrain.ennemiDansTerrain(this.aListeEnnemis[i]);
 
 			if(aListeIntersectionTerrainEnnemi != null)
 			{
 				// rebond
-				this.oPolygone.faireRebond(aListeIntersectionTerrainEnnemi, this.aListeEnnemis[i]);
+				this.oTerrain.faireRebond(aListeIntersectionTerrainEnnemi, this.aListeEnnemis[i]);
 				// this.oSonMetal.pause();
 				// this.oSonMetal = new Audio('sons/metalhit.wav');
 				// this.oSonMetal.volume = 0.05;
@@ -279,7 +284,7 @@ Partie.prototype.lancer = function()
 		
 		// si la souris se trouve dans le canvas
 		// on place la cible
-		if(this.bSourisDansPolygone != undefined)
+		if(this.bSourisDansTerrain != undefined)
 		{
 			if(this.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2) < 28)
 				this.bAugmenterTailleCibles = true;
@@ -291,8 +296,8 @@ Partie.prototype.lancer = function()
 			else
 				this.fTailleCibles -= 0.4*((fRatioLargeur+fRatioHauteur)/2);
 		
-			// si la souris se trouve dans le polygone
-			if(this.bSourisDansPolygone)
+			// si la souris se trouve dans le Terrain
+			if(this.bSourisDansTerrain)
 			{
 				ctx.save(); 
 				ctx.translate(oPositionSouris.x-(this.fTailleCibles/2), oPositionSouris.y-(this.fTailleCibles/2)); 
@@ -325,7 +330,7 @@ Partie.prototype.lancer = function()
 	}
 	
 	// si l'aire minimale a été atteinte
-	if(!this.GAGNE && this.oPolygone.fAireTerrainActuel <= this.oPolygone.fAireMinimale)
+	if(!this.GAGNE && this.oTerrain.fAireTerrainActuel <= this.oTerrain.fAireMinimale)
 	{
 		this.GAGNE = true;
 	}
@@ -345,51 +350,36 @@ Partie.prototype.lancer = function()
 	// Si le joueur a gagné
 	if(this.GAGNE)
 	{
-		this.oPolygone.supprimerPartie();
+		this.oTerrain.supprimerPartie();
 		
-		// on augmente la taille de l'étoiles, leur vitesse et leur nombre
-		if(this.SIZE_STARS < 8*((fRatioLargeur+fRatioHauteur)/2))
-			this.SIZE_STARS +=0.03;
-		if(this.SPEED_STARS < 1.5)
-			this.SPEED_STARS += 0.02;
-		if(this.stars.length < 600)
+		// On ferme de plus en plus la porte gauche
+		if(this.oPositionPorteGauche.x < 0)
 		{
-			this.ajouterStars();
-			this.ajouterStars();
-			this.ajouterStars();
+			if(this.oPositionPorteGauche.x + fRatioLargeur*3 > 0)
+				this.oPositionPorteGauche.x += -this.oPositionPorteGauche.x;
+			else
+				this.oPositionPorteGauche.x += fRatioLargeur*3;
+		}
+		// On ferme de plus en plus la porte droite
+		if(this.oPositionPorteDroite.x > canvas.width/2)
+		{
+			if(this.oPositionPorteDroite.x - fRatioLargeur*3 < canvas.width/2)
+				this.oPositionPorteDroite.x -= this.oPositionPorteDroite.x - canvas.width/2;
+			else
+				this.oPositionPorteDroite.x -= fRatioLargeur*3;
+		}
+		// On ferme de plus en plus la porte bas
+		if(this.oPositionPorteBas.y > canvas.height-this.fHauteurPorteBas)
+		{
+			if(this.oPositionPorteBas.y - fRatioHauteur*3 < canvas.height-this.fHauteurPorteBas)
+				this.oPositionPorteBas.y -= this.oPositionPorteBas.y - (canvas.height-this.fHauteurPorteBas);
+			else
+				this.oPositionPorteBas.y -= fRatioHauteur*3;
 		}
 		
-		if(this.SIZE_STARS > 5.5*((fRatioLargeur+fRatioHauteur)/2))
-		{
-			// On ferme de plus en plus la porte gauche
-			if(this.oPositionPorteGauche.x < 0)
-			{
-				if(this.oPositionPorteGauche.x + fRatioLargeur*3 > 0)
-					this.oPositionPorteGauche.x += -this.oPositionPorteGauche.x;
-				else
-					this.oPositionPorteGauche.x += fRatioLargeur*3;
-			}
-			// On ferme de plus en plus la porte droite
-			if(this.oPositionPorteDroite.x > canvas.width/2)
-			{
-				if(this.oPositionPorteDroite.x - fRatioLargeur*3 < canvas.width/2)
-					this.oPositionPorteDroite.x -= this.oPositionPorteDroite.x - canvas.width/2;
-				else
-					this.oPositionPorteDroite.x -= fRatioLargeur*3;
-			}
-			// On ferme de plus en plus la porte bas
-			if(this.oPositionPorteBas.y > canvas.height-this.fHauteurPorteBas)
-			{
-				if(this.oPositionPorteBas.y - fRatioHauteur*3 < canvas.height-this.fHauteurPorteBas)
-					this.oPositionPorteBas.y -= this.oPositionPorteBas.y - (canvas.height-this.fHauteurPorteBas);
-				else
-					this.oPositionPorteBas.y -= fRatioHauteur*3;
-			}
-			
-			ctx.drawImage(this.oPorteGauche, this.oPositionPorteGauche.x, this.oPositionPorteGauche.y, this.fLargeurPorteGauche, this.fHauteurPorteGauche);
-			ctx.drawImage(this.oPorteDroite, this.oPositionPorteDroite.x, this.oPositionPorteDroite.y, this.fLargeurPorteDroite, this.fHauteurPorteDroite);
-			ctx.drawImage(this.oPorteBas, this.oPositionPorteBas.x, this.oPositionPorteBas.y, this.fLargeurPorteBas, this.fHauteurPorteBas);
-		}
+		ctx.drawImage(this.oPorteGauche, this.oPositionPorteGauche.x, this.oPositionPorteGauche.y, this.fLargeurPorteGauche, this.fHauteurPorteGauche);
+		ctx.drawImage(this.oPorteDroite, this.oPositionPorteDroite.x, this.oPositionPorteDroite.y, this.fLargeurPorteDroite, this.fHauteurPorteDroite);
+		ctx.drawImage(this.oPorteBas, this.oPositionPorteBas.x, this.oPositionPorteBas.y, this.fLargeurPorteBas, this.fHauteurPorteBas);
 		
 		// si les ennemis ne sont pas à l'arrêt, on ralenti les ennemis
 		if(this.aListeEnnemis[0].fVitesse != 0)
@@ -406,9 +396,9 @@ Partie.prototype.lancer = function()
 		this.oTrait.clignoter();
 	}
 	// Disparition d'une partie lors d'une coupe
-	else if(this.oPolygone.bDisparitionPartie)
+	else if(this.oTerrain.bDisparitionPartie)
 	{
-		this.oPolygone.supprimerPartie();
+		this.oTerrain.supprimerPartie();
 	}
 	// Trait a touché un ennemi
 	else if(this.oTrait.bToucheEnnemi)
@@ -452,12 +442,12 @@ Partie.prototype.lancer = function()
 					this.fGrandeurCercle = 0.05*((fRatioLargeur+fRatioHauteur)/2);
 					this.bAugmenterOpacite = false;
 					
-					// on reset le polygone et les ennemis
+					// on reset le Terrain et les ennemis
 					for(var i=0; i<this.aListeEnnemis.length; i++)
 					{
 						this.aListeEnnemis[i].reset();
 					}
-					this.oPolygone.reset();
+					this.oTerrain.reset();
 					this.oBarreAvancement.reset();
 					mouseDown = false;
 					mouseMove = false;
@@ -605,34 +595,34 @@ Partie.prototype.lancer = function()
 	// Partie n'a pas été gagnée
 	else
 	{	
-		// si le début du trait tracé se trouve à l'exterieur du polygone
-		if(this.oTrait.iDepartTraitDansPolygone == 0)
+		// si le début du trait tracé se trouve à l'exterieur du Terrain
+		if(this.oTrait.iDepartTraitDansTerrain == 0)
 		{
-			// si l'arrivée du trait tracé se trouve à l'intérieur du polygone
-			if(this.oPolygone.cn_PnPoly(this.oTrait.oPointArrivee) == 1)
+			// si l'arrivée du trait tracé se trouve à l'intérieur du Terrain
+			if(this.oTerrain.cn_PnPoly(this.oTrait.oPointArrivee) == 1)
 			{	
-				if(this.oTrait.iTraitDansPolygone == 0)
+				if(this.oTrait.iTraitDansTerrain == 0)
 				{
 					var iIntersection = 0;
 					
-					for(var i=0; i<this.oPolygone.aListePoints.length-1; i++)
+					for(var i=0; i<this.oTerrain.aListePoints.length-1; i++)
 					{
 						// Rappel : aIntersection=[0:Point1 cote terrain, 1:Point2 cote terrain, 2:Point intersection]
 						var aIntersection = getIntersectionSegments(this.oTrait.oPointDepart, 
 																	this.oTrait.oPointArrivee, 
-																	this.oPolygone.aListePoints[i], 
-																	this.oPolygone.aListePoints[i+1]);
+																	this.oTerrain.aListePoints[i], 
+																	this.oTerrain.aListePoints[i+1]);
 						
 						if(aIntersection != null)
 						{		
-							// on défini le point de départ du trait dans le polygone
+							// on défini le point de départ du trait dans le Terrain
 							this.oTrait.oPointDepart.x = aIntersection[2].x;
 							this.oTrait.oPointDepart.y = aIntersection[2].y;
 							
-							this.oPolygone.aPremierCoteCoupe.push(i,i+1);
+							this.oTerrain.aPremierCoteCoupe.push(i,i+1);
 						}
 					}
-					this.oTrait.iTraitDansPolygone = 1;
+					this.oTrait.iTraitDansTerrain = 1;
 				}
 				
 				this.oTrait.tracer();
@@ -663,37 +653,37 @@ Partie.prototype.lancer = function()
 				
 			}
 			
-			// si le trait sort du polygone
-			if(this.oPolygone.cn_PnPoly(this.oTrait.oPointArrivee) == 0 && this.oTrait.iTraitDansPolygone == 1 && this.oTrait.bToucheEnnemi == false)
+			// si le trait sort du Terrain
+			if(this.oTerrain.cn_PnPoly(this.oTrait.oPointArrivee) == 0 && this.oTrait.iTraitDansTerrain == 1 && this.oTrait.bToucheEnnemi == false)
 			{	
 				var iIntersection = 0;
 				var bCoupe = false;
 				
-				for(var i=0; i<this.oPolygone.aListePoints.length-1; i++)
+				for(var i=0; i<this.oTerrain.aListePoints.length-1; i++)
 				{
 					// Si le côté ne correspond pas au premier côté coupé
-					if(i != this.oPolygone.aPremierCoteCoupe[0])
+					if(i != this.oTerrain.aPremierCoteCoupe[0])
 					{
 						// Rappel : aIntersection=[0:Point1 cote terrain, 1:Point2 cote terrain, 2:Point intersection]
 						var aIntersection = getIntersectionSegments(this.oTrait.oPointDepart, 
 																	this.oTrait.oPointArrivee, 
-																	this.oPolygone.aListePoints[i], 
-																	this.oPolygone.aListePoints[i+1]);
+																	this.oTerrain.aListePoints[i], 
+																	this.oTerrain.aListePoints[i+1]);
 						
 						if(aIntersection != null)
 						{
 							
 							iIntersection++;
 							
-							// on défini le point d'arrivée du trait dans le polygone
+							// on défini le point d'arrivée du trait dans le Terrain
 							this.oTrait.oPointArrivee.x = aIntersection[2].x;
 							this.oTrait.oPointArrivee.y = aIntersection[2].y;
-							this.oPolygone.aDeuxiemeCoteCoupe.push(i,i+1);
+							this.oTerrain.aDeuxiemeCoteCoupe.push(i,i+1);
 						}
 					}
 				}
 				
-				// si l'arrivée du trait tracé se trouve à l'intérieur du polygone et que le traverse bien le terrain
+				// si l'arrivée du trait tracé se trouve à l'intérieur du Terrain et que le traverse bien le terrain
 				// en effet, le point d'arrivé peut se trouver dans le terrain alors que le trait traverse du vide
 				//
 				//					_________							  _________
@@ -705,10 +695,10 @@ Partie.prototype.lancer = function()
 				//
 				
 				// on vérifie qu'il n'y a bien qu'un seul côté de
-				// coupé en plus de "oPolygone.aPremierCoteCoupe[0]"
+				// coupé en plus de "oTerrain.aPremierCoteCoupe[0]"
 				if(iIntersection == 1)
 				{
-					var bCoupe = this.oPolygone.couperForme(this.oTrait.oPointDepart, this.oTrait.oPointArrivee, this.aListeEnnemis);
+					var bCoupe = this.oTerrain.couperForme(this.oTrait.oPointDepart, this.oTrait.oPointArrivee, this.aListeEnnemis);
 					
 					// si coupe impossible, on décide de mettre le compteur de clignotement à 4
 					if(!bCoupe)
@@ -722,16 +712,12 @@ Partie.prototype.lancer = function()
 						this.oTrait.reset();
 						mouseDown = false;
 						mouseMove = false;
-						this.oSonCoupe.pause();
-						this.oSonCoupe = new Audio('sons/swordCut.wav');
-						this.oSonCoupe.volume = 0.3;
-						this.oSonCoupe.play();
 					}
 				}
 				else
 				{				
-					this.oPolygone.aPremierCoteCoupe = new Array();
-					this.oPolygone.aDeuxiemeCoteCoupe = new Array();
+					this.oTerrain.aPremierCoteCoupe = new Array();
+					this.oTerrain.aDeuxiemeCoteCoupe = new Array();
 					this.oTrait.reset();
 					mouseDown = false;
 					mouseMove = false;
@@ -759,6 +745,6 @@ Partie.prototype.reset = function()
 	this.fTailleGrosseEtoile = 0;
 	this.fOpaciteGlobale = 0;
 	this.oTrait.reset();
-	this.oPolygone.reset();
+	this.oTerrain.reset();
 	this.oBarreAvancement.reset();
 }

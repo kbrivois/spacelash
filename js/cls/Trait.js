@@ -3,8 +3,8 @@ function Trait(sCouleurTemp)
 	this.oPointDepart 				= new Point(0,0);  
 	this.oPointArrivee 				= new Point(0,0);
 	this.sCouleur	 				= sCouleurTemp;
-	this.iDepartTraitDansPolygone 	= 0;
-	this.iTraitDansPolygone 		= 0;
+	this.iDepartTraitDansTerrain 	= 0;
+	this.iTraitDansTerrain 			= 0;
 	this.fOpacite 					= 1;
 	// si coupe impossible entre 2 ennemis
 	this.iCompteurFaireClignoter 	= 0;
@@ -305,8 +305,8 @@ Trait.prototype.reset = function()
 	this.oPointDepart.y = 0;
 	this.oPointArrivee.x = 0;
 	this.oPointArrivee.y = 0;
-	this.iDepartTraitDansPolygone = 0;
-	this.iTraitDansPolygone = 0;
+	this.iDepartTraitDansTerrain = 0;
+	this.iTraitDansTerrain = 0;
 	this.iCompteurFaireClignoter = 0;
 	this.fOpacite = 1;
 	this.bAugmenterOpacite = false;

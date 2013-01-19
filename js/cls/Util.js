@@ -359,8 +359,8 @@ var getIntersectionDroites = function(oPoint1Temp, oPoint2Temp, oPoint3Temp, oPo
 	return null;
 }
 
-// Méthode qui va permettre de savoir si le point donné en argument est situé dans le polygone
-var dansPolygone = function(P, aListePointsTemp)
+// Méthode qui va permettre de savoir si le point donné en argument est situé dans le Terrain
+var dansTerrain = function(P, aListePointsTemp)
 {
 	var aListePoints = aListePointsTemp;
 	var cn = 0;    // the crossing number counter

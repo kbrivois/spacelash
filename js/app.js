@@ -15,8 +15,8 @@ document.body.appendChild(canvas);
 var fLargeurDeBase = 300;
 var fHauteurDeBase = 400;
 
-var fRatioLargeur = (document.documentElement.clientWidth-4) / 300;
-var fRatioHauteur = (document.documentElement.clientHeight-4) / 400;
+var fRatioLargeur = (document.documentElement.clientWidth-4) / fLargeurDeBase;
+var fRatioHauteur = (document.documentElement.clientHeight-4) / fHauteurDeBase;
 
 // souris
 var oPositionDepartSouris = new Point(-100,-100);
@@ -32,10 +32,7 @@ var iNombresImages = 0;
 déclaration des variables pour le menu
 ====================================================================================================================================================*/
 
-var fRatioLargeur = (document.documentElement.clientWidth-4) / 300;
-var fRatioHauteur = (document.documentElement.clientHeight-4) / 400;
 var oMenu = new Menu();
-
 var bChargementComplet = false;
 
 // ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
@@ -72,18 +69,22 @@ canvas.addEventListener('mouseout', mouseOutCanvasPartie, false);
 Main menu
 ====================================================================================================================================================*/
 
-var mainMenu = function () 
+var mainMenu = function ()
 {
-	now = Date.now();
-	delta = now - then;
-	
-	if(iCompteurImages == iNombresImages)
+	// Si on est pas dans une partie
+	if(oMenu != null)
 	{
-		// on lance le menu
-		oMenu.lancer();
+		now = Date.now();
+		delta = now - then;
+		
+		if(iCompteurImages == iNombresImages)
+		{
+			// on lance le menu
+			oMenu.lancer();
+		}
+		
+		requestAnimationFrame(mainMenu);
 	}
-	
-	requestAnimationFrame(mainMenu);
 };
 
 
@@ -93,6 +94,7 @@ Main partie
 
 var initPartie = function ()
 {
+	oMenu = null;
 	oPartie = new Partie();
 	bChargementComplet = false;
 
@@ -127,9 +129,9 @@ var mainPartie = function ()
 			for(var i=0; i<oPartie.aListeImagesEnnemis.length; i++)
 			{
 				var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[i], 2, new Point(0,0), 0.2);
-				// On place l'ennemi sur le terrain (le polygone)
+				// On place l'ennemi sur le terrain (le Terrain)
 				// on récupére les coordonnées
-				var oPositionEnnemi = oPartie.oPolygone.placerEnnemi(oEnnemi);
+				var oPositionEnnemi = oPartie.oTerrain.placerEnnemi(oEnnemi);
 				oEnnemi.oPosition = oPositionEnnemi;
 				// on calcule le déplacement de l'ennemi
 				oEnnemi.calculerDeplacement();
