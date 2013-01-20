@@ -386,13 +386,26 @@ var randomRange = function(minVal,maxVal)
 	return Math.floor(Math.random() * (maxVal - minVal - 1)) + minVal;
 }
 
-
-Object.prototype.clone = function() {
-    var fn = function (o, cloner){
-        if(o == null || typeof(o) != 'object') return o
-        var no = new o.constructor()
-        Object.keys(o).forEach(function(e){this[e] = cloner(o[e], cloner)},no) 
-        return no;
-    }
-    return fn(this, fn)
+// fonction qui permet de faire un rectangle à bords arrondis
+var rectangleArrondi = function(x, y, w, h, angle, couleurFill, couleurStroke, fill, stroke, lineWidth)
+{
+	var r = x + w;
+	var b = y + h;
+	ctx.beginPath();
+	ctx.fillStyle = couleurFill;
+	ctx.strokeStyle = couleurStroke;
+	ctx.lineWidth = lineWidth;
+	ctx.moveTo(x+angle, y);
+	ctx.lineTo(r-angle, y);
+	ctx.quadraticCurveTo(r, y, r, y+angle);
+	ctx.lineTo(r, y+h-angle);
+	ctx.quadraticCurveTo(r, b, r-angle, b);
+	ctx.lineTo(x+angle, b);
+	ctx.quadraticCurveTo(x, b, x, b-angle);
+	ctx.lineTo(x, y+angle);
+	ctx.quadraticCurveTo(x, y, x+angle, y);
+	if(stroke)
+		ctx.stroke();
+	if(fill)
+		ctx.fill();
 }

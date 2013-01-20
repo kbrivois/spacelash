@@ -137,11 +137,11 @@ var screenResizePartie = function(e)
 	canvas.width = document.documentElement.clientWidth-4;
 	canvas.height = document.documentElement.clientHeight-4;
 	
-	var fNewRatioLargeur = canvas.width / 300;
-	var fNewRatioHauteur = canvas.height / 400;
+	var fNewRatioLargeur = canvas.width / fLargeurDeBase;
+	var fNewRatioHauteur = canvas.height / fHauteurDeBase;
 	
-	var fNewRatioLargeurPorte = canvas.width / 300;
-	var fNewRatioHauteurPorte = canvas.height / 400;
+	var fNewRatioLargeurPorte = fNewRatioLargeur;
+	var fNewRatioHauteurPorte = fNewRatioHauteur;
 	
 	if(fNewRatioLargeur > 2)
 		fNewRatioLargeur = 2;
@@ -219,20 +219,25 @@ var screenResizePartie = function(e)
 	// porte de gauche
 	oPartie.fLargeurPorteGauche = canvas.width/2;
 	oPartie.fHauteurPorteGauche = canvas.height;
-	oPartie.oPositionPorteGauche = new Point(-oPartie.fLargeurPorteGauche,0);
+	oPartie.oPositionPorteGauche.x = (oPartie.oPositionPorteGauche.x/oPartie.fRatioLargeurPorte)*fNewRatioLargeurPorte;
+	oPartie.oPositionPorteGauche.y = (oPartie.oPositionPorteGauche.y/oPartie.fRatioHauteurPorte)*fNewRatioHauteurPorte;
 	
 	// porte de droite
 	oPartie.fLargeurPorteDroite = canvas.width/2;
 	oPartie.fHauteurPorteDroite = canvas.height;
-	oPartie.oPositionPorteDroite = new Point(canvas.width,0);
+	oPartie.oPositionPorteDroite.x = (oPartie.oPositionPorteDroite.x/oPartie.fRatioLargeurPorte)*fNewRatioLargeurPorte;
+	oPartie.oPositionPorteDroite.y = (oPartie.oPositionPorteDroite.y/oPartie.fRatioHauteurPorte)*fNewRatioHauteurPorte;
 	
 	// porte du bas
 	oPartie.fLargeurPorteBas = oPartie.oPorteBas.width * (oPartie.fLargeurPorteDroite/oPartie.oPorteDroite.width);
 	oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
-	oPartie.oPositionPorteBas = new Point((canvas.width/2)-(oPartie.fLargeurPorteBas/2),canvas.height);
+	oPartie.oPositionPorteBas.x = (oPartie.oPositionPorteBas.x/oPartie.fRatioLargeurPorte)*fNewRatioLargeurPorte;
+	oPartie.oPositionPorteBas.y = (oPartie.oPositionPorteBas.y/oPartie.fRatioHauteurPorte)*fNewRatioHauteurPorte;
 	
 	fRatioLargeur = fNewRatioLargeur;
 	fRatioHauteur = fNewRatioHauteur;
+	oPartie.fRatioLargeurPorte = fNewRatioLargeurPorte;
+	oPartie.fRatioHauteurPorte = fNewRatioHauteurPorte;
 }
 
 
@@ -281,6 +286,9 @@ var mouseUnClickMenu = function (e)
 	
 	// on replace les écrans correctement une fois que le clic est relaché
 	oMenu.bSlideAuto = true;
+	
+	// on vérifie si on a cliqué sur une vignette
+	oMenu.verifierSelectionVignette();
 }
 
 var mouseMovementMenu = function(e) 
@@ -301,6 +309,9 @@ var mouseMovementMenu = function(e)
 
 	if(mouseDown)
 	{
+		// s'il y a eu un click down sur une vignette, on annule car il y a un mouse move avant un mouse up
+		oMenu.iVignetteSelectionnee = null;
+	
 		oPositionSouris.x = x;
 		oPositionSouris.y = y;
 		
@@ -332,10 +343,10 @@ var screenResizeMenu = function(e)
 	canvas.width = document.documentElement.clientWidth-4;
 	canvas.height = document.documentElement.clientHeight-4;
 	
-	var fNewRatioLargeur = canvas.width / 300;
-	var fNewRatioHauteur = canvas.height / 400;
+	var fNewRatioLargeur = canvas.width / fLargeurDeBase;
+	var fNewRatioHauteur = canvas.height / fHauteurDeBase;
 	
-	// écrans
+	/* === écrans === */
 	for(var i=0; i<oMenu.aEcransNiveauxDepart.length; i++)
 	{
 		oMenu.aEcransNiveauxDepart[i][1].x = i*canvas.width;
@@ -345,24 +356,99 @@ var screenResizeMenu = function(e)
 		oMenu.aEcransNiveaux[i][1].x = oMenu.aEcransNiveauxDepart[i][1].x - oMenu.aEcransNiveauxDepart[oMenu.iEcranActuel][1].x;
 	}
 	
-	// vignettes
-	oMenu.iTailleVignettes = oMenu.iTailleVignettes / ((fRatioLargeur+fRatioHauteur)/2) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
-	oMenu.fEcartVignettes = oMenu.fEcartVignettes / ((fRatioLargeur+fRatioHauteur)/2) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+	/* === vignettes === */
+	oMenu.fEcartX_Vignettes *= ( ((fNewRatioLargeur+fNewRatioHauteur)/2) / ((fRatioLargeur+fRatioHauteur)/2) );
+	oMenu.fEcartY_Vignettes *= ( ((fNewRatioLargeur+fNewRatioHauteur)/2) / ((fRatioLargeur+fRatioHauteur)/2) );
+	oMenu.iTailleVignettes *= ( ((fNewRatioLargeur+fNewRatioHauteur)/2) / ((fRatioLargeur+fRatioHauteur)/2) );
 	
-	// vignettes
+	var iPageVignette = 0;
+	
+	// Initialisation de la position des vignettes et des terrains contenus dans les vignettes
 	for(var i=0; i<oMenu.aListeVignettes.length; i++)
 	{
-		// position du terrain contenu dans la vignette
-		for(var j=0; j<oMenu.aListeVignettes[i].length; j++)
-		{
-			oMenu.aListeVignettes[i][0][j].x *= fRatioLargeur;
-			oMenu.aListeVignettes[i][0][j].y *= fRatioHauteur;
-		}
 		// position de la vignette
 		// on place les vignettes au milieu (largeur)
-		oMenu.aListeVignettes[i][1].x = canvas.width/2 - ((oMenu.aListeVignettes.length-1)*(oMenu.fEcartVignettes)+oMenu.iTailleVignettes+10)/2 + (10/2+(i*oMenu.fEcartVignettes));
-		oMenu.aListeVignettes[i][1].y = 10;
+		if(i != 0)
+			iPageVignette = Math.floor(i / (oMenu.iNbreColonnesMax * oMenu.iNbreLignesMax));
+		
+		// si on ne se trouve pas sur la dernière slide
+		if(iPageVignette+1 != oMenu.iNbrePages)
+		{
+			oMenu.aListeVignettes[i][1].x = canvas.width*iPageVignette + canvas.width/2 
+												- (( (oMenu.iNbreColonnesMax*oMenu.iNbreLignesMax) -1)*(oMenu.fEcartX_Vignettes)+oMenu.iTailleVignettes+10)/2 
+												+ (10/2 + ( (i%(oMenu.iNbreColonnesMax*oMenu.iNbreLignesMax)) * oMenu.fEcartX_Vignettes));
+												
+			oMenu.aListeVignettes[i][1].y = canvas.height/2
+												- (( (oMenu.iNbreLignesMax) -1)*(oMenu.fEcartY_Vignettes)+oMenu.iTailleVignettes+10)/2
+												+ (10/2+( (i%(oMenu.iNbreLignesMax)) * oMenu.fEcartY_Vignettes));
+		}
+		else
+		{
+			oMenu.aListeVignettes[i][1].x = canvas.width*iPageVignette + canvas.width/2 
+												- (( oMenu.aListeVignettes.length - ((oMenu.iNbrePages-1)*oMenu.iNbreColonnesMax*oMenu.iNbreLignesMax) -1)*(oMenu.fEcartX_Vignettes)+oMenu.iTailleVignettes+10)/2 
+												+ (10/2+( (i%(oMenu.iNbreColonnesMax*oMenu.iNbreLignesMax)) * oMenu.fEcartX_Vignettes));
+			
+			oMenu.aListeVignettes[i][1].y = canvas.height/2
+												- (( (oMenu.iNbreLignesMax) -1)*(oMenu.fEcartY_Vignettes)+oMenu.iTailleVignettes+10)/2
+												+ (10/2+( (i%(oMenu.iNbreLignesMax)) * oMenu.fEcartY_Vignettes));
+		}
+		
+		oMenu.aListeVignettesDepart[i][1].x = oMenu.aListeVignettes[i][1].x;
+		oMenu.aListeVignettesDepart[i][1].y = oMenu.aListeVignettes[i][1].y;
+		
+		var iXmin = oMenu.aListeTerrains[i][0].x;
+		var iXmax = oMenu.aListeTerrains[i][0].x;
+		var iYmin = oMenu.aListeTerrains[i][0].y;
+		var iYmax = oMenu.aListeTerrains[i][0].y;
+		
+		/*=== position du terrain contenu dans la vignette ===*/
+		
+		for(var j=1; j<oMenu.aListeTerrains[i].length; j++)
+		{
+			if(oMenu.aListeTerrains[i][j].x < iXmin)
+				iXmin = oMenu.aListeTerrains[i][j].x;
+			if(oMenu.aListeTerrains[i][j].x > iXmax)
+				iXmax = oMenu.aListeTerrains[i][j].x;
+			if(oMenu.aListeTerrains[i][j].y < iYmin)
+				iYmin = oMenu.aListeTerrains[i][j].y;
+			if(oMenu.aListeTerrains[i][j].y > iYmax)
+				iYmax = oMenu.aListeTerrains[i][j].y;
+		}
+		
+		var fEcartX = (iXmax - iXmin);
+		var fEcartY = (iYmax - iYmin);
+		var fRatioX = oMenu.iTailleVignettes / fEcartX - 0.05*((fNewRatioLargeur+fNewRatioHauteur)/2);
+		var fRatioY = oMenu.iTailleVignettes / fEcartY - 0.05*((fNewRatioLargeur+fNewRatioHauteur)/2);
+		var fX_SupPourCentrer = (oMenu.iTailleVignettes - fEcartX*fRatioX)/2;
+		var fY_SupPourCentrer = (oMenu.iTailleVignettes - fEcartY*fRatioY)/2;
+		
+		for(var j=0; j<oMenu.aListeVignettes[i][0].length; j++)
+		{
+			// Vignettes
+			oMenu.aListeVignettes[i][0][j].x = oMenu.aListeVignettes[i][1].x + oMenu.aListeTerrains[i][j].x*fRatioX - iXmin*fRatioX + fX_SupPourCentrer;
+			oMenu.aListeVignettes[i][0][j].y = oMenu.aListeVignettes[i][1].y + oMenu.aListeTerrains[i][j].y*fRatioY - iYmin*fRatioY + fY_SupPourCentrer;
+			
+			// Vignettes de départ
+			oMenu.aListeVignettesDepart[i][0][j].x = oMenu.aListeVignettes[i][0][j].x;
+			oMenu.aListeVignettesDepart[i][0][j].y = oMenu.aListeVignettes[i][0][j].y;
+		}
 	}
+	
+	// for(var i=0; i<oMenu.aListeVignettes.length; i++)
+	// {
+		// // position du terrain contenu dans la vignette
+		// for(var j=0; j<oMenu.aListeVignettes[i].length; j++)
+		// {
+			// oMenu.aListeVignettes[i][0][j].x = oMenu.aListeVignettes[i][0][j].x * (fNewRatioLargeur/fRatioLargeur);
+			// oMenu.aListeVignettes[i][0][j].y = oMenu.aListeVignettes[i][0][j].y * (fNewRatioHauteur/fRatioHauteur);
+		// }
+		// // position de la vignette
+		// // on place les vignettes au milieu (largeur)
+		// oMenu.aListeVignettes[i][1].x *= (fNewRatioLargeur/fRatioLargeur);
+		// oMenu.aListeVignettes[i][1].y *= (fNewRatioHauteur/fRatioHauteur);
+		
+		// console.log(fNewRatioLargeur/fRatioLargeur);
+	// }
 	
 	fRatioLargeur = fNewRatioLargeur;
 	fRatioHauteur = fNewRatioHauteur;

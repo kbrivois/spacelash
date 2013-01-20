@@ -7,6 +7,11 @@ function Partie()
 	iCompteurImages = 0;
 	iNombresImages = 0;
 	
+	// Ratio pour les portes
+	this.fRatioLargeurPorte = fRatioLargeur;
+	this.fRatioHauteurPorte = fRatioHauteur;
+	
+	// ratio
 	if(fRatioLargeur > 2)
 		fRatioLargeur = 2;
 	if(fRatioHauteur > 2)

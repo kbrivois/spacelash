@@ -13,6 +13,10 @@ function Menu()
 	}
 	
 	// ------------------------ Vignettes
+	
+	// vignette selectionnée
+	this.iVignetteSelectionnee = null;
+	
 	this.oImageVignette = new Image();
 	this.oImageVignette.src = 'img/menu/vignette2.png';
 	iNombresImages++;
@@ -23,6 +27,7 @@ function Menu()
 	
 	this.aListeVignettesDepart = new Array();
 	this.aListeVignettes = new Array();
+	this.aListeTerrains = new Array();
 	
 	var aListePointsTemp1 = new Array();
 
@@ -68,6 +73,18 @@ function Menu()
 	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
 	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
 	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
+	
+	this.aListeTerrains.push( new Array());
+	this.aListeTerrains.push( new Array());
+	this.aListeTerrains.push( new Array());
+	this.aListeTerrains.push( new Array());
+	this.aListeTerrains.push( new Array());
+	this.aListeTerrains.push( new Array());
+	this.aListeTerrains.push( new Array());
+	this.aListeTerrains.push( new Array());
+	this.aListeTerrains.push( new Array());
+	this.aListeTerrains.push( new Array());
+	this.aListeTerrains.push( new Array());
 	
 	// ajout des terrain dans les vignettes
 	for(var i=0; i<aListePointsTemp1.length; i++)
@@ -116,6 +133,30 @@ function Menu()
 		this.aListeVignettesDepart[9][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
 	for(var i=0; i<aListePointsTemp2.length; i++)
 		this.aListeVignettesDepart[10][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	
+	// ajout des terrain dans les vignettes fixe (va nous servir pour le redimensionnement des terrains quand resize de l'écran)
+	for(var i=0; i<aListePointsTemp1.length; i++)
+		this.aListeTerrains[0].push(new Point(aListePointsTemp1[i].x, aListePointsTemp1[i].y));
+	for(var i=0; i<aListePointsTemp2.length; i++)
+		this.aListeTerrains[1].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	for(var i=0; i<aListePointsTemp2.length; i++)
+		this.aListeTerrains[2].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	for(var i=0; i<aListePointsTemp2.length; i++)
+		this.aListeTerrains[3].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	for(var i=0; i<aListePointsTemp2.length; i++)
+		this.aListeTerrains[4].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	for(var i=0; i<aListePointsTemp2.length; i++)
+		this.aListeTerrains[5].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	for(var i=0; i<aListePointsTemp2.length; i++)
+		this.aListeTerrains[6].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	for(var i=0; i<aListePointsTemp2.length; i++)
+		this.aListeTerrains[7].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	for(var i=0; i<aListePointsTemp2.length; i++)
+		this.aListeTerrains[8].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	for(var i=0; i<aListePointsTemp2.length; i++)
+		this.aListeTerrains[9].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	for(var i=0; i<aListePointsTemp2.length; i++)
+		this.aListeTerrains[10].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
 	
 	this.fEcartX_Vignettes = 30*((fRatioLargeur+fRatioHauteur)/2);
 	this.fEcartY_Vignettes = 60*((fRatioLargeur+fRatioHauteur)/2);
@@ -196,6 +237,9 @@ function Menu()
 		var fRatioY = this.iTailleVignettes / fEcartY - 0.05*((fRatioLargeur+fRatioHauteur)/2);
 		var fX_SupPourCentrer = (this.iTailleVignettes - fEcartX*fRatioX)/2;
 		var fY_SupPourCentrer = (this.iTailleVignettes - fEcartY*fRatioY)/2;
+		
+		
+		console.log("normal : "+fEcartX);
 		
 		for(var j=0; j<this.aListeVignettes[i][0].length; j++)
 		{
@@ -371,6 +415,15 @@ Menu.prototype.lancer = function()
 	
 	for(var i=0; i<this.aListeVignettes.length; i++)
 	{
+		if(i == this.iVignetteSelectionnee)
+		{
+			//ctx.rect(px,py,size,size);
+			ctx.globalAlpha = 0.4;
+			rectangleArrondi(this.aListeVignettes[i][1].x, this.aListeVignettes[i][1].y, this.iTailleVignettes, this.iTailleVignettes,
+							 15, "rgb(255,255,255)", "rgb(255,255,255)", true, true, 10);
+			ctx.globalAlpha = 1;
+		}
+	
 		ctx.drawImage(this.oImageVignette, 
 							0, 
 							0, 
@@ -517,17 +570,28 @@ Menu.prototype.slide = function()
 **/
 Menu.prototype.verifierSelectionVignette = function()
 {
-	for(var i=0; i<this.aListeVignettes.length; i++)
+	// si un mouse click
+	if(mouseDown == true)
 	{
-		if(i==0)
+		for(var i=0; i<this.aListeVignettes.length; i++)
 		{
-			if(oPositionDepartSouris.x <= this.aListeVignettes[i][1].x+this.iTailleVignettes && oPositionDepartSouris.x >= this.aListeVignettes[i][1].x
-				&& oPositionDepartSouris.y <= this.aListeVignettes[i][1].y+this.iTailleVignettes && oPositionDepartSouris.y >= this.aListeVignettes[i][1].y)
+			if(i==0)
 			{
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-				initPartie();
-				break;
+				if(oPositionDepartSouris.x <= this.aListeVignettes[i][1].x+this.iTailleVignettes && oPositionDepartSouris.x >= this.aListeVignettes[i][1].x
+					&& oPositionDepartSouris.y <= this.aListeVignettes[i][1].y+this.iTailleVignettes && oPositionDepartSouris.y >= this.aListeVignettes[i][1].y)
+				{
+					this.iVignetteSelectionnee = i;
+					break;
+				}
 			}
 		}
+	}
+	// si un mouse up et qu'il n'y a pas eu de mouseMove
+	else if(!mouseDown && this.iVignetteSelectionnee != null)
+	{
+		//this.iVignetteSelectionnee = i;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		oMenu.iVignetteSelectionnee = null;
+		initPartie();
 	}
 }
