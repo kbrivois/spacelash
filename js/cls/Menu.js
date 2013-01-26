@@ -29,134 +29,44 @@ function Menu()
 	this.aListeVignettes = new Array();
 	this.aListeTerrains = new Array();
 	
-	var aListePointsTemp1 = new Array();
+	// on crée la liste des points des terrains grace à indexedDB
+	var aListePointsTemp = new Array();
 
-	aListePointsTemp1.push(new Point(50,50));
-	aListePointsTemp1.push(new Point(250,50));
-	aListePointsTemp1.push(new Point(180,175));
-	aListePointsTemp1.push(new Point(250,300));
-	aListePointsTemp1.push(new Point(50,300));
-	aListePointsTemp1.push(new Point(120,175));
-	aListePointsTemp1.push(new Point(50,50));
-
+	// on remplit la liste
+	for(var i=0; i<oNiveauPartie.length; i++)
+	{
+		aListePointsTemp[i] = new Array();
+		
+		for(var j=0; j<oNiveauPartie[i].Points.length; j++)
+			aListePointsTemp[i].push(new Point(oNiveauPartie[i].Points[j].x, oNiveauPartie[i].Points[j].y));
+	}
 	
-	var aListePointsTemp2 = new Array();
-
-	aListePointsTemp2.push(new Point(0,300));
-	aListePointsTemp2.push(new Point(150,0));
-	aListePointsTemp2.push(new Point(300,300));
-	aListePointsTemp2.push(new Point(150,150));
-	aListePointsTemp2.push(new Point(150,300));
-	aListePointsTemp2.push(new Point(75,200));
-	aListePointsTemp2.push(new Point(0,300));
-	
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettes.push( new Array(Array(), new Point(0,0)) );
-	
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	this.aListeVignettesDepart.push( new Array(Array(), new Point(0,0)) );
-	
-	this.aListeTerrains.push( new Array());
-	this.aListeTerrains.push( new Array());
-	this.aListeTerrains.push( new Array());
-	this.aListeTerrains.push( new Array());
-	this.aListeTerrains.push( new Array());
-	this.aListeTerrains.push( new Array());
-	this.aListeTerrains.push( new Array());
-	this.aListeTerrains.push( new Array());
-	this.aListeTerrains.push( new Array());
-	this.aListeTerrains.push( new Array());
-	this.aListeTerrains.push( new Array());
-	
-	// ajout des terrain dans les vignettes
-	for(var i=0; i<aListePointsTemp1.length; i++)
-		this.aListeVignettes[0][0].push(new Point(aListePointsTemp1[i].x, aListePointsTemp1[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettes[1][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettes[2][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettes[3][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettes[4][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettes[5][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettes[6][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettes[7][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettes[8][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettes[9][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettes[10][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	// ajout des terrains dans les vignettes
+	for(var i=0; i<aListePointsTemp.length; i++)
+	{
+		this.aListeVignettes[i] = new Array(Array(), new Point(0,0));
+		
+		for(var j=0; j<aListePointsTemp[i].length; j++)
+			this.aListeVignettes[i][0].push(new Point(aListePointsTemp[i][j].x, aListePointsTemp[i][j].y));
+	}
 	
 	// ajout des terrain dans les vignettes de départ
-	for(var i=0; i<aListePointsTemp1.length; i++)
-		this.aListeVignettesDepart[0][0].push(new Point(aListePointsTemp1[i].x, aListePointsTemp1[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettesDepart[1][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettesDepart[2][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettesDepart[3][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettesDepart[4][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettesDepart[5][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettesDepart[6][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettesDepart[7][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettesDepart[8][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettesDepart[9][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeVignettesDepart[10][0].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	
+	for(var i=0; i<aListePointsTemp.length; i++)
+	{
+		this.aListeVignettesDepart[i] = new Array(Array(), new Point(0,0));
+		
+		for(var j=0; j<aListePointsTemp[i].length; j++)
+			this.aListeVignettesDepart[i][0].push(new Point(aListePointsTemp[i][j].x, aListePointsTemp[i][j].y));
+	}
+			
 	// ajout des terrain dans les vignettes fixe (va nous servir pour le redimensionnement des terrains quand resize de l'écran)
-	for(var i=0; i<aListePointsTemp1.length; i++)
-		this.aListeTerrains[0].push(new Point(aListePointsTemp1[i].x, aListePointsTemp1[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeTerrains[1].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeTerrains[2].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeTerrains[3].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeTerrains[4].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeTerrains[5].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeTerrains[6].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeTerrains[7].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeTerrains[8].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeTerrains[9].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
-	for(var i=0; i<aListePointsTemp2.length; i++)
-		this.aListeTerrains[10].push(new Point(aListePointsTemp2[i].x, aListePointsTemp2[i].y));
+	for(var i=0; i<aListePointsTemp.length; i++)
+	{
+		this.aListeTerrains[i] = new Array();
+		
+		for(var j=0; j<aListePointsTemp[i].length; j++)
+			this.aListeTerrains[i].push(new Point(aListePointsTemp[i][j].x, aListePointsTemp[i][j].y));
+	}
 	
 	this.fEcartX_Vignettes = 30*((fRatioLargeur+fRatioHauteur)/2);
 	this.fEcartY_Vignettes = 60*((fRatioLargeur+fRatioHauteur)/2);
@@ -237,9 +147,6 @@ function Menu()
 		var fRatioY = this.iTailleVignettes / fEcartY - 0.05*((fRatioLargeur+fRatioHauteur)/2);
 		var fX_SupPourCentrer = (this.iTailleVignettes - fEcartX*fRatioX)/2;
 		var fY_SupPourCentrer = (this.iTailleVignettes - fEcartY*fRatioY)/2;
-		
-		
-		console.log("normal : "+fEcartX);
 		
 		for(var j=0; j<this.aListeVignettes[i][0].length; j++)
 		{
@@ -357,7 +264,7 @@ Menu.prototype.lancer = function()
 				{
 					this.aListeVignettes[i][1].x += (0 - this.aEcransNiveaux[this.iEcranActuel][1].x);
 					
-					// le terrain	
+					// le terrain
 					for(var j=0; j<this.aListeVignettes[i][0].length; j++)
 					{
 						this.aListeVignettes[i][0][j].x += (0 - this.aEcransNiveaux[this.iEcranActuel][1].x);
@@ -450,6 +357,8 @@ Menu.prototype.lancer = function()
 		{
 			ctx.lineTo(this.aListeVignettes[i][0][j].x, this.aListeVignettes[i][0][j].y);
 		}
+	
+		ctx.closePath();
 	
 		ctx.fill();
 		ctx.stroke();

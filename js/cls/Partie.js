@@ -10,12 +10,78 @@ function Partie()
 	// Ratio pour les portes
 	this.fRatioLargeurPorte = fRatioLargeur;
 	this.fRatioHauteurPorte = fRatioHauteur;
-	
+
 	// ratio
-	if(fRatioLargeur > 2)
-		fRatioLargeur = 2;
-	if(fRatioHauteur > 2)
-		fRatioHauteur = 2;
+	if(fRatioLargeur < fRatioHauteur)
+	{		
+		fRatioHauteur = fRatioLargeur * fLargeurDeBase/fHauteurDeBase;
+	}
+	else
+	{
+		fRatioLargeur = fRatioHauteur * fHauteurDeBase/fLargeurDeBase;
+	}
+	
+	// ------------------------ replay et pause
+	
+	// boutons replay et pause
+	this.iTailleBouton = 30*((fRatioLargeur+fRatioHauteur)/2);
+	
+	//replay
+	this.oBoutonReplay = new Image();
+	this.oBoutonReplay.src = 'img/replay.png';
+	iNombresImages++;
+	this.oBoutonReplay.onload = function()
+	{
+		iCompteurImages++;
+	}
+	
+	//replay hover
+	this.oBoutonReplayHover = new Image();
+	this.oBoutonReplayHover.src = 'img/replay-hover.png';
+	iNombresImages++;
+	this.oBoutonReplayHover.onload = function()
+	{
+		iCompteurImages++;
+	}
+	
+	
+	this.oPositionBoutonReplay = new Point(10+40*((fRatioLargeur+fRatioHauteur)/2),10);
+	
+	//pause
+	this.bPause = false;
+	
+	this.oBoutonPause = new Image();
+	this.oBoutonPause.src = 'img/pause.png';
+	iNombresImages++;
+	this.oBoutonPause.onload = function()
+	{
+		iCompteurImages++;
+	}
+
+	//pause hover
+	this.oBoutonPauseHover = new Image();
+	this.oBoutonPauseHover.src = 'img/pause-hover.png';
+	iNombresImages++;
+	this.oBoutonPauseHover.onload = function()
+	{
+		iCompteurImages++;
+	}
+	
+	this.oPositionBoutonPause = new Point(10,10);
+	
+	// image de fond de la pause
+	this.oFondPause = new Image();
+	this.oFondPause.src = 'img/fond-pause.png';
+	iNombresImages++;
+	this.oFondPause.onload = function()
+	{
+		iCompteurImages++;
+	}
+	
+	// souris sur les bouton 
+	this.bSurBoutonPause = false;
+	this.bSurBoutonReplay = false;
+	
 	
 	// ------------------------ sons
 	this.oSonMetal = new Audio('sons/metalhit.wav');
@@ -118,7 +184,7 @@ function Partie()
 	var img = new Image();
 	img.src = 'img/textures/metal2.jpg';
 	iNombresImages++;
-	this.oTerrain = new Terrain(aListePointsTemp,img, 0.4);
+	this.oTerrain = new Terrain(aListePointsTemp,img, 0.15);
 	img.onload = function()
 	{
 		iCompteurImages++;
@@ -169,22 +235,6 @@ Partie.prototype.initStars = function()
 			z: randomRange(1,this.MAX_DEPTH)
 		}
 	}
-}
-
-
-/**
-*** ==========================================================================================================================================
-**** on ajoute des étoiles
-*** ========================================================================================================================================== 
-**/
-Partie.prototype.ajouterStars = function()
-{
-	this.stars[this.stars.length] = 
-		{
-			x: randomRange(-25,25),
-			y: randomRange(-25,25),
-			z: randomRange(1,this.MAX_DEPTH)
-		}
 }
 
 
@@ -287,9 +337,9 @@ Partie.prototype.lancer = function()
 			}
 		}
 		
-		// si la souris se trouve dans le canvas
+		// si la souris se trouve dans le canvas et si on ne se trouve pas sur un bouton
 		// on place la cible
-		if(this.bSourisDansTerrain != undefined)
+		if(this.bSourisDansTerrain != undefined && this.bSurBoutonPause == false && this.bSurBoutonReplay == false)
 		{
 			if(this.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2) < 28)
 				this.bAugmenterTailleCibles = true;
@@ -332,6 +382,62 @@ Partie.prototype.lancer = function()
 				}
 			}
 		}
+		
+		// bouton replay
+		if(this.bSurBoutonReplay)
+		{
+			ctx.drawImage(this.oBoutonReplayHover, 
+								0, 
+								0, 
+								this.oBoutonReplay.width, 
+								this.oBoutonReplay.height, 
+								//position
+								this.oPositionBoutonReplay.x,
+								this.oPositionBoutonReplay.y,
+								this.iTailleBouton, 
+								this.iTailleBouton);
+		}
+		else
+		{
+			ctx.drawImage(this.oBoutonReplay, 
+								0, 
+								0, 
+								this.oBoutonReplay.width, 
+								this.oBoutonReplay.height, 
+								//position
+								this.oPositionBoutonReplay.x,
+								this.oPositionBoutonReplay.y,
+								this.iTailleBouton, 
+								this.iTailleBouton);
+		}
+		
+		// bouton pause
+		if(this.bSurBoutonPause)
+		{
+			ctx.drawImage(this.oBoutonPauseHover, 
+								0, 
+								0, 
+								this.oBoutonPause.width, 
+								this.oBoutonPause.height, 
+								//position
+								this.oPositionBoutonPause.x,
+								this.oPositionBoutonPause.y,
+								this.iTailleBouton, 
+								this.iTailleBouton);
+		}
+		else
+		{
+			ctx.drawImage(this.oBoutonPause, 
+								0, 
+								0, 
+								this.oBoutonPause.width, 
+								this.oBoutonPause.height, 
+								//position
+								this.oPositionBoutonPause.x,
+								this.oPositionBoutonPause.y,
+								this.iTailleBouton, 
+								this.iTailleBouton);
+		}
 	}
 	
 	// si l'aire minimale a été atteinte
@@ -360,18 +466,18 @@ Partie.prototype.lancer = function()
 		// On ferme de plus en plus la porte gauche
 		if(this.oPositionPorteGauche.x < 0)
 		{
-			if(this.oPositionPorteGauche.x + fRatioLargeur*3 > 0)
+			if(this.oPositionPorteGauche.x + (canvas.width/2)/50 > 0)
 				this.oPositionPorteGauche.x += -this.oPositionPorteGauche.x;
 			else
-				this.oPositionPorteGauche.x += fRatioLargeur*3;
+				this.oPositionPorteGauche.x += (canvas.width/2)/50;
 		}
 		// On ferme de plus en plus la porte droite
 		if(this.oPositionPorteDroite.x > canvas.width/2)
 		{
-			if(this.oPositionPorteDroite.x - fRatioLargeur*3 < canvas.width/2)
+			if(this.oPositionPorteDroite.x - (canvas.width/2)/50 < canvas.width/2)
 				this.oPositionPorteDroite.x -= this.oPositionPorteDroite.x - canvas.width/2;
 			else
-				this.oPositionPorteDroite.x -= fRatioLargeur*3;
+				this.oPositionPorteDroite.x -= (canvas.width/2)/50;
 		}
 		// On ferme de plus en plus la porte bas
 		if(this.oPositionPorteBas.y > canvas.height-this.fHauteurPorteBas)
@@ -447,7 +553,7 @@ Partie.prototype.lancer = function()
 					this.fGrandeurCercle = 0.05*((fRatioLargeur+fRatioHauteur)/2);
 					this.bAugmenterOpacite = false;
 					
-					// on reset le Terrain et les ennemis
+					// on reset les éléments du jeu
 					for(var i=0; i<this.aListeEnnemis.length; i++)
 					{
 						this.aListeEnnemis[i].reset();
@@ -731,6 +837,102 @@ Partie.prototype.lancer = function()
 			}
 		}
 	}
+}
+
+/**
+*** ==========================================================================================================================================
+**** on lance la pause
+*** ========================================================================================================================================== 
+**/
+Partie.prototype.lancerPause = function()
+{
+	// on crée le canvas
+	ctx.beginPath();
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+	
+	// les étoiles
+	for( var i = 0; i < this.stars.length; i++ ) 
+	{
+		if( this.stars[i].z <= 0 ) 
+		{
+			this.stars[i].x = randomRange(-25,25);
+			this.stars[i].y = randomRange(-25,25);
+			this.stars[i].z = this.MAX_DEPTH;
+		}
+ 
+		var k  = 128.0 / this.stars[i].z;
+		var px = this.stars[i].x * k + canvas.width / 2;
+		var py = this.stars[i].y * k + canvas.height / 2;
+ 
+		if( px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height ) 
+		{
+			var size = (1 - this.stars[i].z / 32.0) * this.SIZE_STARS;
+			var shade = parseInt((1 - this.stars[i].z / 32.0) * 255);
+			
+			ctx.beginPath();
+			ctx.arc(px,py, size/2, 0, 2 * Math.PI);
+			ctx.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
+			ctx.fill();
+		}
+	}
+	
+	// on trace le Terrain
+	this.oTerrain.tracer();
+	
+	// on trace la barre d'avancement
+	this.oBarreAvancement.tracer(this.oTerrain);
+	
+	// bouton replay
+	ctx.drawImage(this.oBoutonReplay, 
+					0, 
+					0, 
+					this.oBoutonReplay.width, 
+					this.oBoutonReplay.height, 
+					//position
+					this.oPositionBoutonReplay.x,
+					this.oPositionBoutonReplay.y,
+					this.iTailleBouton, 
+					this.iTailleBouton);
+	
+	// bouton pause
+	ctx.drawImage(this.oBoutonPause, 
+					0, 
+					0, 
+					this.oBoutonPause.width, 
+					this.oBoutonPause.height, 
+					//position
+					this.oPositionBoutonPause.x,
+					this.oPositionBoutonPause.y,
+					this.iTailleBouton, 
+					this.iTailleBouton);
+				
+	// les ennemis
+	for(var i=0; i<this.aListeEnnemis.length; i++)
+	{	
+		ctx.drawImage(this.aListeEnnemis[i].oImage, 
+						  0, 
+						  0, 
+						  this.aListeEnnemis[i].oImage.width, 
+						  this.aListeEnnemis[i].oImage.height,
+						  this.aListeEnnemis[i].oPosition.x,
+						  this.aListeEnnemis[i].oPosition.y,
+						  this.aListeEnnemis[i].iTailleX, 
+						  this.aListeEnnemis[i].iTailleX);
+	}
+	
+	// l'image de fond
+	ctx.drawImage(this.oFondPause, 
+					  0, 
+					  0, 
+					  this.oFondPause.width, 
+					  this.oFondPause.height,
+					  canvas.width/4,
+					  20,
+					  canvas.width - canvas.width/2, 
+					  canvas.height - 40);
 }
 
 /**

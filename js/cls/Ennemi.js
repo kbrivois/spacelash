@@ -69,5 +69,4 @@ Ennemi.prototype.reset = function()
 	this.fRotation = this.fRotationDepart;
 	// on calcule le déplacement de l'ennemi
 	this.calculerDeplacement();
-	
 }

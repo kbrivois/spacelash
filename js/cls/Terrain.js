@@ -319,6 +319,8 @@ Terrain.prototype.tracer = function()
 		ctx.lineTo(this.aListePoints[i].x, this.aListePoints[i].y);
 	}
 	
+	ctx.closePath();
+	
 	ctx.fill();
 	ctx.stroke();
 }

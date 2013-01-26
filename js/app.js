@@ -8,15 +8,15 @@ déclaration des variables communes au menu et à la partie
 
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
-canvas.width = document.documentElement.clientWidth-4;
-canvas.height = document.documentElement.clientHeight-4;
+canvas.width = document.documentElement.clientWidth;
+canvas.height = document.documentElement.clientHeight;
 document.body.appendChild(canvas);  
  
 var fLargeurDeBase = 300;
 var fHauteurDeBase = 400;
 
-var fRatioLargeur = (document.documentElement.clientWidth-4) / fLargeurDeBase;
-var fRatioHauteur = (document.documentElement.clientHeight-4) / fHauteurDeBase;
+var fRatioLargeur = (document.documentElement.clientWidth) / fLargeurDeBase;
+var fRatioHauteur = (document.documentElement.clientHeight) / fHauteurDeBase;
 
 // souris
 var oPositionDepartSouris = new Point(-100,-100);
@@ -28,21 +28,14 @@ var mouseMove = false;
 var iCompteurImages = 0;
 var iNombresImages = 0;
 
+var oNiveauPartie = new Array();
+readAllNiveau();//Stocke tous les niveaux(et ses infos) dans oNiveauPartie
+
 /*** ================================================================================================================================================
 déclaration des variables pour le menu
 ====================================================================================================================================================*/
 
-var oMenu = new Menu();
-var bChargementComplet = false;
-
-// ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
-// ------------------------ et lancement des fonctions.
-canvas.addEventListener('mousemove', mouseMovementMenu, false);
-canvas.addEventListener('mousedown', mouseClickMenu, false);
-canvas.addEventListener('mouseup', mouseUnClickMenu, false);
-canvas.addEventListener('mouseout', mouseOutCanvasMenu, false);
-window.addEventListener('resize', screenResizeMenu, false);
-		
+var oMenu;
 		
 /*** ================================================================================================================================================
 déclaration des variables pour la partie
@@ -51,28 +44,28 @@ déclaration des variables pour la partie
 var oPartie;
 var bChargementComplet = false;
 
-/*
-var oPartie = new Partie();
-
-var bChargementComplet = false;
-
-// ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
-// ------------------------ et lancement des fonctions.
-canvas.addEventListener('mousemove', mouseMovementPartie, false);
-canvas.addEventListener('mousedown', mouseClickPartie, false);
-canvas.addEventListener('mouseup', mouseUnClickPartie, false);
-canvas.addEventListener('mouseout', mouseOutCanvasPartie, false);
-// window.addEventListener('resize', screenResizePartie, false);
-*/
-
 /*** ================================================================================================================================================
 Main menu
 ====================================================================================================================================================*/
 
 var mainMenu = function ()
 {
-	// Si on est pas dans une partie
-	if(oMenu != null)
+	// Si on aucun menu n'a encore été initialisé et si l'indexedDB a fini de charger les niveaux
+	if(oPartie == null && oMenu == null && oNiveauPartie.length != 0)
+	{
+		oMenu = new Menu();
+
+		// ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
+		// ------------------------ et lancement des fonctions.
+		canvas.addEventListener('mousemove', mouseMovementMenu, false);
+		canvas.addEventListener('mousedown', mouseClickMenu, false);
+		canvas.addEventListener('mouseup', mouseUnClickMenu, false);
+		canvas.addEventListener('mouseout', mouseOutCanvasMenu, false);
+		window.addEventListener('resize', screenResizeMenu, false);
+		
+		requestAnimationFrame(mainMenu);
+	}
+	else if(oMenu != null && oNiveauPartie.length != 0)
 	{
 		now = Date.now();
 		delta = now - then;
@@ -82,7 +75,10 @@ var mainMenu = function ()
 			// on lance le menu
 			oMenu.lancer();
 		}
-		
+		requestAnimationFrame(mainMenu);
+	}
+	else if(oPartie == null)
+	{
 		requestAnimationFrame(mainMenu);
 	}
 };
@@ -121,7 +117,7 @@ var mainPartie = function ()
 	now = Date.now();
 	delta = now - then;
 	
-	if(iCompteurImages == iNombresImages)
+	if(iCompteurImages == iNombresImages && oNiveauPartie.length!=0)
 	{
 		if(!bChargementComplet)
 		{
@@ -147,8 +143,16 @@ var mainPartie = function ()
 			bChargementComplet = true;
 		}
 		
-		// on lance la partie
-		oPartie.lancer();
+		if(!oPartie.pause)
+		{
+			// on lance la partie
+			oPartie.lancer();
+		}
+		else
+		{
+			// on lance le menu de pause
+			oPartie.lancerPause();
+		}
 	}
 	
 	requestAnimationFrame(mainPartie);

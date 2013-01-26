@@ -29,7 +29,7 @@ Evénements souris pour la partie
 ====================================================================================================================================================*/
 
 var mouseClickPartie = function(e)
-{
+{		
 	// on récupère les coordonnées de la souris
 	if(e.offsetX || e.offsetY) 
 	{
@@ -59,6 +59,20 @@ var mouseClickPartie = function(e)
 			oPartie.oTrait.oPointDepart.x = 0;
 			oPartie.oTrait.oPointDepart.y = 0;
 		}
+	}
+	
+	// si on clique sur le bouton pause
+	if(oPartie.bSurBoutonPause)
+	{
+		if(!oPartie.pause)
+			oPartie.pause = true;
+		else
+			oPartie.pause = false;
+	}
+	// si on clique sur le bouton replay
+	else if(oPartie.bSurBoutonReplay)
+	{
+		oPartie.reset();
 	}
 }
 
@@ -118,6 +132,26 @@ var mouseMovementPartie = function(e)
 			oPartie.bSourisDansTerrain = false;
 		}
 	}
+	
+	// curseur sur le bouton pause
+	if(x <= oPartie.oPositionBoutonPause.x+oPartie.iTailleBouton && x >= oPartie.oPositionBoutonPause.x
+		&& y <= oPartie.oPositionBoutonPause.y+oPartie.iTailleBouton && y >= oPartie.oPositionBoutonPause.y)
+	{
+		oPartie.bSurBoutonPause = true;
+		oPartie.bSurBoutonReplay = false;
+	}
+	// curseur sur le bouton replay
+	else if (x <= oPartie.oPositionBoutonReplay.x+oPartie.iTailleBouton && x >= oPartie.oPositionBoutonReplay.x
+				&& y <= oPartie.oPositionBoutonReplay.y+oPartie.iTailleBouton && y >= oPartie.oPositionBoutonReplay.y)
+	{
+		oPartie.bSurBoutonReplay = true;
+		oPartie.bSurBoutonPause = false;
+	}
+	else
+	{
+		oPartie.bSurBoutonReplay = false;
+		oPartie.bSurBoutonPause = false;
+	}
 }
 
 
@@ -134,8 +168,8 @@ Evénement resize
 // redimensionnement de la fenêtre
 var screenResizePartie = function(e) 
 {
-	canvas.width = document.documentElement.clientWidth-4;
-	canvas.height = document.documentElement.clientHeight-4;
+	canvas.width = document.documentElement.clientWidth;
+	canvas.height = document.documentElement.clientHeight;
 	
 	var fNewRatioLargeur = canvas.width / fLargeurDeBase;
 	var fNewRatioHauteur = canvas.height / fHauteurDeBase;
@@ -143,10 +177,14 @@ var screenResizePartie = function(e)
 	var fNewRatioLargeurPorte = fNewRatioLargeur;
 	var fNewRatioHauteurPorte = fNewRatioHauteur;
 	
-	if(fNewRatioLargeur > 2)
-		fNewRatioLargeur = 2;
-	if(fNewRatioHauteur > 2)
-		fNewRatioHauteur = 2;
+	if(fNewRatioLargeur < fNewRatioHauteur)
+	{		
+		fNewRatioHauteur = fNewRatioLargeur * fLargeurDeBase/fHauteurDeBase;
+	}
+	else
+	{
+		fNewRatioLargeur = fNewRatioHauteur * fHauteurDeBase/fLargeurDeBase;
+	}
 	
 	/* === Redéfinition de la barre d'avancement === */
 	var fMilieu = canvas.width/2;
@@ -233,6 +271,15 @@ var screenResizePartie = function(e)
 	oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
 	oPartie.oPositionPorteBas.x = (oPartie.oPositionPorteBas.x/oPartie.fRatioLargeurPorte)*fNewRatioLargeurPorte;
 	oPartie.oPositionPorteBas.y = (oPartie.oPositionPorteBas.y/oPartie.fRatioHauteurPorte)*fNewRatioHauteurPorte;
+	
+	/* === Redimensionnement des boutons ===*/
+	
+	oPartie.oPositionBoutonReplay.x = oPartie.oPositionBoutonReplay.x / fRatioLargeur * fNewRatioLargeur;
+	oPartie.oPositionBoutonReplay.y = oPartie.oPositionBoutonReplay.y / fRatioHauteur * fNewRatioHauteur;
+	
+	oPartie.oPositionBoutonPause.x = oPartie.oPositionBoutonPause.x / fRatioLargeur * fNewRatioLargeur;
+	oPartie.oPositionBoutonPause.y = oPartie.oPositionBoutonPause.y / fRatioHauteur * fNewRatioHauteur;
+	oPartie.iTailleBouton = oPartie.iTailleBouton / ((fRatioLargeur+fRatioHauteur)/2) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
 	
 	fRatioLargeur = fNewRatioLargeur;
 	fRatioHauteur = fNewRatioHauteur;
@@ -340,8 +387,8 @@ Evénement resize Menu
 // redimensionnement de la fenêtre
 var screenResizeMenu = function(e) 
 {
-	canvas.width = document.documentElement.clientWidth-4;
-	canvas.height = document.documentElement.clientHeight-4;
+	canvas.width = document.documentElement.clientWidth;
+	canvas.height = document.documentElement.clientHeight;
 	
 	var fNewRatioLargeur = canvas.width / fLargeurDeBase;
 	var fNewRatioHauteur = canvas.height / fHauteurDeBase;
