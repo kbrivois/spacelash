@@ -164,14 +164,9 @@ function Partie()
 
 	// ------------------------ Terrain
 	var aListePointsTemp = new Array();
-
-	aListePointsTemp.push(new Point(50,50));
-	aListePointsTemp.push(new Point(250,50));
-	aListePointsTemp.push(new Point(180,175));
-	aListePointsTemp.push(new Point(250,300));
-	aListePointsTemp.push(new Point(50,300));
-	aListePointsTemp.push(new Point(120,175));
-	aListePointsTemp.push(new Point(50,50));
+	
+	for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Points.length; i++)
+			aListePointsTemp.push(new Point(oNiveauPartie[iNiveauSelectionne].Points[i].x, oNiveauPartie[iNiveauSelectionne].Points[i].y));
 
 	// aListePointsTemp.push(new Point(0,300));
 	// aListePointsTemp.push(new Point(150,0));
@@ -612,7 +607,7 @@ Partie.prototype.lancer = function()
 			// Deuxieme explosion (cercle grandit vite, devient opaque et lumière blanche en fond)
 			if(!this.bAugmenterOpacite)
 			{
-				fPasOpacite = 0.04;
+				fPasOpacite = 0.06;
 				
 				
 				// Premiere fois qu'on dessine le 2eme cercle, bruit de l'explosion

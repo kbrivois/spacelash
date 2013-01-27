@@ -3,8 +3,8 @@ function Ennemi(oImageTemp, fVitesseTemp, oPositionTemp, fRotationTemp)
 	this.oImage 				= oImageTemp;
 	this.fVitesseDepart 		= fVitesseTemp * ((fRatioLargeur+fRatioHauteur)/2);
 	this.fVitesse 				= fVitesseTemp * ((fRatioLargeur+fRatioHauteur)/2);
-	this.iTailleX 				= oImageTemp.width * ((fRatioLargeur+fRatioHauteur)/2);
-	this.iTailleY 				= oImageTemp.height * ((fRatioLargeur+fRatioHauteur)/2);
+	this.iTailleX 				= 13 * ((fRatioLargeur+fRatioHauteur)/2);
+	this.iTailleY 				= 13 * ((fRatioLargeur+fRatioHauteur)/2);
 	this.oDeplacement 			= new Point(0,0);
 	this.oPosition 				= oPositionTemp;
 	this.fRotationDepart 		= fRotationTemp;

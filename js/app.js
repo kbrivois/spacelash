@@ -31,6 +31,9 @@ var iNombresImages = 0;
 var oNiveauPartie = new Array();
 readAllNiveau();//Stocke tous les niveaux(et ses infos) dans oNiveauPartie
 
+// niveau selectionnée
+var iNiveauSelectionne = null;
+
 /*** ================================================================================================================================================
 déclaration des variables pour le menu
 ====================================================================================================================================================*/
@@ -117,7 +120,7 @@ var mainPartie = function ()
 	now = Date.now();
 	delta = now - then;
 	
-	if(iCompteurImages == iNombresImages && oNiveauPartie.length!=0)
+	if(iCompteurImages == iNombresImages && oNiveauPartie.length!=0 && iNiveauSelectionne != null)
 	{
 		if(!bChargementComplet)
 		{

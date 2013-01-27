@@ -14,9 +14,6 @@ function Menu()
 	
 	// ------------------------ Vignettes
 	
-	// vignette selectionnée
-	this.iVignetteSelectionnee = null;
-	
 	this.oImageVignette = new Image();
 	this.oImageVignette.src = 'img/menu/vignette2.png';
 	iNombresImages++;
@@ -163,6 +160,8 @@ function Menu()
 	this.iEcranActuel = 0;
 	this.iBulleActuelle = 0;
 	this.bSlideAuto = false;
+	
+	iNiveauSelectionne = null;
 }
 
 
@@ -322,7 +321,7 @@ Menu.prototype.lancer = function()
 	
 	for(var i=0; i<this.aListeVignettes.length; i++)
 	{
-		if(i == this.iVignetteSelectionnee)
+		if(i == iNiveauSelectionne)
 		{
 			//ctx.rect(px,py,size,size);
 			ctx.globalAlpha = 0.4;
@@ -342,10 +341,10 @@ Menu.prototype.lancer = function()
 							this.iTailleVignettes);
 	
 		// On dessine les terrains contenus dans les vignettes
-		if(i != 0)
-		{
-			ctx.globalAlpha = 0.4;
-		}
+		// if(i != 0)
+		// {
+			// ctx.globalAlpha = 0.4;
+		// }
 		
 		ctx.beginPath();
 		ctx.lineWidth=1*((fRatioLargeur+fRatioHauteur)/2);;
@@ -484,23 +483,18 @@ Menu.prototype.verifierSelectionVignette = function()
 	{
 		for(var i=0; i<this.aListeVignettes.length; i++)
 		{
-			if(i==0)
-			{
 				if(oPositionDepartSouris.x <= this.aListeVignettes[i][1].x+this.iTailleVignettes && oPositionDepartSouris.x >= this.aListeVignettes[i][1].x
 					&& oPositionDepartSouris.y <= this.aListeVignettes[i][1].y+this.iTailleVignettes && oPositionDepartSouris.y >= this.aListeVignettes[i][1].y)
 				{
-					this.iVignetteSelectionnee = i;
+					iNiveauSelectionne = i;
 					break;
 				}
-			}
 		}
 	}
 	// si un mouse up et qu'il n'y a pas eu de mouseMove
-	else if(!mouseDown && this.iVignetteSelectionnee != null)
+	else if(!mouseDown && iNiveauSelectionne != null)
 	{
-		//this.iVignetteSelectionnee = i;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		oMenu.iVignetteSelectionnee = null;
 		initPartie();
 	}
 }

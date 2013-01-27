@@ -7,21 +7,21 @@ function Terrain (aListePointsTemp,oTexture, fAireMinimale)
 	// ------------ on adapte le Terrain selon la résolution et on le centre
 	
 	// on centre le terrain
-	var iXmin = aListePointsTemp[0].x * fRatioLargeur;
-	var iXmax = aListePointsTemp[0].x * fRatioLargeur;
-	var iYmin = aListePointsTemp[0].y * fRatioHauteur;
-	var iYmax = aListePointsTemp[0].y * fRatioHauteur;
+	var iXmin = aListePointsTemp[0].x * ((fRatioLargeur+fRatioHauteur)/2);
+	var iXmax = aListePointsTemp[0].x * ((fRatioLargeur+fRatioHauteur)/2);
+	var iYmin = aListePointsTemp[0].y * ((fRatioLargeur+fRatioHauteur)/2);
+	var iYmax = aListePointsTemp[0].y * ((fRatioLargeur+fRatioHauteur)/2);
 	
 	for(var i=1; i<aListePointsTemp.length; i++)
 	{
-		if(aListePointsTemp[i].x * fRatioLargeur < iXmin)
-			iXmin = aListePointsTemp[i].x * fRatioLargeur;
-		if(aListePointsTemp[i].x * fRatioLargeur > iXmax)
-			iXmax = aListePointsTemp[i].x * fRatioLargeur;
-		if(aListePointsTemp[i].y * fRatioHauteur < iYmin)
-			iYmin = aListePointsTemp[i].y * fRatioHauteur;
-		if(aListePointsTemp[i].y * fRatioHauteur > iYmax)
-			iYmax = aListePointsTemp[i].y * fRatioHauteur;
+		if(aListePointsTemp[i].x * ((fRatioLargeur+fRatioHauteur)/2) < iXmin)
+			iXmin = aListePointsTemp[i].x * ((fRatioLargeur+fRatioHauteur)/2);
+		if(aListePointsTemp[i].x * ((fRatioLargeur+fRatioHauteur)/2) > iXmax)
+			iXmax = aListePointsTemp[i].x * ((fRatioLargeur+fRatioHauteur)/2);
+		if(aListePointsTemp[i].y * ((fRatioLargeur+fRatioHauteur)/2) < iYmin)
+			iYmin = aListePointsTemp[i].y * ((fRatioLargeur+fRatioHauteur)/2);
+		if(aListePointsTemp[i].y * ((fRatioLargeur+fRatioHauteur)/2) > iYmax)
+			iYmax = aListePointsTemp[i].y * ((fRatioLargeur+fRatioHauteur)/2);
 	}
 	
 	var iLargeurTerrain = iXmax - iXmin;
@@ -29,8 +29,8 @@ function Terrain (aListePointsTemp,oTexture, fAireMinimale)
 	
 	for(var i=0; i<aListePointsTemp.length; i++)
 	{
-		aListePointsTemp[i].x = aListePointsTemp[i].x*fRatioLargeur + (canvas.width-iLargeurTerrain)/2 - iXmin;
-		aListePointsTemp[i].y = aListePointsTemp[i].y*fRatioHauteur + (canvas.height-iHauteurTerrain)/2 - iYmin - 15*fRatioHauteur;;
+		aListePointsTemp[i].x = aListePointsTemp[i].x*((fRatioLargeur+fRatioHauteur)/2) + (canvas.width-iLargeurTerrain)/2 - iXmin;
+		aListePointsTemp[i].y = aListePointsTemp[i].y*((fRatioLargeur+fRatioHauteur)/2) + (canvas.height-iHauteurTerrain)/2 - iYmin;
 		
 		this.aListePointsDepart[i] 		= new Point(aListePointsTemp[i].x, aListePointsTemp[i].y);
 	}

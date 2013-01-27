@@ -162,7 +162,7 @@ var mouseOutCanvasPartie = function(e)
 
 
 /*** ================================================================================================================================================
-Evénement resize
+Evénement resize partie
 ====================================================================================================================================================*/
 
 // redimensionnement de la fenêtre
@@ -194,9 +194,9 @@ var screenResizePartie = function(e)
 	
 	/* === Redéfinition du Terrain === */
 	for(var i=0; i<oPartie.oTerrain.aListePointsDepart.length; i++)
-		oPartie.oTerrain.aListePointsDepart[i] = new Point( (oPartie.oTerrain.aListePointsDepart[i].x/fRatioLargeur)*fNewRatioLargeur , (oPartie.oTerrain.aListePointsDepart[i].y/fRatioHauteur)*fNewRatioHauteur);
+		oPartie.oTerrain.aListePointsDepart[i] = new Point( (oPartie.oTerrain.aListePointsDepart[i].x/((fRatioLargeur+fRatioHauteur)/2))*((fNewRatioLargeur+fNewRatioHauteur)/2) , (oPartie.oTerrain.aListePointsDepart[i].y/((fRatioLargeur+fRatioHauteur)/2))*((fNewRatioLargeur+fNewRatioHauteur)/2));
 	for(var i=0; i<oPartie.oTerrain.aListePoints.length; i++)
-		oPartie.oTerrain.aListePoints[i] = new Point( (oPartie.oTerrain.aListePoints[i].x/fRatioLargeur)*fNewRatioLargeur , (oPartie.oTerrain.aListePoints[i].y/fRatioHauteur)*fNewRatioHauteur);
+		oPartie.oTerrain.aListePoints[i] = new Point( (oPartie.oTerrain.aListePoints[i].x/((fRatioLargeur+fRatioHauteur)/2))*((fNewRatioLargeur+fNewRatioHauteur)/2) , (oPartie.oTerrain.aListePoints[i].y/((fRatioLargeur+fRatioHauteur)/2))*((fNewRatioLargeur+fNewRatioHauteur)/2));
 	
 	var iXmin = oPartie.oTerrain.aListePointsDepart[0].x ;
 	var iXmax = oPartie.oTerrain.aListePointsDepart[0].x ;
@@ -221,13 +221,13 @@ var screenResizePartie = function(e)
 	for(var i=0; i<oPartie.oTerrain.aListePointsDepart.length; i++)
 	{
 		oPartie.oTerrain.aListePointsDepart[i].x = oPartie.oTerrain.aListePointsDepart[i].x + (canvas.width-iLargeurTerrain)/2 - iXmin;
-		oPartie.oTerrain.aListePointsDepart[i].y = oPartie.oTerrain.aListePointsDepart[i].y + (canvas.height-iHauteurTerrain)/2 - iYmin - 15*fNewRatioHauteur;
+		oPartie.oTerrain.aListePointsDepart[i].y = oPartie.oTerrain.aListePointsDepart[i].y + (canvas.height-iHauteurTerrain)/2 - iYmin;
 	}
 	
 	for(var i=0; i<oPartie.oTerrain.aListePoints.length; i++)
 	{
 		oPartie.oTerrain.aListePoints[i].x = oPartie.oTerrain.aListePoints[i].x + (canvas.width-iLargeurTerrain)/2 - iXmin;
-		oPartie.oTerrain.aListePoints[i].y = oPartie.oTerrain.aListePoints[i].y + (canvas.height-iHauteurTerrain)/2 - iYmin - 15*fNewRatioHauteur;
+		oPartie.oTerrain.aListePoints[i].y = oPartie.oTerrain.aListePoints[i].y + (canvas.height-iHauteurTerrain)/2 - iYmin;
 	}
 	
 	var fPourcentageAireMinimale = oPartie.oTerrain.fAireMinimale/oPartie.oTerrain.fAireTerrainDepart;
@@ -239,11 +239,13 @@ var screenResizePartie = function(e)
 	for(var i=0; i<oPartie.aListeEnnemis.length; i++)
 	{
 		oPartie.aListeEnnemis[i].fVitesseDepart = (oPartie.aListeEnnemis[i].fVitesseDepart / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
-		oPartie.aListeEnnemis[i].fVitesse = (oPartie.aListeEnnemis[i].fVitesse / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
+		oPartie.aListeEnnemis[i].fVitesse = oPartie.aListeEnnemis[i].fVitesseDepart;
 		oPartie.aListeEnnemis[i].iTailleX = (oPartie.aListeEnnemis[i].iTailleX / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
 		oPartie.aListeEnnemis[i].iTailleY = (oPartie.aListeEnnemis[i].iTailleY / ((fRatioLargeur+fRatioHauteur)/2)) * ((fNewRatioLargeur+fNewRatioHauteur)/2);
-		oPartie.aListeEnnemis[i].oPosition = new Point(oPartie.aListeEnnemis[i].oPosition.x*(fNewRatioLargeur/fRatioLargeur) + (canvas.width-iLargeurTerrain)/2 - iXmin, 
-													   oPartie.aListeEnnemis[i].oPosition.y*(fNewRatioHauteur/fRatioHauteur) + (canvas.height-iHauteurTerrain)/2 - iYmin - 15*fNewRatioHauteur);
+		oPartie.aListeEnnemis[i].oPosition = new Point(oPartie.aListeEnnemis[i].oPosition.x/((fRatioLargeur+fRatioHauteur)/2) * ((fNewRatioLargeur+fNewRatioHauteur)/2) + (canvas.width-iLargeurTerrain)/2 - iXmin, 
+													   oPartie.aListeEnnemis[i].oPosition.y/((fRatioLargeur+fRatioHauteur)/2) * ((fNewRatioLargeur+fNewRatioHauteur)/2) + (canvas.height-iHauteurTerrain)/2 - iYmin);
+													   
+		oPartie.aListeEnnemis[i].calculerDeplacement();
 	}
 	
 	/* === Redimensionnement des étoiles en fond ===*/
@@ -357,7 +359,7 @@ var mouseMovementMenu = function(e)
 	if(mouseDown)
 	{
 		// s'il y a eu un click down sur une vignette, on annule car il y a un mouse move avant un mouse up
-		oMenu.iVignetteSelectionnee = null;
+		iNiveauSelectionne = null;
 	
 		oPositionSouris.x = x;
 		oPositionSouris.y = y;
