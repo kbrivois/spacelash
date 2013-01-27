@@ -25,6 +25,8 @@ function Menu()
 	this.aListeVignettesDepart = new Array();
 	this.aListeVignettes = new Array();
 	this.aListeTerrains = new Array();
+	this.aListeRatioX = new Array();
+	this.aListeRatioY = new Array();
 	
 	// on crée la liste des points des terrains grace à indexedDB
 	var aListePointsTemp = new Array();
@@ -140,16 +142,43 @@ function Menu()
 		
 		var fEcartX = iXmax - iXmin;
 		var fEcartY = iYmax - iYmin;
-		var fRatioX = this.iTailleVignettes / fEcartX - 0.05*((fRatioLargeur+fRatioHauteur)/2);
-		var fRatioY = this.iTailleVignettes / fEcartY - 0.05*((fRatioLargeur+fRatioHauteur)/2);
+		
+		var fRatioX = this.iTailleVignettes / ((fEcartX+fEcartY)/2) - 0.07*((fRatioLargeur+fRatioHauteur)/2);
+		var fRatioY = this.iTailleVignettes / ((fEcartX+fEcartY)/2) - 0.07*((fRatioLargeur+fRatioHauteur)/2);
+		
+		// si l'écart X ou Y de la forme dépasse la taille de la vignette
+		if(fEcartX > fEcartY)
+		{
+			if(fEcartX*((fRatioX+fRatioY)/2) > this.iTailleVignettes)
+			{
+				var fRatioEcart = fRatioY/fRatioX;
+				fRatioY = ((this.iTailleVignettes/fEcartX) * 2) - fRatioX - 0.05*((fRatioLargeur+fRatioHauteur)/2);
+				fRatioX = fRatioY*fRatioEcart;
+			}
+		}
+		else
+		{
+			if(fEcartY*((fRatioX+fRatioY)/2) > this.iTailleVignettes)
+			{
+				var fRatioEcart = fRatioX/fRatioY;
+				fRatioX = ((this.iTailleVignettes/fEcartY) * 2) - fRatioY - 0.05*((fRatioLargeur+fRatioHauteur)/2);
+				fRatioY = fRatioX*fRatioEcart;
+			}
+		}
+		
+		this.aListeRatioX.push(fRatioX);
+		this.aListeRatioY.push(fRatioY);
+		
 		var fX_SupPourCentrer = (this.iTailleVignettes - fEcartX*fRatioX)/2;
 		var fY_SupPourCentrer = (this.iTailleVignettes - fEcartY*fRatioY)/2;
+		
+		var fRatio = (fRatioX+fRatioY)/2;
 		
 		for(var j=0; j<this.aListeVignettes[i][0].length; j++)
 		{
 			// Vignettes
-			this.aListeVignettes[i][0][j].x = this.aListeVignettes[i][1].x + this.aListeVignettes[i][0][j].x*fRatioX - iXmin*fRatioX + fX_SupPourCentrer;
-			this.aListeVignettes[i][0][j].y = this.aListeVignettes[i][1].y + this.aListeVignettes[i][0][j].y*fRatioY - iYmin*fRatioY + fY_SupPourCentrer;
+			this.aListeVignettes[i][0][j].x = this.aListeVignettes[i][1].x + this.aListeVignettes[i][0][j].x*fRatio - iXmin*fRatio + fX_SupPourCentrer;
+			this.aListeVignettes[i][0][j].y = this.aListeVignettes[i][1].y + this.aListeVignettes[i][0][j].y*fRatio - iYmin*fRatio + fY_SupPourCentrer;
 			
 			// Vignettes de départ
 			this.aListeVignettesDepart[i][0][j].x = this.aListeVignettes[i][0][j].x;

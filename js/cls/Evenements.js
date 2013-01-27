@@ -464,41 +464,32 @@ var screenResizeMenu = function(e)
 				iYmax = oMenu.aListeTerrains[i][j].y;
 		}
 		
-		var fEcartX = (iXmax - iXmin);
-		var fEcartY = (iYmax - iYmin);
-		var fRatioX = oMenu.iTailleVignettes / fEcartX - 0.05*((fNewRatioLargeur+fNewRatioHauteur)/2);
-		var fRatioY = oMenu.iTailleVignettes / fEcartY - 0.05*((fNewRatioLargeur+fNewRatioHauteur)/2);
+		var fEcartX = iXmax - iXmin;
+		var fEcartY = iYmax - iYmin;
+		
+		var fRatioX = oMenu.aListeRatioX[i] * ( ((fNewRatioLargeur+fNewRatioHauteur)/2) / ((fRatioLargeur+fRatioHauteur)/2) );
+		var fRatioY = oMenu.aListeRatioY[i] * ( ((fNewRatioLargeur+fNewRatioHauteur)/2) / ((fRatioLargeur+fRatioHauteur)/2) );
+		
+		oMenu.aListeRatioX[i] = fRatioX;
+		oMenu.aListeRatioY[i] = fRatioY;	
+		
 		var fX_SupPourCentrer = (oMenu.iTailleVignettes - fEcartX*fRatioX)/2;
 		var fY_SupPourCentrer = (oMenu.iTailleVignettes - fEcartY*fRatioY)/2;
+		
+		var fRatio = (fRatioX+fRatioY)/2;
 		
 		for(var j=0; j<oMenu.aListeVignettes[i][0].length; j++)
 		{
 			// Vignettes
-			oMenu.aListeVignettes[i][0][j].x = oMenu.aListeVignettes[i][1].x + oMenu.aListeTerrains[i][j].x*fRatioX - iXmin*fRatioX + fX_SupPourCentrer;
-			oMenu.aListeVignettes[i][0][j].y = oMenu.aListeVignettes[i][1].y + oMenu.aListeTerrains[i][j].y*fRatioY - iYmin*fRatioY + fY_SupPourCentrer;
+			oMenu.aListeVignettes[i][0][j].x = oMenu.aListeVignettes[i][1].x + oMenu.aListeTerrains[i][j].x*fRatio - iXmin*fRatio + fX_SupPourCentrer;
+			oMenu.aListeVignettes[i][0][j].y = oMenu.aListeVignettes[i][1].y + oMenu.aListeTerrains[i][j].y*fRatio - iYmin*fRatio + fY_SupPourCentrer;
 			
 			// Vignettes de départ
 			oMenu.aListeVignettesDepart[i][0][j].x = oMenu.aListeVignettes[i][0][j].x;
 			oMenu.aListeVignettesDepart[i][0][j].y = oMenu.aListeVignettes[i][0][j].y;
 		}
 	}
-	
-	// for(var i=0; i<oMenu.aListeVignettes.length; i++)
-	// {
-		// // position du terrain contenu dans la vignette
-		// for(var j=0; j<oMenu.aListeVignettes[i].length; j++)
-		// {
-			// oMenu.aListeVignettes[i][0][j].x = oMenu.aListeVignettes[i][0][j].x * (fNewRatioLargeur/fRatioLargeur);
-			// oMenu.aListeVignettes[i][0][j].y = oMenu.aListeVignettes[i][0][j].y * (fNewRatioHauteur/fRatioHauteur);
-		// }
-		// // position de la vignette
-		// // on place les vignettes au milieu (largeur)
-		// oMenu.aListeVignettes[i][1].x *= (fNewRatioLargeur/fRatioLargeur);
-		// oMenu.aListeVignettes[i][1].y *= (fNewRatioHauteur/fRatioHauteur);
-		
-		// console.log(fNewRatioLargeur/fRatioLargeur);
-	// }
-	
+
 	fRatioLargeur = fNewRatioLargeur;
 	fRatioHauteur = fNewRatioHauteur;
 }

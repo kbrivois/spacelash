@@ -1,13 +1,3 @@
-
-var dbreq = window.indexedDB.deleteDatabase("spacelash2");
-        dbreq.onsuccess = function (event) {
-             // Database deleted
-        }
-        dbreq.onerror = function (event) {
-            // Log or show the error message
-        }
-
-
 var parametrageNiveau=
 
   [
@@ -886,6 +876,15 @@ window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.ms
  * ou si elle nécessite une mise à jour.
  * Appellée sur le onupgradeneeded à l'ouverture de la base
  */
+ 
+var dbreq = indexedDB.deleteDatabase("spacelash2");
+        dbreq.onsuccess = function (event) {
+             // Database deleted
+        }
+        dbreq.onerror = function (event) {
+            // Log or show the error message
+        }
+ 
 function createDatabase(event) {
     var db = event.target.transaction.db;
     
@@ -1019,35 +1018,37 @@ function readAllNiveau(){
     request.onupgradeneeded = createDatabase;
 
     request.onsuccess = function(event) {
-	var db = event.target.result; 
-	// on ouvre une transaction qui permettra d'effectuer
-    // la lecture. uniquement de la lecture -> "readonly"
-    var transaction = db.transaction(["niveaux"], "readonly");
-    transaction.oncomplete = function(event) {};
-    transaction.onerror = function(event) {
-       window.alert('erreur de transaction lecture ');
-    };
+		var db = event.target.result; 
+		// on ouvre une transaction qui permettra d'effectuer
+		// la lecture. uniquement de la lecture -> "readonly"
+		var transaction = db.transaction(["niveaux"], "readonly");
+		transaction.oncomplete = function(event) {};
+		transaction.onerror = function(event) {
+		   window.alert('erreur de transaction lecture ');
+		};
 
-   
+		// on récupère l'object store que l'on veut lire
+		var niveauStore = transaction.objectStore("niveaux");
+		niveauStore.openCursor().onsuccess = function (event) {
 
-    // on récupère l'object store que l'on veut lire
-    var niveauStore = transaction.objectStore("niveaux");
-    niveauStore.openCursor().onsuccess = function (event) {
-
-    var cursor = event.target.result;
-        if (cursor) {
-		
-            oNiveauPartie.push(cursor.value); // un niveau
-			//alert("Dedans "+oNiveauPartie.length);
-
-            cursor.continue();
-        }
-		
-    }
-	//alert("Dehors "+oNiveauPartie.length);
-
-}
-
+		var cursor = event.target.result;
+			if (cursor) {
+			
+				var test = niveauStore.get(cursor.key);
+				
+				test.onsuccess = function (e) {
+					oNiveauPartie.push(test.result); // un niveau
+					cursor.continue();
+				}
+			}
+			// plus de niveaux (fin de l'enregistrement)
+			else
+			{
+				bChargementNiveauxComplet = true;
+			}
+			
+		}
+	}
 }
 
 

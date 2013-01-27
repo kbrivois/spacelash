@@ -29,6 +29,7 @@ var iCompteurImages = 0;
 var iNombresImages = 0;
 
 var oNiveauPartie = new Array();
+var bChargementNiveauxComplet = false;
 readAllNiveau();//Stocke tous les niveaux(et ses infos) dans oNiveauPartie
 
 // niveau selectionnée
@@ -54,7 +55,7 @@ Main menu
 var mainMenu = function ()
 {
 	// Si on aucun menu n'a encore été initialisé et si l'indexedDB a fini de charger les niveaux
-	if(oPartie == null && oMenu == null && oNiveauPartie.length != 0)
+	if(oPartie == null && oMenu == null && bChargementNiveauxComplet)
 	{
 		oMenu = new Menu();
 
@@ -68,7 +69,7 @@ var mainMenu = function ()
 		
 		requestAnimationFrame(mainMenu);
 	}
-	else if(oMenu != null && oNiveauPartie.length != 0)
+	else if(oMenu != null && bChargementNiveauxComplet)
 	{
 		now = Date.now();
 		delta = now - then;
@@ -120,7 +121,7 @@ var mainPartie = function ()
 	now = Date.now();
 	delta = now - then;
 	
-	if(iCompteurImages == iNombresImages && oNiveauPartie.length!=0 && iNiveauSelectionne != null)
+	if(iCompteurImages == iNombresImages && bChargementNiveauxComplet && iNiveauSelectionne != null)
 	{
 		if(!bChargementComplet)
 		{
