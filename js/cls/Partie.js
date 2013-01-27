@@ -14,11 +14,11 @@ function Partie()
 	// ratio
 	if(fRatioLargeur < fRatioHauteur)
 	{		
-		fRatioHauteur = fRatioLargeur * fLargeurDeBase/fHauteurDeBase;
+		fRatioHauteur = fRatioLargeur;
 	}
 	else
 	{
-		fRatioLargeur = fRatioHauteur * fHauteurDeBase/fLargeurDeBase;
+		fRatioLargeur = fRatioHauteur;
 	}
 	
 	// ------------------------ replay et pause
@@ -607,8 +607,7 @@ Partie.prototype.lancer = function()
 			// Deuxieme explosion (cercle grandit vite, devient opaque et lumière blanche en fond)
 			if(!this.bAugmenterOpacite)
 			{
-				fPasOpacite = 0.06;
-				
+				fPasOpacite = 0.04;
 				
 				// Premiere fois qu'on dessine le 2eme cercle, bruit de l'explosion
 				if(this.fGrandeurCercle == 0.05*((fRatioLargeur+fRatioHauteur)/2))
@@ -648,35 +647,35 @@ Partie.prototype.lancer = function()
 					ctx.beginPath();
 					ctx.fillStyle = "rgb("+iCouleur1+","+iCouleur2+","+iCouleur3+")";
 					ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
-								this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle), 0, 2 * Math.PI);
+								this.oTrait.oPositionEnnemiTouche.y, (100*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle), 0, 2 * Math.PI);
 					ctx.fill();
 					
 					ctx.beginPath();
 					ctx.lineWidth = 4;
 					ctx.strokeStyle = "rgb(254,230,157)";
 					ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
-							this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle), 0, 2 * Math.PI);
+							this.oTrait.oPositionEnnemiTouche.y, (100*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle), 0, 2 * Math.PI);
 					ctx.stroke();
 					
 					ctx.beginPath();
 					ctx.lineWidth = 4;
 					ctx.strokeStyle = "rgb(251,215,109)";
 					ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
-							this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+4, 0, 2 * Math.PI);
+							this.oTrait.oPositionEnnemiTouche.y, (100*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+4, 0, 2 * Math.PI);
 					ctx.stroke();
 					
 					ctx.beginPath();
 					ctx.lineWidth = 4;
 					ctx.strokeStyle = "rgb(248,200,61)";
 					ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
-							this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+8, 0, 2 * Math.PI);
+							this.oTrait.oPositionEnnemiTouche.y, (100*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+8, 0, 2 * Math.PI);
 					ctx.stroke();
 					
 					ctx.beginPath();
 					ctx.lineWidth = 4;
 					ctx.strokeStyle = "rgb(248,150,10)";
 					ctx.arc(this.oTrait.oPositionEnnemiTouche.x, 
-							this.oTrait.oPositionEnnemiTouche.y, (200*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+8, 0, 2 * Math.PI);
+							this.oTrait.oPositionEnnemiTouche.y, (100*((fRatioLargeur+fRatioHauteur)/2)*this.fGrandeurCercle)+8, 0, 2 * Math.PI);
 					ctx.stroke();
 					
 					ctx.globalAlpha = 1;

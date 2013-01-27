@@ -79,10 +79,26 @@ var mainMenu = function ()
 			// on lance le menu
 			oMenu.lancer();
 		}
+		else
+		{
+			// Texte d'attente
+			ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+"pt Calibri,Geneva,Arial";
+			ctx.fillStyle = "black";
+			ctx.fillText("Wait...", 50, 50);
+		}
 		requestAnimationFrame(mainMenu);
 	}
-	else if(oPartie == null)
+	else if(oPartie == null && bChargementNiveauxComplet)
 	{
+		requestAnimationFrame(mainMenu);
+	}
+	
+	if(!bChargementNiveauxComplet)
+	{
+		// Texte d'attente
+		ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+"pt Calibri,Geneva,Arial";
+		ctx.fillStyle = "black";
+		ctx.fillText("Wait...", 50, 100);
 		requestAnimationFrame(mainMenu);
 	}
 };

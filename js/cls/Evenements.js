@@ -179,11 +179,11 @@ var screenResizePartie = function(e)
 	
 	if(fNewRatioLargeur < fNewRatioHauteur)
 	{		
-		fNewRatioHauteur = fNewRatioLargeur * fLargeurDeBase/fHauteurDeBase;
+		fNewRatioHauteur = fNewRatioLargeur;
 	}
 	else
 	{
-		fNewRatioLargeur = fNewRatioHauteur * fHauteurDeBase/fLargeurDeBase;
+		fNewRatioLargeur = fNewRatioHauteur;
 	}
 	
 	/* === Redéfinition de la barre d'avancement === */

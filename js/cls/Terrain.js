@@ -35,7 +35,7 @@ function Terrain (aListePointsTemp,oTexture, fAireMinimale)
 		this.aListePointsDepart[i] 		= new Point(aListePointsTemp[i].x, aListePointsTemp[i].y);
 	}
 
-	for(var i=0; i<aListePointsTemp.length; i++)
+	 for(var i=0; i<aListePointsTemp.length; i++)
 	{
 		this.aListePoints[i] 			= new Point(aListePointsTemp[i].x, aListePointsTemp[i].y);
 	}
