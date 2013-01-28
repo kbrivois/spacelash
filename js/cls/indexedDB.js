@@ -873,6 +873,8 @@ window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || 
 window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
 
 majNiveaux();
+
+//saveSauvegarde("01",3,34,94);
  
 function createDatabase(event) {
     var db = event.target.transaction.db;
@@ -897,13 +899,14 @@ function errorOpen(event) {
  * .
  * ajoute ou remplace une sauvegarde dans la base
  */
-function saveSauvegarde(id,score,aire) {
+function saveSauvegarde(id,nbCoupe,aireAtteinte,temps) {
     // création d'un objet contenant les données
     // il sert d'"enregistrement" dans la base
     var sauvegarde = {
 		id:id,
-        score:  score,
-        aireMinimaleAtteinte:   aire
+        nbCoupe:  nbCoupe,
+        aireMinimaleAtteinte:   aireAtteinte,
+		temps:temps
     }
 
     // on ouvre la base, et on déclare les listeners
@@ -921,8 +924,8 @@ function saveSauvegarde(id,score,aire) {
         // les opérations sur la base
         var transaction = db.transaction(["sauvegarde"], "readwrite");
         transaction.oncomplete = function(event) {
-            //displayList(db);
-            window.alert("Transaction terminée, sauvegarde effectuée");
+          
+           
         };
 
         transaction.onerror = function(event) {
@@ -979,7 +982,6 @@ function readNiveau(idNiveau) {
         req.onsuccess = function(event) {
             if(req.result) {
 			resultat= req.result;
-			//alert("in: "+resultat.Ennemis[0].rotation);
 			oNiveauPartie = resultat;
 			} 
 			else {
@@ -1040,6 +1042,47 @@ function readAllNiveau(){
 	}
 }
 
+function readAllSauvegarde(){
+
+	// on ouvre la base, et on déclare les listeners
+    var request = indexedDB.open("spacelash2", 1);
+
+    request.onerror = errorOpen;
+    request.onupgradeneeded = createDatabase;
+
+    request.onsuccess = function(event) {
+		var db = event.target.result; 
+		// on ouvre une transaction qui permettra d'effectuer
+		// la lecture. uniquement de la lecture -> "readonly"
+		var transaction = db.transaction(["sauvegarde"], "readonly");
+		transaction.oncomplete = function(event) {};
+		transaction.onerror = function(event) {
+		   window.alert('erreur de transaction lecture ');
+		};
+
+		// on récupère l'object store que l'on veut lire
+		var niveauStore = transaction.objectStore("sauvegarde");
+		sauvegardeStore.openCursor().onsuccess = function (event) {
+
+		var cursor = event.target.result;
+			if (cursor) {
+			
+				var test = sauvegardeStore.get(cursor.key);
+				
+				test.onsuccess = function (e) {
+					oSauvegarde.push(test.result); // une sauvegarde
+					cursor.continue();
+				}
+			}
+			// plus de niveaux (fin de l'enregistrement)
+			else
+			{
+				bChargementSauvegardeComplet = true;
+			}
+			
+		}
+	}
+}
 
 
 /**

@@ -30,8 +30,9 @@ var iNombresImages = 0;
 
 var oNiveauPartie = new Array();
 var bChargementNiveauxComplet = false;
+var bChargementSauvegardeComplet = false;
 readAllNiveau();//Stocke tous les niveaux(et ses infos) dans oNiveauPartie
-
+readAllSauvegarde();
 // niveau selectionnée
 var iNiveauSelectionne = null;
 
