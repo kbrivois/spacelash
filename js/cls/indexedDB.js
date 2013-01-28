@@ -871,19 +871,8 @@ var indexedDB=window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB 
 //prefixes of window.IDB objects
 window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
 window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
-/**
- * fonction chargée de créer la base de donnée si elle n'existe pas
- * ou si elle nécessite une mise à jour.
- * Appellée sur le onupgradeneeded à l'ouverture de la base
- */
- 
-var dbreq = indexedDB.deleteDatabase("spacelash2");
-        dbreq.onsuccess = function (event) {
-             // Database deleted
-        }
-        dbreq.onerror = function (event) {
-            // Log or show the error message
-        }
+
+majNiveaux();
  
 function createDatabase(event) {
     var db = event.target.transaction.db;
@@ -1057,7 +1046,7 @@ function readAllNiveau(){
  * fonction qui efface tout le contenu de la base, quand on
  * clique sur le bouton "effacer" de la page
  */
-function deleteAllRecords() {
+function majNiveaux() {
     // on ouvre la base, et on déclare les listeners
     var request = indexedDB.open("spacelash2", 1);
     request.onerror = errorOpen;
@@ -1067,19 +1056,26 @@ function deleteAllRecords() {
         var db = event.target.result;
 
         // on ouvre une transaction qui permettra d'effectuer la suppression
-        var transaction = db.transaction(["sauvegarde"], "readwrite");
-        transaction.oncomplete = function(event) {displayList(db);};
+        var transaction = db.transaction(["niveaux"], "readwrite");
+        transaction.oncomplete = function(event) {};
         transaction.onerror = function(event) {
            window.alert('erreur de transaction suppression');
         };
 
-        var sauvegardeStore = transaction.objectStore("sauvegarde");
-        var req = sauvegardeStore.clear();
-        req.onsuccess = function(event) {
+        var niveauxStore = transaction.objectStore("niveaux");
+        var reqVider = niveauxStore.clear();
+        reqVider.onsuccess = function(event) {
         }
-        req.onerror = function(event) {
+        reqVider.onerror = function(event) {
             window.alert('erreur suppression');
         }
+		
+		var majNiveaux=transaction.objectStore("niveaux");
+		for (var i in parametrageNiveau) {
+        majNiveaux.add(parametrageNiveau[i]);   
+		}
+		
+		
     }
 }
 
