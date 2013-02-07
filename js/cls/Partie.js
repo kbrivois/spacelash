@@ -439,6 +439,16 @@ Partie.prototype.lancer = function()
 	if(!this.GAGNE && this.oTerrain.fAireTerrainActuel <= this.oTerrain.fAireMinimale)
 	{
 		this.GAGNE = true;
+		
+		var niveau=iNiveauSelectionne+1;
+		if(niveau.toString().length==1)
+		{
+			niveau="0"+niveau.toString();
+		}
+		
+		
+		saveSauvegarde(niveau.toString(),this.oTerrain.nbCoupe,this.oTerrain.fAireTerrainActuel);//On garde le score en sauvegarde
+		
 	}
 	
 	/*
@@ -495,6 +505,7 @@ Partie.prototype.lancer = function()
 				this.aListeEnnemis[i].ralentir();
 			}
 		}
+
 	}
 	// Clignotement du trait si mauvaise coupe
 	else if(this.oTrait.iCompteurFaireClignoter != 0)

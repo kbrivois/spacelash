@@ -1073,14 +1073,14 @@ function errorOpen(event) {
  * .
  * ajoute ou remplace une sauvegarde dans la base
  */
-function saveSauvegarde(id,nbCoupe,aireAtteinte,temps) {
+function saveSauvegarde(id,nbCoupe,aireAtteinte) {
     // création d'un objet contenant les données
     // il sert d'"enregistrement" dans la base
     var sauvegarde = {
 		id:id,
         nbCoupe:  nbCoupe,
-        aireMinimaleAtteinte:   aireAtteinte,
-		temps:temps
+        aireMinimaleAtteinte:   aireAtteinte
+		//temps:temps
     }
 
     // on ouvre la base, et on déclare les listeners
