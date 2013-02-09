@@ -21,35 +21,32 @@ function Partie()
 		fRatioLargeur = fRatioHauteur;
 	}
 	
-	// ------------------------ replay et pause
+	// ------------------------ Rejouer et pause
 	
-	// boutons replay et pause
+	// boutons Rejouer et pause
 	this.iTailleBouton = 30*((fRatioLargeur+fRatioHauteur)/2);
 	
-	//replay
-	this.oBoutonReplay = new Image();
-	this.oBoutonReplay.src = 'img/replay.png';
+	//Rejouer
+	this.oBoutonRejouer = new Image();
+	this.oBoutonRejouer.src = 'img/Replay.png';
 	iNombresImages++;
-	this.oBoutonReplay.onload = function()
+	this.oBoutonRejouer.onload = function()
 	{
 		iCompteurImages++;
 	}
 	
-	//replay hover
-	this.oBoutonReplayHover = new Image();
-	this.oBoutonReplayHover.src = 'img/replay-hover.png';
+	//Rejouer hover
+	this.oBoutonRejouerHover = new Image();
+	this.oBoutonRejouerHover.src = 'img/Replay-hover.png';
 	iNombresImages++;
-	this.oBoutonReplayHover.onload = function()
+	this.oBoutonRejouerHover.onload = function()
 	{
 		iCompteurImages++;
 	}
-	
-	
-	this.oPositionBoutonReplay = new Point(10+40*((fRatioLargeur+fRatioHauteur)/2),10);
+	this.oPositionBoutonRejouer = new Point(10+40*((fRatioLargeur+fRatioHauteur)/2),10);
 	
 	//pause
 	this.bPause = false;
-	
 	this.oBoutonPause = new Image();
 	this.oBoutonPause.src = 'img/pause.png';
 	iNombresImages++;
@@ -66,10 +63,9 @@ function Partie()
 	{
 		iCompteurImages++;
 	}
-	
 	this.oPositionBoutonPause = new Point(10,10);
 	
-	// image de fond de la pause
+	// fond de la pause
 	this.oFondPause = new Image();
 	this.oFondPause.src = 'img/fond-pause.png';
 	iNombresImages++;
@@ -78,9 +74,25 @@ function Partie()
 		iCompteurImages++;
 	}
 	
+	this.oBoutonDeSelection = new Image();
+	this.oBoutonDeSelection.src = 'img/chargement.png';
+	iNombresImages++;
+	this.oBoutonDeSelection.onload = function()
+	{
+		iCompteurImages++;
+	}
+	this.fTailleBoutonDeSelection = 30*((fRatioLargeur+fRatioHauteur)/2);
+	
+	this.oPositionBoutonPause = new Point(10,10);
+	this.oPositionBoutonReprendre = new Point(canvas.width/2, canvas.height/2-25*((fRatioHauteur+fRatioLargeur)/2));
+	this.oPositionBoutonMenu = new Point(canvas.width/2, canvas.height/2+25*((fRatioHauteur+fRatioLargeur)/2));
+	this.iTailleFontMenu = 15;
+	
 	// souris sur les bouton 
 	this.bSurBoutonPause = false;
-	this.bSurBoutonReplay = false;
+	this.bSurBoutonRejouer = false;
+	this.bSurBoutonReprendre = false;
+	this.bSurBoutonMenu = false;
 	
 	
 	// ------------------------ sons
@@ -334,7 +346,7 @@ Partie.prototype.lancer = function()
 		
 		// si la souris se trouve dans le canvas et si on ne se trouve pas sur un bouton
 		// on place la cible
-		if(this.bSourisDansTerrain != undefined && this.bSurBoutonPause == false && this.bSurBoutonReplay == false)
+		if(this.bSourisDansTerrain != undefined && this.bSurBoutonPause == false && this.bSurBoutonRejouer == false)
 		{
 			if(this.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2) < 28)
 				this.bAugmenterTailleCibles = true;
@@ -378,30 +390,30 @@ Partie.prototype.lancer = function()
 			}
 		}
 		
-		// bouton replay
-		if(this.bSurBoutonReplay)
+		// bouton Rejouer
+		if(this.bSurBoutonRejouer)
 		{
-			ctx.drawImage(this.oBoutonReplayHover, 
+			ctx.drawImage(this.oBoutonRejouerHover, 
 								0, 
 								0, 
-								this.oBoutonReplay.width, 
-								this.oBoutonReplay.height, 
+								this.oBoutonRejouer.width, 
+								this.oBoutonRejouer.height, 
 								//position
-								this.oPositionBoutonReplay.x,
-								this.oPositionBoutonReplay.y,
+								this.oPositionBoutonRejouer.x,
+								this.oPositionBoutonRejouer.y,
 								this.iTailleBouton, 
 								this.iTailleBouton);
 		}
 		else
 		{
-			ctx.drawImage(this.oBoutonReplay, 
+			ctx.drawImage(this.oBoutonRejouer, 
 								0, 
 								0, 
-								this.oBoutonReplay.width, 
-								this.oBoutonReplay.height, 
+								this.oBoutonRejouer.width, 
+								this.oBoutonRejouer.height, 
 								//position
-								this.oPositionBoutonReplay.x,
-								this.oPositionBoutonReplay.y,
+								this.oPositionBoutonRejouer.x,
+								this.oPositionBoutonRejouer.y,
 								this.iTailleBouton, 
 								this.iTailleBouton);
 		}
@@ -879,15 +891,15 @@ Partie.prototype.lancerPause = function()
 	// on trace la barre d'avancement
 	this.oBarreAvancement.tracer(this.oTerrain);
 	
-	// bouton replay
-	ctx.drawImage(this.oBoutonReplay, 
+	// bouton Rejouer
+	ctx.drawImage(this.oBoutonRejouer, 
 					0, 
 					0, 
-					this.oBoutonReplay.width, 
-					this.oBoutonReplay.height, 
+					this.oBoutonRejouer.width, 
+					this.oBoutonRejouer.height, 
 					//position
-					this.oPositionBoutonReplay.x,
-					this.oPositionBoutonReplay.y,
+					this.oPositionBoutonRejouer.x,
+					this.oPositionBoutonRejouer.y,
 					this.iTailleBouton, 
 					this.iTailleBouton);
 	
@@ -917,16 +929,43 @@ Partie.prototype.lancerPause = function()
 						  this.aListeEnnemis[i].iTailleX);
 	}
 	
-	// l'image de fond
-	ctx.drawImage(this.oFondPause, 
-					  0, 
-					  0, 
-					  this.oFondPause.width, 
-					  this.oFondPause.height,
-					  canvas.width/4,
-					  20,
-					  canvas.width - canvas.width/2, 
-					  canvas.height - 40);
+	// fond de pause
+	ctx.globalAlpha = 0.5;
+	ctx.fillStyle = "rgb(255,255,255)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+	ctx.globalAlpha = 1;
+	
+	ctx.textAlign = 'center';
+	ctx.font = this.iTailleFontMenu*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
+	ctx.fillStyle = "black";
+	ctx.fillText("reprendre", this.oPositionBoutonReprendre.x, this.oPositionBoutonReprendre.y);
+	ctx.fillText("menu",this.oPositionBoutonMenu.x, this.oPositionBoutonMenu.y);
+	this.oPositionBoutonReprendre = new Point(canvas.width/2, canvas.height/2-25*((fRatioHauteur+fRatioLargeur)/2));
+	this.oPositionBoutonMenu = new Point(canvas.width/2, canvas.height/2+25*((fRatioHauteur+fRatioLargeur)/2));
+	ctx.textAlign = 'left';
+	
+	if(this.bSurBoutonReprendre)
+	{
+		ctx.save(); 
+		ctx.translate(canvas.width/2-110*((fRatioHauteur+fRatioLargeur)/2)-(this.fTailleBoutonDeSelection/2), this.oPositionBoutonReprendre.y-18*((fRatioHauteur+fRatioLargeur)/2)/2-(this.fTailleBoutonDeSelection/2)); 
+		ctx.translate(this.fTailleBoutonDeSelection/2, this.fTailleBoutonDeSelection/2); 
+		ctx.rotate(this.fRotationCibles);
+		ctx.drawImage(this.oBoutonDeSelection, -(this.fTailleBoutonDeSelection/2), -(this.fTailleBoutonDeSelection/2), this.fTailleBoutonDeSelection, this.fTailleBoutonDeSelection);
+		ctx.restore();
+		this.fRotationCibles += 0.05;
+		this.fTailleBoutonDeSelection = 30*((fRatioLargeur+fRatioHauteur)/2);
+	}
+	if(this.bSurBoutonMenu)
+	{
+		ctx.save(); 
+		ctx.translate(canvas.width/2-110*((fRatioHauteur+fRatioLargeur)/2)-(this.fTailleBoutonDeSelection/2), this.oPositionBoutonMenu.y-18*((fRatioHauteur+fRatioLargeur)/2)/2-(this.fTailleBoutonDeSelection/2)); 
+		ctx.translate(this.fTailleBoutonDeSelection/2, this.fTailleBoutonDeSelection/2); 
+		ctx.rotate(this.fRotationCibles);
+		ctx.drawImage(this.oBoutonDeSelection, -(this.fTailleBoutonDeSelection/2), -(this.fTailleBoutonDeSelection/2), this.fTailleBoutonDeSelection, this.fTailleBoutonDeSelection);
+		ctx.restore();
+		this.fRotationCibles += 0.05;
+		this.fTailleBoutonDeSelection = 30*((fRatioLargeur+fRatioHauteur)/2);
+	}
 }
 
 /**

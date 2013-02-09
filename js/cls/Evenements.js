@@ -64,15 +64,33 @@ var mouseClickPartie = function(e)
 	// si on clique sur le bouton pause
 	if(oPartie.bSurBoutonPause)
 	{
-		if(!oPartie.pause)
-			oPartie.pause = true;
+		if(!oPartie.bPause)
+			oPartie.bPause = true;
 		else
-			oPartie.pause = false;
+			oPartie.bPause = false;
 	}
-	// si on clique sur le bouton replay
-	else if(oPartie.bSurBoutonReplay)
+	// si on clique sur le bouton Rejouer
+	else if(oPartie.bSurBoutonRejouer)
 	{
 		oPartie.reset();
+	}
+	
+	//si le jeu est en pause
+	if(oPartie.bPause)
+	{
+		// si on clique sur le bouton reprendre
+		if(oPartie.bSurBoutonReprendre)
+		{
+			oPartie.bPause = false;
+			oPartie.bSurBoutonReprendre = false;
+		}
+		// si on clique sur le bouton menu
+		else if(oPartie.bSurBoutonMenu)
+		{
+			oPartie = null;
+			mainMenu();
+			oPartie.bSurBoutonMenu = false;
+		}
 	}
 }
 
@@ -138,19 +156,42 @@ var mouseMovementPartie = function(e)
 		&& y <= oPartie.oPositionBoutonPause.y+oPartie.iTailleBouton && y >= oPartie.oPositionBoutonPause.y)
 	{
 		oPartie.bSurBoutonPause = true;
-		oPartie.bSurBoutonReplay = false;
+		oPartie.bSurBoutonRejouer = false;
 	}
-	// curseur sur le bouton replay
-	else if (x <= oPartie.oPositionBoutonReplay.x+oPartie.iTailleBouton && x >= oPartie.oPositionBoutonReplay.x
-				&& y <= oPartie.oPositionBoutonReplay.y+oPartie.iTailleBouton && y >= oPartie.oPositionBoutonReplay.y)
+	// curseur sur le bouton Rejouer
+	else if (x <= oPartie.oPositionBoutonRejouer.x+oPartie.iTailleBouton && x >= oPartie.oPositionBoutonRejouer.x
+				&& y <= oPartie.oPositionBoutonRejouer.y+oPartie.iTailleBouton && y >= oPartie.oPositionBoutonRejouer.y)
 	{
-		oPartie.bSurBoutonReplay = true;
+		oPartie.bSurBoutonRejouer = true;
 		oPartie.bSurBoutonPause = false;
 	}
 	else
 	{
-		oPartie.bSurBoutonReplay = false;
+		oPartie.bSurBoutonRejouer = false;
 		oPartie.bSurBoutonPause = false;
+	}
+	
+	// si le jeu est en pause
+	if(oPartie.bPause)
+	{
+		// si le curseur se trouve sur le bouton reprendre
+		if(y <= oPartie.oPositionBoutonReprendre.y && y >= oPartie.oPositionBoutonReprendre.y-oPartie.iTailleFontMenu*((fRatioHauteur+fRatioLargeur)/2))
+		{
+			oPartie.bSurBoutonReprendre = true;
+			oPartie.bSurBoutonMenu = false;
+		}
+		// si le curseur se trouve sur le bouton menu
+		else if(y <= oPartie.oPositionBoutonMenu.y && y >= oPartie.oPositionBoutonMenu.y-oPartie.iTailleFontMenu*((fRatioHauteur+fRatioLargeur)/2))
+		{
+			oPartie.bSurBoutonMenu = true;
+			oPartie.bSurBoutonReprendre = false;
+		}
+		// si le curseur se trouve sur le bouton menu
+		else
+		{
+			oPartie.bSurBoutonReprendre = false;
+			oPartie.bSurBoutonMenu = false;
+		}
 	}
 }
 
@@ -276,8 +317,8 @@ var screenResizePartie = function(e)
 	
 	/* === Redimensionnement des boutons ===*/
 	
-	oPartie.oPositionBoutonReplay.x = oPartie.oPositionBoutonReplay.x / fRatioLargeur * fNewRatioLargeur;
-	oPartie.oPositionBoutonReplay.y = oPartie.oPositionBoutonReplay.y / fRatioHauteur * fNewRatioHauteur;
+	oPartie.oPositionBoutonRejouer.x = oPartie.oPositionBoutonRejouer.x / fRatioLargeur * fNewRatioLargeur;
+	oPartie.oPositionBoutonRejouer.y = oPartie.oPositionBoutonRejouer.y / fRatioHauteur * fNewRatioHauteur;
 	
 	oPartie.oPositionBoutonPause.x = oPartie.oPositionBoutonPause.x / fRatioLargeur * fNewRatioLargeur;
 	oPartie.oPositionBoutonPause.y = oPartie.oPositionBoutonPause.y / fRatioHauteur * fNewRatioHauteur;

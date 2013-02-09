@@ -58,6 +58,9 @@ var mainMenu = function ()
 	// Si on aucun menu n'a encore été initialisé et si l'indexedDB a fini de charger les niveaux
 	if(oPartie == null && oMenu == null && bChargementNiveauxComplet)
 	{
+		fRatioLargeur = (document.documentElement.clientWidth) / fLargeurDeBase;
+		fRatioHauteur = (document.documentElement.clientHeight) / fHauteurDeBase;
+	
 		oMenu = new Menu();
 
 		// ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
@@ -83,9 +86,9 @@ var mainMenu = function ()
 		else
 		{
 			// Texte d'attente
-			ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+"pt Calibri,Geneva,Arial";
+			ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
 			ctx.fillStyle = "black";
-			ctx.fillText("Wait...", 50, 50);
+			ctx.fillText("Wait...", 50, 150);
 		}
 		requestAnimationFrame(mainMenu);
 	}
@@ -97,9 +100,9 @@ var mainMenu = function ()
 	if(!bChargementNiveauxComplet)
 	{
 		// Texte d'attente
-		ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+"pt Calibri,Geneva,Arial";
+		ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
 		ctx.fillStyle = "black";
-		ctx.fillText("Wait...", 50, 100);
+		ctx.fillText("Wait...", 50, 150);
 		requestAnimationFrame(mainMenu);
 	}
 };
@@ -164,7 +167,7 @@ var mainPartie = function ()
 			bChargementComplet = true;
 		}
 		
-		if(!oPartie.pause)
+		if(!oPartie.bPause)
 		{
 			// on lance la partie
 			oPartie.lancer();

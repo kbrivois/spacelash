@@ -17,7 +17,7 @@ function Barre(oPoint1Temp, oPoint2Temp, fTailleTemp, sCouleurTemp, sCouleurCont
 Barre.prototype.tracer = function(oTerrainTemp)
 {
 	// Texte pourcentage aire restante
-	ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+"pt Calibri,Geneva,Arial";
+	ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
 	ctx.fillStyle = "white";
 	ctx.fillText(Math.floor((this.fDiminutionProgressive)*100)+" %", this.oPoint1.x, 350*(canvas.height/fHauteurDeBase));
 
