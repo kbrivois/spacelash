@@ -3,7 +3,7 @@ function Terrain (aListePointsTemp,oTexture, fAireMinimale)
 	// Points du Terrain
 	this.aListePointsDepart = new Array();
 	this.aListePoints = new Array();
-	
+	this.nbCoupe=0;
 	// ------------ on adapte le Terrain selon la résolution et on le centre
 	
 	// on centre le terrain
@@ -215,7 +215,7 @@ Terrain.prototype.couperForme = function(oPointCoupe1Temp, oPointCoupe2Temp)
 		this.aDeuxiemeCoteCoupe = new Array();
 		return false;
 	}
-	
+	this.nbCoupe++;
 	return true;
 }
 

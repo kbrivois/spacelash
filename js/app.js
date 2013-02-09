@@ -29,6 +29,7 @@ var iCompteurImages = 0;
 var iNombresImages = 0;
 
 var oNiveauPartie = new Array();
+var oSauvegarde = new Array();
 var bChargementNiveauxComplet = false;
 var bChargementSauvegardeComplet = false;
 readAllNiveau();//Stocke tous les niveaux(et ses infos) dans oNiveauPartie
