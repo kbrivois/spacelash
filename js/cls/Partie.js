@@ -191,7 +191,7 @@ function Partie()
 	var img = new Image();
 	img.src = 'img/textures/metal2.jpg';
 	iNombresImages++;
-	this.oTerrain = new Terrain(aListePointsTemp,img, 0.15);
+	this.oTerrain = new Terrain(aListePointsTemp,img, oNiveauPartie[iNiveauSelectionne].AireForme/100);
 	img.onload = function()
 	{
 		iCompteurImages++;
@@ -211,18 +211,8 @@ function Partie()
 		iCompteurImages++;
 	}
 
-	// Ennemi 2
-	var oEnnemiImage2 = new Image();
-	oEnnemiImage2.src = "img/ennemis/fireball2.png";
-	this.aListeImagesEnnemis.push(oEnnemiImage2);
-	iNombresImages++;
-	oEnnemiImage2.onload = function()
-	{
-		iCompteurImages++;
-	}
-
 	// ------------------------ barre d'avancement
-	this.oBarreAvancement = new Barre(new Point(20,370), new Point(270,370), 15, "blue", "rgb(126,133,188)", this);
+	this.oBarreAvancement = new Barre(new Point(20,370), new Point(270,370), 15, "black", this);
 }
 
 
@@ -459,7 +449,7 @@ Partie.prototype.lancer = function()
 		}
 		
 		
-		saveSauvegarde(niveau.toString(),this.oTerrain.nbCoupe,this.oTerrain.fAireTerrainActuel);//On garde le score en sauvegarde
+		saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel);//On garde le score en sauvegarde
 		
 	}
 	

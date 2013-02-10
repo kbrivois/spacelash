@@ -1,5 +1,5 @@
 // Barre qui indique au joueur son avancement
-function Barre(oPoint1Temp, oPoint2Temp, fTailleTemp, sCouleurTemp, sCouleurConteurTemp, oPartieTemp)  
+function Barre(oPoint1Temp, oPoint2Temp, fTailleTemp, sCouleurConteurTemp, oPartieTemp)  
 {
 	// pour centrer la barre
 	var fMilieu = canvas.width/2;
@@ -10,8 +10,15 @@ function Barre(oPoint1Temp, oPoint2Temp, fTailleTemp, sCouleurTemp, sCouleurCont
 	this.fDiminutionProgressive		= 1;
 	this.fAirePrecedente			= this.fDiminutionProgressive;
 	this.fTaille 					= fTailleTemp;
-	this.sCouleur 					= sCouleurTemp;
 	this.sCouleurConteneur 			= sCouleurConteurTemp;
+	
+	this.oTexture = new Image();
+	this.oTexture.src = 'img/textures/texture_barre.png';
+	iNombresImages++;
+	this.oTexture.onload = function()
+	{
+		iCompteurImages++;
+	}
 }
 
 Barre.prototype.tracer = function(oTerrainTemp)
@@ -31,7 +38,9 @@ Barre.prototype.tracer = function(oTerrainTemp)
 	
 	// Barre d'avancement
 	ctx.beginPath();
-	ctx.strokeStyle = this.sCouleur; 
+	// create pattern
+	var ptrn = ctx.createPattern(this.oTexture,'repeat');
+	ctx.strokeStyle = ptrn;
 	ctx.lineWidth = this.fTaille*(canvas.height/fHauteurDeBase);
 	ctx.moveTo(this.oPoint1.x, this.oPoint1.y*(canvas.height/fHauteurDeBase));
 	// s'il y a eu une coupe, on diminue progressivement la taille de la barre d'avancement
@@ -48,12 +57,20 @@ Barre.prototype.tracer = function(oTerrainTemp)
 	
 	// Barre limite
 	ctx.beginPath();
-	ctx.strokeStyle='red'; 
+	ctx.strokeStyle='white'; 
 	ctx.lineWidth=4;
 	// (aire du terrain en %) * (taille de la barre totale) + this.oPoint1.x
 	ctx.moveTo((oTerrainTemp.fAireMinimale/oTerrainTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 362.5*(canvas.height/fHauteurDeBase));
 	ctx.lineTo((oTerrainTemp.fAireMinimale/oTerrainTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 377.5*(canvas.height/fHauteurDeBase));
 	ctx.stroke();
+	// Flèche qui montre la barre limite
+	ctx.fillStyle='white'; 
+	// (aire du terrain en %) * (taille de la barre totale) + this.oPoint1.x
+	ctx.moveTo((oTerrainTemp.fAireMinimale/oTerrainTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 377.5*(canvas.height/fHauteurDeBase)+5);
+	ctx.lineTo((oTerrainTemp.fAireMinimale/oTerrainTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x)-10*fRatioLargeur + this.oPoint1.x , 390*(canvas.height/fHauteurDeBase)+2);
+	ctx.lineTo((oTerrainTemp.fAireMinimale/oTerrainTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x)+10*fRatioLargeur + this.oPoint1.x , 390*(canvas.height/fHauteurDeBase)+2);
+	ctx.lineTo((oTerrainTemp.fAireMinimale/oTerrainTemp.fAireTerrainDepart)*(this.oPoint2.x-this.oPoint1.x) + this.oPoint1.x , 377.5*(canvas.height/fHauteurDeBase)+5);
+	ctx.fill();
 }
 
 Barre.prototype.reset = function()

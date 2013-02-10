@@ -147,9 +147,9 @@ var mainPartie = function ()
 		if(!bChargementComplet)
 		{
 			// ennemis
-			for(var i=0; i<oPartie.aListeImagesEnnemis.length; i++)
+			for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Ennemis.length; i++)
 			{
-				var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[i], 2, new Point(0,0), 0.2);
+				var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[0], oNiveauPartie[iNiveauSelectionne].Ennemis[i].vitesse, new Point(0,0), oNiveauPartie[iNiveauSelectionne].Ennemis[i].rotation);
 				// On place l'ennemi sur le terrain (le Terrain)
 				// on récupére les coordonnées
 				var oPositionEnnemi = oPartie.oTerrain.placerEnnemi(oEnnemi);

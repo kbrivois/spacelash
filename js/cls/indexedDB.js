@@ -11,9 +11,13 @@ var parametrageNiveau=
 					{
 						vitesse:2,
 						rotation:0.2
+					},
+					{
+						vitesse:2,
+						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{
 						x:50,
@@ -61,7 +65,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{
 						x:0,
@@ -108,7 +112,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:150,y:50},
 					{x:180,y:145},
@@ -137,7 +141,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:135, y:60},
 					{x:95, y:137},
@@ -173,7 +177,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:75,y:65},
 					{x:44,y:94},
@@ -224,7 +228,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:158,y:65},
 					{x:137,y:67},
@@ -294,7 +298,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:137,y:109},
 					{x:125,y:114},
@@ -375,7 +379,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:131,y:61},
 					{x:107,y:65},
@@ -419,7 +423,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:204,y:59},
 					{x:192,y:102},
@@ -466,7 +470,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:187,y:82},
 					{x:173,y:96},
@@ -546,7 +550,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:136,y:55},
 					{x:121,y:57},
@@ -643,7 +647,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 									{x:212,y:147},
 					{x:204,y:134},
@@ -706,7 +710,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 				{x:154,y:88},
 				{x:151,y:79},
@@ -761,7 +765,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:278,y:65},
 					{x:198,y:81},
@@ -799,7 +803,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 									{x:130,y:158},
 					{x:125,y:133},
@@ -874,7 +878,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:142,y:58},
 					{x:122,y:119},
@@ -918,7 +922,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:56,y:97},
 					{x:56,y:116},
@@ -988,7 +992,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				aireForme:56,
+				AireForme:56,
 				Points:[
 					{x:114,y:63},
 					{x:114,y:78},
