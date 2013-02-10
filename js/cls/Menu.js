@@ -21,6 +21,13 @@ function Menu()
 	{
 		iCompteurImages++;
 	}
+	this.oImageBandeau = new Image();
+	this.oImageBandeau.src = 'img/menu/bandeau.png';
+	iNombresImages++;
+	this.oImageBandeau.onload = function()
+	{
+		iCompteurImages++;
+	}
 	
 	this.aListeVignettesDepart = new Array();
 	this.aListeVignettes = new Array();
@@ -68,7 +75,7 @@ function Menu()
 	}
 	
 	this.fEcartX_Vignettes = 30*((fRatioLargeur+fRatioHauteur)/2);
-	this.fEcartY_Vignettes = 60*((fRatioLargeur+fRatioHauteur)/2);
+	this.fEcartY_Vignettes = 75*((fRatioLargeur+fRatioHauteur)/2);
 	this.iTailleVignettes = 50*((fRatioLargeur+fRatioHauteur)/2);
 	
 	// ------------------------ Initialisation des écrans de niveaux (nombre d'écrans)
@@ -368,15 +375,9 @@ Menu.prototype.lancer = function()
 							this.aListeVignettes[i][1].y, 
 							this.iTailleVignettes, 
 							this.iTailleVignettes);
-	
-		// On dessine les terrains contenus dans les vignettes
-		// if(i != 0)
-		// {
-			// ctx.globalAlpha = 0.4;
-		// }
 		
 		ctx.beginPath();
-		ctx.lineWidth=1*((fRatioLargeur+fRatioHauteur)/2);;
+		ctx.lineWidth=1*((fRatioLargeur+fRatioHauteur)/2);
 		ctx.strokeStyle="white";
 		ctx.fillStyle="rgb(90,90,90)";
 		ctx.moveTo(this.aListeVignettes[i][0][0].x, this.aListeVignettes[i][0][0].y);
@@ -385,11 +386,57 @@ Menu.prototype.lancer = function()
 		{
 			ctx.lineTo(this.aListeVignettes[i][0][j].x, this.aListeVignettes[i][0][j].y);
 		}
-	
+		
 		ctx.closePath();
 	
 		ctx.fill();
 		ctx.stroke();
+		
+		// bandeau avec numéro du niveau
+		ctx.drawImage(this.oImageBandeau, 
+							0, 
+							0, 
+							this.oImageBandeau.width, 
+							this.oImageBandeau.height, 
+							this.aListeVignettes[i][1].x + 1, 
+							this.aListeVignettes[i][1].y + 1, 
+							22*((fRatioLargeur+fRatioHauteur)/2), 
+							22*((fRatioLargeur+fRatioHauteur)/2));
+	
+		ctx.textAlign = 'center';		
+		ctx.font = 5*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillStyle = "white";
+		ctx.fillText(i+1, this.aListeVignettes[i][1].x + 15*((fRatioLargeur+fRatioHauteur)/2)/2 , this.aListeVignettes[i][1].y + 19*((fRatioLargeur+fRatioHauteur)/2)/2);
+		
+		// score
+		var iNbCoupes = "-";
+		var iAire = "-";
+		for(var j=0; j<oSauvegarde.length; j++)
+		{
+			if(oSauvegarde[j].id-1 == i)
+			{
+				iNbCoupes = oSauvegarde[j].nbCoupe+" coupes";
+				iAire = Math.floor(oSauvegarde[j].aireMinimaleAtteinte)+"%";
+				break;
+			}
+		}
+		
+		ctx.textAlign = 'center';		
+		ctx.font = 5*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillStyle = "rgb(90,90,90)";
+		ctx.fillText("01:15", this.aListeVignettes[i][1].x + this.iTailleVignettes/2 + 0.8*((fRatioLargeur+fRatioHauteur)/2) , this.aListeVignettes[i][1].y + this.iTailleVignettes + 5*((fRatioLargeur+fRatioHauteur)/2) -  0.8*((fRatioLargeur+fRatioHauteur)/2));
+		ctx.fillText(iNbCoupes, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 + 0.8*((fRatioLargeur+fRatioHauteur)/2) , this.aListeVignettes[i][1].y + this.iTailleVignettes + 11*((fRatioLargeur+fRatioHauteur)/2) -  0.8*((fRatioLargeur+fRatioHauteur)/2));
+		ctx.fillText(iAire, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 + 0.8*((fRatioLargeur+fRatioHauteur)/2) , this.aListeVignettes[i][1].y + this.iTailleVignettes + 17*((fRatioLargeur+fRatioHauteur)/2) -  0.8*((fRatioLargeur+fRatioHauteur)/2));
+		ctx.fillText("1200", this.aListeVignettes[i][1].x + this.iTailleVignettes/2 + 0.8*((fRatioLargeur+fRatioHauteur)/2) , this.aListeVignettes[i][1].y + this.iTailleVignettes + 23*((fRatioLargeur+fRatioHauteur)/2) -  0.8*((fRatioLargeur+fRatioHauteur)/2));
+	
+		ctx.font = 5*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillStyle = "white";
+		ctx.fillText("01:15", this.aListeVignettes[i][1].x + this.iTailleVignettes/2 , this.aListeVignettes[i][1].y + this.iTailleVignettes + 5*((fRatioLargeur+fRatioHauteur)/2));
+		ctx.fillText(iNbCoupes, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 , this.aListeVignettes[i][1].y + this.iTailleVignettes + 11*((fRatioLargeur+fRatioHauteur)/2));
+		ctx.fillText(iAire, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 , this.aListeVignettes[i][1].y + this.iTailleVignettes + 17*((fRatioLargeur+fRatioHauteur)/2));
+		ctx.fillText("1200", this.aListeVignettes[i][1].x + this.iTailleVignettes/2 , this.aListeVignettes[i][1].y + this.iTailleVignettes + 23*((fRatioLargeur+fRatioHauteur)/2));
+		ctx.textAlign = 'left';
+		
 		
 		ctx.globalAlpha = 1;
 	}

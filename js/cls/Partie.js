@@ -289,152 +289,148 @@ Partie.prototype.lancer = function()
     ctx.fillStyle = "rgb(0,0,0)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 		
-	// si les portes ne sont pas encore fermées
-	if(this.oPositionPorteGauche.x < 0)
-	{
-		this.dessinerStars();
+	this.dessinerStars();
+	
+	// on trace le Terrain
+	this.oTerrain.tracer();
+	
+	// on trace la barre d'avancement
+	this.oBarreAvancement.tracer(this.oTerrain);
+	
+	// Deplacement des ennemis, rebonds	
+	for(var i=0; i<this.aListeEnnemis.length; i++)
+	{	
+		this.aListeEnnemis[i].oPosition.x += this.aListeEnnemis[i].oDeplacement.x;
+		this.aListeEnnemis[i].oPosition.y += this.aListeEnnemis[i].oDeplacement.y;
+	
+		ctx.save(); 
+		ctx.translate(this.aListeEnnemis[i].oPosition.x, this.aListeEnnemis[i].oPosition.y); 
+		ctx.translate(this.aListeEnnemis[i].iTailleX/2, this.aListeEnnemis[i].iTailleY/2); 
+		ctx.rotate(this.aListeEnnemis[i].fRotationActuelle);
+		ctx.drawImage(this.aListeEnnemis[i].oImage, 
+						  -this.aListeEnnemis[i].iTailleX/2, 
+						  -this.aListeEnnemis[i].iTailleY/2, 
+						  this.aListeEnnemis[i].iTailleX, 
+						  this.aListeEnnemis[i].iTailleX);
+		ctx.restore();
 		
-		// on trace le Terrain
-		this.oTerrain.tracer();
+		this.aListeEnnemis[i].fRotationActuelle = (this.aListeEnnemis[i].fRotationActuelle + this.aListeEnnemis[i].fRotation);
 		
-		// on trace la barre d'avancement
-		this.oBarreAvancement.tracer(this.oTerrain);
-		
-		// Deplacement des ennemis, rebonds	
-		for(var i=0; i<this.aListeEnnemis.length; i++)
-		{	
-			this.aListeEnnemis[i].oPosition.x += this.aListeEnnemis[i].oDeplacement.x;
-			this.aListeEnnemis[i].oPosition.y += this.aListeEnnemis[i].oDeplacement.y;
-		
-			ctx.save(); 
-			ctx.translate(this.aListeEnnemis[i].oPosition.x, this.aListeEnnemis[i].oPosition.y); 
-			ctx.translate(this.aListeEnnemis[i].iTailleX/2, this.aListeEnnemis[i].iTailleY/2); 
-			ctx.rotate(this.aListeEnnemis[i].fRotationActuelle);
-			ctx.drawImage(this.aListeEnnemis[i].oImage, 
-							  -this.aListeEnnemis[i].iTailleX/2, 
-							  -this.aListeEnnemis[i].iTailleY/2, 
-							  this.aListeEnnemis[i].iTailleX, 
-							  this.aListeEnnemis[i].iTailleX);
-			ctx.restore();
-			
-			this.aListeEnnemis[i].fRotationActuelle = (this.aListeEnnemis[i].fRotationActuelle + this.aListeEnnemis[i].fRotation);
-			
-			// on vérifie si l'ennemi est toujours sur le terrain
-			// Rappel : si ennemiDansTerrain --> renvoie aIntersection=[0:Point1 cote terrain, 1:Point2 cote terrain, 2:Point intersection]	
-			var aListeIntersectionTerrainEnnemi = this.oTerrain.ennemiDansTerrain(this.aListeEnnemis[i]);
+		// on vérifie si l'ennemi est toujours sur le terrain
+		// Rappel : si ennemiDansTerrain --> renvoie aIntersection=[0:Point1 cote terrain, 1:Point2 cote terrain, 2:Point intersection]	
+		var aListeIntersectionTerrainEnnemi = this.oTerrain.ennemiDansTerrain(this.aListeEnnemis[i]);
 
-			if(aListeIntersectionTerrainEnnemi != null)
-			{
-				// rebond
-				this.oTerrain.faireRebond(aListeIntersectionTerrainEnnemi, this.aListeEnnemis[i]);
-				// this.oSonMetal.pause();
-				// this.oSonMetal = new Audio('sons/metalhit.wav');
-				// this.oSonMetal.volume = 0.05;
-				// this.oSonMetal.play();
-			}
-		}
-		
-		// si la souris se trouve dans le canvas et si on ne se trouve pas sur un bouton
-		// on place la cible
-		if(this.bSourisDansTerrain != undefined && this.bSurBoutonPause == false && this.bSurBoutonRejouer == false)
+		if(aListeIntersectionTerrainEnnemi != null)
 		{
-			if(this.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2) < 28)
-				this.bAugmenterTailleCibles = true;
-			else if(this.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2) > 43	)
-				this.bAugmenterTailleCibles = false;
-		
-			if(this.bAugmenterTailleCibles)
-				this.fTailleCibles += 0.4*((fRatioLargeur+fRatioHauteur)/2);
-			else
-				this.fTailleCibles -= 0.4*((fRatioLargeur+fRatioHauteur)/2);
-		
-			// si la souris se trouve dans le Terrain
-			if(this.bSourisDansTerrain)
-			{
-				ctx.save(); 
-				ctx.translate(oPositionSouris.x-(this.fTailleCibles/2), oPositionSouris.y-(this.fTailleCibles/2)); 
-				ctx.translate(this.fTailleCibles/2, this.fTailleCibles/2); 
-				ctx.rotate(this.fRotationCibles);
-				ctx.drawImage(this.oCibleNok, -(this.fTailleCibles/2), -(this.fTailleCibles/2), this.fTailleCibles, this.fTailleCibles);
-				ctx.restore();
+			// rebond
+			this.oTerrain.faireRebond(aListeIntersectionTerrainEnnemi, this.aListeEnnemis[i]);
+			// this.oSonMetal.pause();
+			// this.oSonMetal = new Audio('sons/metalhit.wav');
+			// this.oSonMetal.volume = 0.05;
+			// this.oSonMetal.play();
+		}
+	}
+	
+	// si la souris se trouve dans le canvas et si on ne se trouve pas sur un bouton
+	// on place la cible
+	if(this.bSourisDansTerrain != undefined && this.bSurBoutonPause == false && this.bSurBoutonRejouer == false)
+	{
+		if(this.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2) < 28)
+			this.bAugmenterTailleCibles = true;
+		else if(this.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2) > 43	)
+			this.bAugmenterTailleCibles = false;
+	
+		if(this.bAugmenterTailleCibles)
+			this.fTailleCibles += 0.4*((fRatioLargeur+fRatioHauteur)/2);
+		else
+			this.fTailleCibles -= 0.4*((fRatioLargeur+fRatioHauteur)/2);
+	
+		// si la souris se trouve dans le Terrain
+		if(this.bSourisDansTerrain)
+		{
+			ctx.save(); 
+			ctx.translate(oPositionSouris.x-(this.fTailleCibles/2), oPositionSouris.y-(this.fTailleCibles/2)); 
+			ctx.translate(this.fTailleCibles/2, this.fTailleCibles/2); 
+			ctx.rotate(this.fRotationCibles);
+			ctx.drawImage(this.oCibleNok, -(this.fTailleCibles/2), -(this.fTailleCibles/2), this.fTailleCibles, this.fTailleCibles);
+			ctx.restore();
+			this.fRotationCibles += 0.05;
+		}
+		// sinon
+		else
+		{
+			ctx.save(); 
+			ctx.translate(oPositionSouris.x-(this.fTailleCibles/2), oPositionSouris.y-(this.fTailleCibles/2)); 
+			ctx.translate(this.fTailleCibles/2, this.fTailleCibles/2); 
+			ctx.rotate(this.fRotationCibles);
+			ctx.drawImage(this.oCibleOk, -(this.fTailleCibles/2), -(this.fTailleCibles/2), this.fTailleCibles, this.fTailleCibles);
+			ctx.restore();
+			if(!mouseDown)
 				this.fRotationCibles += 0.05;
-			}
-			// sinon
 			else
 			{
-				ctx.save(); 
-				ctx.translate(oPositionSouris.x-(this.fTailleCibles/2), oPositionSouris.y-(this.fTailleCibles/2)); 
-				ctx.translate(this.fTailleCibles/2, this.fTailleCibles/2); 
-				ctx.rotate(this.fRotationCibles);
-				ctx.drawImage(this.oCibleOk, -(this.fTailleCibles/2), -(this.fTailleCibles/2), this.fTailleCibles, this.fTailleCibles);
-				ctx.restore();
-				if(!mouseDown)
-					this.fRotationCibles += 0.05;
-				else
-				{
-					ctx.beginPath();
-					ctx.arc(oPositionSouris.x, oPositionSouris.y, 4*((fRatioLargeur+fRatioHauteur)/2), 0, 2 * Math.PI);
-					ctx.fillStyle = this.oTrait.sCouleur;
-					ctx.fill();
-				}
+				ctx.beginPath();
+				ctx.arc(oPositionSouris.x, oPositionSouris.y, 4*((fRatioLargeur+fRatioHauteur)/2), 0, 2 * Math.PI);
+				ctx.fillStyle = this.oTrait.sCouleur;
+				ctx.fill();
 			}
 		}
-		
-		// bouton Rejouer
-		if(this.bSurBoutonRejouer)
-		{
-			ctx.drawImage(this.oBoutonRejouerHover, 
-								0, 
-								0, 
-								this.oBoutonRejouer.width, 
-								this.oBoutonRejouer.height, 
-								//position
-								this.oPositionBoutonRejouer.x,
-								this.oPositionBoutonRejouer.y,
-								this.iTailleBouton, 
-								this.iTailleBouton);
-		}
-		else
-		{
-			ctx.drawImage(this.oBoutonRejouer, 
-								0, 
-								0, 
-								this.oBoutonRejouer.width, 
-								this.oBoutonRejouer.height, 
-								//position
-								this.oPositionBoutonRejouer.x,
-								this.oPositionBoutonRejouer.y,
-								this.iTailleBouton, 
-								this.iTailleBouton);
-		}
-		
-		// bouton pause
-		if(this.bSurBoutonPause)
-		{
-			ctx.drawImage(this.oBoutonPauseHover, 
-								0, 
-								0, 
-								this.oBoutonPause.width, 
-								this.oBoutonPause.height, 
-								//position
-								this.oPositionBoutonPause.x,
-								this.oPositionBoutonPause.y,
-								this.iTailleBouton, 
-								this.iTailleBouton);
-		}
-		else
-		{
-			ctx.drawImage(this.oBoutonPause, 
-								0, 
-								0, 
-								this.oBoutonPause.width, 
-								this.oBoutonPause.height, 
-								//position
-								this.oPositionBoutonPause.x,
-								this.oPositionBoutonPause.y,
-								this.iTailleBouton, 
-								this.iTailleBouton);
-		}
+	}
+	
+	// bouton Rejouer
+	if(this.bSurBoutonRejouer)
+	{
+		ctx.drawImage(this.oBoutonRejouerHover, 
+							0, 
+							0, 
+							this.oBoutonRejouer.width, 
+							this.oBoutonRejouer.height, 
+							//position
+							this.oPositionBoutonRejouer.x,
+							this.oPositionBoutonRejouer.y,
+							this.iTailleBouton, 
+							this.iTailleBouton);
+	}
+	else
+	{
+		ctx.drawImage(this.oBoutonRejouer, 
+							0, 
+							0, 
+							this.oBoutonRejouer.width, 
+							this.oBoutonRejouer.height, 
+							//position
+							this.oPositionBoutonRejouer.x,
+							this.oPositionBoutonRejouer.y,
+							this.iTailleBouton, 
+							this.iTailleBouton);
+	}
+	
+	// bouton pause
+	if(this.bSurBoutonPause)
+	{
+		ctx.drawImage(this.oBoutonPauseHover, 
+							0, 
+							0, 
+							this.oBoutonPause.width, 
+							this.oBoutonPause.height, 
+							//position
+							this.oPositionBoutonPause.x,
+							this.oPositionBoutonPause.y,
+							this.iTailleBouton, 
+							this.iTailleBouton);
+	}
+	else
+	{
+		ctx.drawImage(this.oBoutonPause, 
+							0, 
+							0, 
+							this.oBoutonPause.width, 
+							this.oBoutonPause.height, 
+							//position
+							this.oPositionBoutonPause.x,
+							this.oPositionBoutonPause.y,
+							this.iTailleBouton, 
+							this.iTailleBouton);
 	}
 	
 	// si l'aire minimale a été atteinte
@@ -448,9 +444,7 @@ Partie.prototype.lancer = function()
 			niveau="0"+niveau.toString();
 		}
 		
-		
-		saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel);//On garde le score en sauvegarde
-		
+		saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100);//On garde le score en sauvegarde
 	}
 	
 	/*
@@ -852,6 +846,129 @@ Partie.prototype.lancer = function()
 *** ========================================================================================================================================== 
 **/
 Partie.prototype.lancerPause = function()
+{
+	// on crée le canvas
+	ctx.beginPath();
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+	
+	// les étoiles
+	for( var i = 0; i < this.stars.length; i++ ) 
+	{
+		if( this.stars[i].z <= 0 ) 
+		{
+			this.stars[i].x = randomRange(-25,25);
+			this.stars[i].y = randomRange(-25,25);
+			this.stars[i].z = this.MAX_DEPTH;
+		}
+ 
+		var k  = 128.0 / this.stars[i].z;
+		var px = this.stars[i].x * k + canvas.width / 2;
+		var py = this.stars[i].y * k + canvas.height / 2;
+ 
+		if( px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height ) 
+		{
+			var size = (1 - this.stars[i].z / 32.0) * this.SIZE_STARS;
+			var shade = parseInt((1 - this.stars[i].z / 32.0) * 255);
+			
+			ctx.beginPath();
+			ctx.arc(px,py, size/2, 0, 2 * Math.PI);
+			ctx.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
+			ctx.fill();
+		}
+	}
+	
+	// on trace le Terrain
+	this.oTerrain.tracer();
+	
+	// on trace la barre d'avancement
+	this.oBarreAvancement.tracer(this.oTerrain);
+	
+	// bouton Rejouer
+	ctx.drawImage(this.oBoutonRejouer, 
+					0, 
+					0, 
+					this.oBoutonRejouer.width, 
+					this.oBoutonRejouer.height, 
+					//position
+					this.oPositionBoutonRejouer.x,
+					this.oPositionBoutonRejouer.y,
+					this.iTailleBouton, 
+					this.iTailleBouton);
+	
+	// bouton pause
+	ctx.drawImage(this.oBoutonPause, 
+					0, 
+					0, 
+					this.oBoutonPause.width, 
+					this.oBoutonPause.height, 
+					//position
+					this.oPositionBoutonPause.x,
+					this.oPositionBoutonPause.y,
+					this.iTailleBouton, 
+					this.iTailleBouton);
+				
+	// les ennemis
+	for(var i=0; i<this.aListeEnnemis.length; i++)
+	{	
+		ctx.drawImage(this.aListeEnnemis[i].oImage, 
+						  0, 
+						  0, 
+						  this.aListeEnnemis[i].oImage.width, 
+						  this.aListeEnnemis[i].oImage.height,
+						  this.aListeEnnemis[i].oPosition.x,
+						  this.aListeEnnemis[i].oPosition.y,
+						  this.aListeEnnemis[i].iTailleX, 
+						  this.aListeEnnemis[i].iTailleX);
+	}
+	
+	// fond de pause
+	ctx.globalAlpha = 0.5;
+	ctx.fillStyle = "rgb(255,255,255)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+	ctx.globalAlpha = 1;
+	
+	ctx.textAlign = 'center';
+	ctx.font = this.iTailleFontMenu*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
+	ctx.fillStyle = "black";
+	ctx.fillText("reprendre", this.oPositionBoutonReprendre.x, this.oPositionBoutonReprendre.y);
+	ctx.fillText("menu",this.oPositionBoutonMenu.x, this.oPositionBoutonMenu.y);
+	this.oPositionBoutonReprendre = new Point(canvas.width/2, canvas.height/2-25*((fRatioHauteur+fRatioLargeur)/2));
+	this.oPositionBoutonMenu = new Point(canvas.width/2, canvas.height/2+25*((fRatioHauteur+fRatioLargeur)/2));
+	ctx.textAlign = 'left';
+	
+	if(this.bSurBoutonReprendre)
+	{
+		ctx.save(); 
+		ctx.translate(canvas.width/2-110*((fRatioHauteur+fRatioLargeur)/2)-(this.fTailleBoutonDeSelection/2), this.oPositionBoutonReprendre.y-18*((fRatioHauteur+fRatioLargeur)/2)/2-(this.fTailleBoutonDeSelection/2)); 
+		ctx.translate(this.fTailleBoutonDeSelection/2, this.fTailleBoutonDeSelection/2); 
+		ctx.rotate(this.fRotationCibles);
+		ctx.drawImage(this.oBoutonDeSelection, -(this.fTailleBoutonDeSelection/2), -(this.fTailleBoutonDeSelection/2), this.fTailleBoutonDeSelection, this.fTailleBoutonDeSelection);
+		ctx.restore();
+		this.fRotationCibles += 0.05;
+		this.fTailleBoutonDeSelection = 30*((fRatioLargeur+fRatioHauteur)/2);
+	}
+	if(this.bSurBoutonMenu)
+	{
+		ctx.save(); 
+		ctx.translate(canvas.width/2-110*((fRatioHauteur+fRatioLargeur)/2)-(this.fTailleBoutonDeSelection/2), this.oPositionBoutonMenu.y-18*((fRatioHauteur+fRatioLargeur)/2)/2-(this.fTailleBoutonDeSelection/2)); 
+		ctx.translate(this.fTailleBoutonDeSelection/2, this.fTailleBoutonDeSelection/2); 
+		ctx.rotate(this.fRotationCibles);
+		ctx.drawImage(this.oBoutonDeSelection, -(this.fTailleBoutonDeSelection/2), -(this.fTailleBoutonDeSelection/2), this.fTailleBoutonDeSelection, this.fTailleBoutonDeSelection);
+		ctx.restore();
+		this.fRotationCibles += 0.05;
+		this.fTailleBoutonDeSelection = 30*((fRatioLargeur+fRatioHauteur)/2);
+	}
+}
+
+/**
+*** ==========================================================================================================================================
+**** on lance l'écran de victoire
+*** ========================================================================================================================================== 
+**/
+Partie.prototype.lancerVictoire = function()
 {
 	// on crée le canvas
 	ctx.beginPath();
