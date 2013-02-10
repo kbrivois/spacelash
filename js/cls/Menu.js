@@ -75,7 +75,7 @@ function Menu()
 	}
 	
 	this.fEcartX_Vignettes = 30*((fRatioLargeur+fRatioHauteur)/2);
-	this.fEcartY_Vignettes = 75*((fRatioLargeur+fRatioHauteur)/2);
+	this.fEcartY_Vignettes = 70*((fRatioLargeur+fRatioHauteur)/2);
 	this.iTailleVignettes = 50*((fRatioLargeur+fRatioHauteur)/2);
 	
 	// ------------------------ Initialisation des écrans de niveaux (nombre d'écrans)
@@ -376,6 +376,21 @@ Menu.prototype.lancer = function()
 							this.iTailleVignettes, 
 							this.iTailleVignettes);
 		
+		// ombre du terrain
+		ctx.globalAlpha = 0.5;
+		ctx.beginPath();
+		ctx.fillStyle="rgb(90,90,90)";
+		ctx.moveTo(this.aListeVignettes[i][0][0].x+2*((fRatioLargeur+fRatioHauteur)/2), this.aListeVignettes[i][0][0].y+2*((fRatioLargeur+fRatioHauteur)/2));
+		
+		for(var j=1; j < this.aListeVignettes[i][0].length; j++)
+		{
+			ctx.lineTo(this.aListeVignettes[i][0][j].x+2*((fRatioLargeur+fRatioHauteur)/2), this.aListeVignettes[i][0][j].y+2*((fRatioLargeur+fRatioHauteur)/2));
+		}
+		ctx.closePath();
+		ctx.fill();
+		ctx.globalAlpha = 1;
+		
+		// terrain dans la vignette
 		ctx.beginPath();
 		ctx.lineWidth=1*((fRatioLargeur+fRatioHauteur)/2);
 		ctx.strokeStyle="white";
@@ -386,9 +401,7 @@ Menu.prototype.lancer = function()
 		{
 			ctx.lineTo(this.aListeVignettes[i][0][j].x, this.aListeVignettes[i][0][j].y);
 		}
-		
 		ctx.closePath();
-	
 		ctx.fill();
 		ctx.stroke();
 		
@@ -411,34 +424,29 @@ Menu.prototype.lancer = function()
 		// score
 		var iNbCoupes = "-";
 		var iAire = "-";
+		var iScore = "-";
 		for(var j=0; j<oSauvegarde.length; j++)
 		{
 			if(oSauvegarde[j].id-1 == i)
 			{
-				iNbCoupes = oSauvegarde[j].nbCoupe+" coupes";
-				iAire = Math.floor(oSauvegarde[j].aireMinimaleAtteinte)+"%";
+				iNbCoupes = oSauvegarde[j].nbCoupe;
+				iAire = Math.floor(oSauvegarde[j].aireMinimaleAtteinte);
+				iScore = ((100-iAire) * 50) - (iNbCoupes * 200);
 				break;
 			}
 		}
 		
+		ctx.globalAlpha = 0.5;
 		ctx.textAlign = 'center';		
-		ctx.font = 5*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.font = 6*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
 		ctx.fillStyle = "rgb(90,90,90)";
-		ctx.fillText("01:15", this.aListeVignettes[i][1].x + this.iTailleVignettes/2 + 0.8*((fRatioLargeur+fRatioHauteur)/2) , this.aListeVignettes[i][1].y + this.iTailleVignettes + 5*((fRatioLargeur+fRatioHauteur)/2) -  0.8*((fRatioLargeur+fRatioHauteur)/2));
-		ctx.fillText(iNbCoupes, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 + 0.8*((fRatioLargeur+fRatioHauteur)/2) , this.aListeVignettes[i][1].y + this.iTailleVignettes + 11*((fRatioLargeur+fRatioHauteur)/2) -  0.8*((fRatioLargeur+fRatioHauteur)/2));
-		ctx.fillText(iAire, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 + 0.8*((fRatioLargeur+fRatioHauteur)/2) , this.aListeVignettes[i][1].y + this.iTailleVignettes + 17*((fRatioLargeur+fRatioHauteur)/2) -  0.8*((fRatioLargeur+fRatioHauteur)/2));
-		ctx.fillText("1200", this.aListeVignettes[i][1].x + this.iTailleVignettes/2 + 0.8*((fRatioLargeur+fRatioHauteur)/2) , this.aListeVignettes[i][1].y + this.iTailleVignettes + 23*((fRatioLargeur+fRatioHauteur)/2) -  0.8*((fRatioLargeur+fRatioHauteur)/2));
-	
-		ctx.font = 5*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
-		ctx.fillStyle = "white";
-		ctx.fillText("01:15", this.aListeVignettes[i][1].x + this.iTailleVignettes/2 , this.aListeVignettes[i][1].y + this.iTailleVignettes + 5*((fRatioLargeur+fRatioHauteur)/2));
-		ctx.fillText(iNbCoupes, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 , this.aListeVignettes[i][1].y + this.iTailleVignettes + 11*((fRatioLargeur+fRatioHauteur)/2));
-		ctx.fillText(iAire, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 , this.aListeVignettes[i][1].y + this.iTailleVignettes + 17*((fRatioLargeur+fRatioHauteur)/2));
-		ctx.fillText("1200", this.aListeVignettes[i][1].x + this.iTailleVignettes/2 , this.aListeVignettes[i][1].y + this.iTailleVignettes + 23*((fRatioLargeur+fRatioHauteur)/2));
-		ctx.textAlign = 'left';
-		
-		
+		ctx.fillText(iScore, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 + 0.8*((fRatioLargeur+fRatioHauteur)/2) , this.aListeVignettes[i][1].y + this.iTailleVignettes + 7*((fRatioLargeur+fRatioHauteur)/2) -  0.8*((fRatioLargeur+fRatioHauteur)/2));
 		ctx.globalAlpha = 1;
+		
+		ctx.font = 6*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillStyle = "white";
+		ctx.fillText(iScore, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 , this.aListeVignettes[i][1].y + this.iTailleVignettes + 7*((fRatioLargeur+fRatioHauteur)/2));
+		ctx.textAlign = 'left';
 	}
 }
 
