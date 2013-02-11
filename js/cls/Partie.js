@@ -468,7 +468,7 @@ Partie.prototype.lancer = function()
 			{
 				if(oSauvegarde[i].id==iNiveauSelectionne+1)
 				{
-					if(iScore>oSauvegarde[iNiveauSelectionne].score)
+					if(iScore>oSauvegarde[i].score)
 					{
 						saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);//On garde le score en sauvegarde
 					}
