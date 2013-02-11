@@ -424,14 +424,22 @@ Menu.prototype.lancer = function()
 		// score
 		var iNbCoupes = "-";
 		var iAire = "-";
+		var iTemps = "-";
 		var iScore = "-";
+		var scoreTemps=0;
 		for(var j=0; j<oSauvegarde.length; j++)
 		{
 			if(oSauvegarde[j].id-1 == i)
 			{
 				iNbCoupes = oSauvegarde[j].nbCoupe;
 				iAire = Math.floor(oSauvegarde[j].aireMinimaleAtteinte);
-				iScore = ((100-iAire) * 50) - (iNbCoupes * 200);
+				iTemps= oSauvegarde[j].temps;
+				scoreTemps=3000-(iTemps*50);
+				if(scoreTemps<=0)
+				{
+					scoreTemps=0;
+				}
+				iScore = ((100-iAire) * 50) - (iNbCoupes * 200)+scoreTemps;
 				break;
 			}
 		}

@@ -65,15 +65,26 @@ var mouseClickPartie = function(e)
 	if(oPartie.bSurBoutonPause)
 	{
 		if(!oPartie.bPause)
+		{
+			//On met le chrono en pause
+			oPartie.oChrono.pause();
 			oPartie.bPause = true;
+		}
 		else
+		{
+			//On relance le chrono
+			oPartie.oChrono.start();
 			oPartie.bPause = false;
+			
+		}
+			
 	}
 	// si on clique sur le bouton Rejouer
 	else if(oPartie.bSurBoutonRejouer)
 	{
-		oPartie.bGagne = false;
 		oPartie.reset();
+		//Reset du chrono
+		oPartie.oChrono.reset();
 	}
 	
 	//si le jeu est en pause
@@ -82,16 +93,17 @@ var mouseClickPartie = function(e)
 		// si on clique sur le bouton reprendre
 		if(oPartie.bSurBoutonReprendre)
 		{
+			//On relance le chrono
+			oPartie.oChrono.start();
 			oPartie.bPause = false;
 			oPartie.bSurBoutonReprendre = false;
 		}
 		// si on clique sur le bouton menu
 		else if(oPartie.bSurBoutonMenu)
 		{
-			oPartie.oSonPartie.pause();
-			oPartie.bSurBoutonMenu = false;
 			oPartie = null;
 			mainMenu();
+			oPartie.bSurBoutonMenu = false;
 		}
 	}
 }

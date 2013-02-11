@@ -50,6 +50,9 @@ déclaration des variables pour la partie
 var oPartie;
 var bChargementComplet = false;
 
+
+
+
 /*** ================================================================================================================================================
 Main menu
 ====================================================================================================================================================*/
@@ -65,13 +68,7 @@ var mainMenu = function ()
 		oMenu = new Menu();
 
 		// ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
-		// ------------------------ et lancement des fonctions.		
-		canvas.removeEventListener('mousemove', mouseMovementPartie, false);
-		canvas.removeEventListener('mousedown', mouseClickPartie, false);
-		canvas.removeEventListener('mouseup', mouseUnClickPartie, false);
-		canvas.removeEventListener('mouseout', mouseOutCanvasPartie, false);
-		window.removeEventListener('resize', screenResizePartie, false);
-		
+		// ------------------------ et lancement des fonctions.
 		canvas.addEventListener('mousemove', mouseMovementMenu, false);
 		canvas.addEventListener('mousedown', mouseClickMenu, false);
 		canvas.addEventListener('mouseup', mouseUnClickMenu, false);
@@ -148,47 +145,45 @@ var mainPartie = function ()
 	now = Date.now();
 	delta = now - then;
 	
-	if(oPartie != null)
+	
+	if(iCompteurImages == iNombresImages && bChargementNiveauxComplet && iNiveauSelectionne != null)
 	{
-		if(iCompteurImages == iNombresImages && bChargementNiveauxComplet && iNiveauSelectionne != null)
+		if(!bChargementComplet)
 		{
-			if(!bChargementComplet)
+			// ennemis
+			for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Ennemis.length; i++)
 			{
-				// ennemis
-				for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Ennemis.length; i++)
-				{
-					var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[0], oNiveauPartie[iNiveauSelectionne].Ennemis[i].vitesse, new Point(0,0), oNiveauPartie[iNiveauSelectionne].Ennemis[i].rotation);
-					// On place l'ennemi sur le terrain (le Terrain)
-					// on récupére les coordonnées
-					var oPositionEnnemi = oPartie.oTerrain.placerEnnemi(oEnnemi);
-					oEnnemi.oPosition = oPositionEnnemi;
-					// on calcule le déplacement de l'ennemi
-					oEnnemi.calculerDeplacement();
+				var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[0], oNiveauPartie[iNiveauSelectionne].Ennemis[i].vitesse, new Point(0,0), oNiveauPartie[iNiveauSelectionne].Ennemis[i].rotation);
+				// On place l'ennemi sur le terrain (le Terrain)
+				// on récupére les coordonnées
+				var oPositionEnnemi = oPartie.oTerrain.placerEnnemi(oEnnemi);
+				oEnnemi.oPosition = oPositionEnnemi;
+				// on calcule le déplacement de l'ennemi
+				oEnnemi.calculerDeplacement();
 
-					oPartie.aListeEnnemis.push(oEnnemi);
-				}
-				
-				// porte du bas
-				oPartie.fLargeurPorteBas = oPartie.oPorteBas.width * (oPartie.fLargeurPorteDroite/oPartie.oPorteDroite.width);
-				oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
-				oPartie.oPositionPorteBas = new Point((canvas.width/2)-(oPartie.fLargeurPorteBas/2),canvas.height);
-				
-				bChargementComplet = true;
+				oPartie.aListeEnnemis.push(oEnnemi);
 			}
 			
-			if(!oPartie.bPause && !oPartie)
-			{
-				// on lance la partie
-				oPartie.lancer();
-			}
-			else
-			{
-				// on lance le menu de pause
-				oPartie.lancerPause();
-			}
-		}	
-		requestAnimationFrame(mainPartie);
+			// porte du bas
+			oPartie.fLargeurPorteBas = oPartie.oPorteBas.width * (oPartie.fLargeurPorteDroite/oPartie.oPorteDroite.width);
+			oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
+			oPartie.oPositionPorteBas = new Point((canvas.width/2)-(oPartie.fLargeurPorteBas/2),canvas.height);
+			
+			bChargementComplet = true;
+		}
+		
+		if(!oPartie.bPause)
+		{
+			oPartie.lancer();
+		}
+		else
+		{
+			// on lance le menu de pause
+			oPartie.lancerPause();
+		}
 	}
+	
+	requestAnimationFrame(mainPartie);
 };
 
 // On lance le jeu
