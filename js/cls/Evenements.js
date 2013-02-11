@@ -72,6 +72,7 @@ var mouseClickPartie = function(e)
 	// si on clique sur le bouton Rejouer
 	else if(oPartie.bSurBoutonRejouer)
 	{
+		oPartie.bGagne = false;
 		oPartie.reset();
 	}
 	
@@ -87,9 +88,10 @@ var mouseClickPartie = function(e)
 		// si on clique sur le bouton menu
 		else if(oPartie.bSurBoutonMenu)
 		{
+			oPartie.oSonPartie.pause();
+			oPartie.bSurBoutonMenu = false;
 			oPartie = null;
 			mainMenu();
-			oPartie.bSurBoutonMenu = false;
 		}
 	}
 }

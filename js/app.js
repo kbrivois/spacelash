@@ -65,7 +65,13 @@ var mainMenu = function ()
 		oMenu = new Menu();
 
 		// ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
-		// ------------------------ et lancement des fonctions.
+		// ------------------------ et lancement des fonctions.		
+		canvas.removeEventListener('mousemove', mouseMovementPartie, false);
+		canvas.removeEventListener('mousedown', mouseClickPartie, false);
+		canvas.removeEventListener('mouseup', mouseUnClickPartie, false);
+		canvas.removeEventListener('mouseout', mouseOutCanvasPartie, false);
+		window.removeEventListener('resize', screenResizePartie, false);
+		
 		canvas.addEventListener('mousemove', mouseMovementMenu, false);
 		canvas.addEventListener('mousedown', mouseClickMenu, false);
 		canvas.addEventListener('mouseup', mouseUnClickMenu, false);
@@ -142,45 +148,47 @@ var mainPartie = function ()
 	now = Date.now();
 	delta = now - then;
 	
-	if(iCompteurImages == iNombresImages && bChargementNiveauxComplet && iNiveauSelectionne != null)
+	if(oPartie != null)
 	{
-		if(!bChargementComplet)
+		if(iCompteurImages == iNombresImages && bChargementNiveauxComplet && iNiveauSelectionne != null)
 		{
-			// ennemis
-			for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Ennemis.length; i++)
+			if(!bChargementComplet)
 			{
-				var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[0], oNiveauPartie[iNiveauSelectionne].Ennemis[i].vitesse, new Point(0,0), oNiveauPartie[iNiveauSelectionne].Ennemis[i].rotation);
-				// On place l'ennemi sur le terrain (le Terrain)
-				// on récupére les coordonnées
-				var oPositionEnnemi = oPartie.oTerrain.placerEnnemi(oEnnemi);
-				oEnnemi.oPosition = oPositionEnnemi;
-				// on calcule le déplacement de l'ennemi
-				oEnnemi.calculerDeplacement();
+				// ennemis
+				for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Ennemis.length; i++)
+				{
+					var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[0], oNiveauPartie[iNiveauSelectionne].Ennemis[i].vitesse, new Point(0,0), oNiveauPartie[iNiveauSelectionne].Ennemis[i].rotation);
+					// On place l'ennemi sur le terrain (le Terrain)
+					// on récupére les coordonnées
+					var oPositionEnnemi = oPartie.oTerrain.placerEnnemi(oEnnemi);
+					oEnnemi.oPosition = oPositionEnnemi;
+					// on calcule le déplacement de l'ennemi
+					oEnnemi.calculerDeplacement();
 
-				oPartie.aListeEnnemis.push(oEnnemi);
+					oPartie.aListeEnnemis.push(oEnnemi);
+				}
+				
+				// porte du bas
+				oPartie.fLargeurPorteBas = oPartie.oPorteBas.width * (oPartie.fLargeurPorteDroite/oPartie.oPorteDroite.width);
+				oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
+				oPartie.oPositionPorteBas = new Point((canvas.width/2)-(oPartie.fLargeurPorteBas/2),canvas.height);
+				
+				bChargementComplet = true;
 			}
 			
-			// porte du bas
-			oPartie.fLargeurPorteBas = oPartie.oPorteBas.width * (oPartie.fLargeurPorteDroite/oPartie.oPorteDroite.width);
-			oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
-			oPartie.oPositionPorteBas = new Point((canvas.width/2)-(oPartie.fLargeurPorteBas/2),canvas.height);
-			
-			bChargementComplet = true;
-		}
-		
-		if(!oPartie.bPause)
-		{
-			// on lance la partie
-			oPartie.lancer();
-		}
-		else
-		{
-			// on lance le menu de pause
-			oPartie.lancerPause();
-		}
+			if(!oPartie.bPause && !oPartie)
+			{
+				// on lance la partie
+				oPartie.lancer();
+			}
+			else
+			{
+				// on lance le menu de pause
+				oPartie.lancerPause();
+			}
+		}	
+		requestAnimationFrame(mainPartie);
 	}
-	
-	requestAnimationFrame(mainPartie);
 };
 
 // On lance le jeu

@@ -102,6 +102,13 @@ function Partie()
 	this.oSonEnnemiTouche = new Audio('sons/ennemiTouche.wav');
 	this.oSonCoupe = new Audio('sons/swordCut.wav');
 	this.oSonStars = new Audio('sons/brake.wav');
+	this.oSonPartie = new Audio('sons/partie.wav');
+	this.oSonPartie.addEventListener('ended', function() {
+		this.currentTime = 0;
+		this.play();
+	}, false);
+	this.oSonPartie.volume = 1;
+	this.oSonPartie.play();
 	
 	this.fOpaciteGlobale = 0;
 	this.fGrandeurCercle = 0;
@@ -119,7 +126,7 @@ function Partie()
 	this.initStars();
 
 	// ------------------------ Variables liées à la victoire du joueur
-	this.GAGNE = false;
+	this.bGagne = false;
 	
 	// Porte en metal
 	// gauche
@@ -434,9 +441,9 @@ Partie.prototype.lancer = function()
 	}
 	
 	// si l'aire minimale a été atteinte
-	if(!this.GAGNE && this.oTerrain.fAireTerrainActuel <= this.oTerrain.fAireMinimale)
+	if(!this.bGagne && this.oTerrain.fAireTerrainActuel <= this.oTerrain.fAireMinimale)
 	{
-		this.GAGNE = true;
+		this.bGagne = true;
 		
 		var niveau=iNiveauSelectionne+1;
 		if(niveau.toString().length==1)
@@ -460,38 +467,12 @@ Partie.prototype.lancer = function()
 	*/
 	
 	// Si le joueur a gagné
-	if(this.GAGNE)
+	if(this.bGagne)
 	{
-		this.oTerrain.supprimerPartie();
-		
-		// On ferme de plus en plus la porte gauche
-		if(this.oPositionPorteGauche.x < 0)
+		if(this.oTerrain.bDisparitionPartie)
 		{
-			if(this.oPositionPorteGauche.x + (canvas.width/2)/50 > 0)
-				this.oPositionPorteGauche.x += -this.oPositionPorteGauche.x;
-			else
-				this.oPositionPorteGauche.x += (canvas.width/2)/50;
+			this.oTerrain.supprimerPartie();
 		}
-		// On ferme de plus en plus la porte droite
-		if(this.oPositionPorteDroite.x > canvas.width/2)
-		{
-			if(this.oPositionPorteDroite.x - (canvas.width/2)/50 < canvas.width/2)
-				this.oPositionPorteDroite.x -= this.oPositionPorteDroite.x - canvas.width/2;
-			else
-				this.oPositionPorteDroite.x -= (canvas.width/2)/50;
-		}
-		// On ferme de plus en plus la porte bas
-		if(this.oPositionPorteBas.y > canvas.height-this.fHauteurPorteBas)
-		{
-			if(this.oPositionPorteBas.y - fRatioHauteur*3 < canvas.height-this.fHauteurPorteBas)
-				this.oPositionPorteBas.y -= this.oPositionPorteBas.y - (canvas.height-this.fHauteurPorteBas);
-			else
-				this.oPositionPorteBas.y -= fRatioHauteur*3;
-		}
-		
-		ctx.drawImage(this.oPorteGauche, this.oPositionPorteGauche.x, this.oPositionPorteGauche.y, this.fLargeurPorteGauche, this.fHauteurPorteGauche);
-		ctx.drawImage(this.oPorteDroite, this.oPositionPorteDroite.x, this.oPositionPorteDroite.y, this.fLargeurPorteDroite, this.fHauteurPorteDroite);
-		ctx.drawImage(this.oPorteBas, this.oPositionPorteBas.x, this.oPositionPorteBas.y, this.fLargeurPorteBas, this.fHauteurPorteBas);
 		
 		// si les ennemis ne sont pas à l'arrêt, on ralenti les ennemis
 		if(this.aListeEnnemis[0].fVitesse != 0)
