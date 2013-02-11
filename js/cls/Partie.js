@@ -454,7 +454,35 @@ Partie.prototype.lancer = function()
 			niveau="0"+niveau.toString();
 		}
 		
-		saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps);//On garde le score en sauvegarde
+		var scoreTemps=3000-(temps*50);
+		if(scoreTemps<=0)
+		{
+			scoreTemps=0;
+		}
+		var iScore = ((100-Math.floor(this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100)) * 50) - (this.oTerrain.iNbCoupe * 200)+scoreTemps;
+
+		for(var i=0 ;i<oSauvegarde.length ; i++)
+		{
+			if(oSauvegarde[i].id==iNiveauSelectionne+1)
+			{
+				if(iScore>oSauvegarde[iNiveauSelectionne].score)
+				{
+					saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);//On garde le score en sauvegarde
+				}
+				else
+				{
+					console.log("Gagné mais score de merde "+ iScore );
+				}
+				
+			}
+			else
+			{
+				saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);
+			}
+		}
+		
+
+		
 	}
 	
 	/*
@@ -527,6 +555,9 @@ Partie.prototype.lancer = function()
 	// Trait a touché un ennemi
 	else if(this.oTrait.bToucheEnnemi)
 	{
+		//on relance le chrono
+		this.oChrono.reset();
+		
 		this.oTrait.disparaitre();
 	
 		// si les ennemis ne sont pas à l'arrêt, on ralenti les ennemis
