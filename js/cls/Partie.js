@@ -281,6 +281,7 @@ Partie.prototype.dessinerStars = function()
 **/
 Partie.prototype.lancer = function()
 {
+
 	// on crée le canvas
 	ctx.beginPath();
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -461,25 +462,34 @@ Partie.prototype.lancer = function()
 		}
 		var iScore = ((100-Math.floor(this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100)) * 50) - (this.oTerrain.iNbCoupe * 200)+scoreTemps;
 
-		for(var i=0 ;i<oSauvegarde.length ; i++)
+		if(oSauvegarde.length!=0)
 		{
-			if(oSauvegarde[i].id==iNiveauSelectionne+1)
+			for(var i=0 ;i<oSauvegarde.length ; i++)
 			{
-				if(iScore>oSauvegarde[iNiveauSelectionne].score)
+				if(oSauvegarde[i].id==iNiveauSelectionne+1)
 				{
-					saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);//On garde le score en sauvegarde
+					if(iScore>oSauvegarde[iNiveauSelectionne].score)
+					{
+						saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);//On garde le score en sauvegarde
+					}
+					else
+					{
+						console.log("Gagné mais score de merde "+ iScore );
+					}
+					
 				}
 				else
 				{
-					console.log("Gagné mais score de merde "+ iScore );
+					
+					saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);
 				}
-				
-			}
-			else
-			{
-				saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);
 			}
 		}
+		else{
+			saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);
+		}
+		
+		
 		
 
 		
