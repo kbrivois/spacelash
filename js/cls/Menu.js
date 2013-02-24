@@ -16,8 +16,29 @@ function Menu(bEcranAccueil, bEcranNiveaux)
 		iCompteurImages++;
 	}
 	
-	// ------------------------ Vignettes
+	/*** Accueil ***/
 	
+	// ------------------------ Logo "Spacelash"
+	this.oLogo = new Image();
+	this.oLogo.src = 'img/menu/spacelash.png';
+	iNombresImages++;
+	this.oLogo.onload = function()
+	{
+		iCompteurImages++;
+	}
+	
+	// ------------------------ Bouton
+	this.oBouton = new Image();
+	this.oBouton.src = 'img/menu/bouton.png';
+	iNombresImages++;
+	this.oBouton.onload = function()
+	{
+		iCompteurImages++;
+	}
+	
+	/*** Niveaux ***/
+	
+	// ------------------------ Vignettes
 	this.oImageVignette = new Image();
 	this.oImageVignette.src = 'img/menu/vignette2.png';
 	iNombresImages++;
@@ -202,6 +223,39 @@ function Menu(bEcranAccueil, bEcranNiveaux)
 	this.bSlideAuto = false;
 	
 	iNiveauSelectionne = null;
+}
+
+/**
+*** ==========================================================================================================================================
+**** fonction qui permet de dessiner l'accueil
+*** ========================================================================================================================================== 
+**/
+Menu.prototype.lancerAccueil = function()
+{
+	var fRatioHauteurTemp = fRatioHauteur;
+	var fRatioLargeurTemp = fRatioLargeur;
+
+	// ratio
+	if(fRatioLargeur < fRatioHauteur)
+	{		
+		fRatioHauteurTemp = fRatioLargeur;
+	}
+	else
+	{
+		fRatioLargeurTemp = fRatioHauteur;
+	}
+	
+	// on crée le canvas
+	ctx.beginPath();
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	// fond
+	ctx.drawImage(this.oFond, 0, 0, this.oFond.width, this.oFond.height, 0, 0, canvas.width, canvas.height);
+	// logo
+	ctx.drawImage(this.oLogo, 0, 0, this.oLogo.width, this.oLogo.height, 
+				  canvas.width/2 - (this.oLogo.width/2)*((fRatioLargeurTemp+fRatioHauteurTemp)/2)/2, 20*((fRatioLargeurTemp+fRatioHauteurTemp)/2), (this.oLogo.width/2)*((fRatioLargeurTemp+fRatioHauteurTemp)/2), (this.oLogo.height/2)*((fRatioLargeurTemp+fRatioHauteurTemp)/2));
+	// bouton
+	ctx.drawImage(this.oBouton, 0, 0, this.oBouton.width, this.oBouton.height, 
+				  canvas.width/2 - (this.oBouton.width/2)*((fRatioLargeurTemp+fRatioHauteurTemp)/2)/2, canvas.height/2-(this.oBouton.height/2)*((fRatioLargeurTemp+fRatioHauteurTemp)/2)/2, (this.oBouton.width/2)*((fRatioLargeurTemp+fRatioHauteurTemp)/2), (this.oBouton.height/2)*((fRatioLargeurTemp+fRatioHauteurTemp)/2));
 }
 
 
@@ -416,6 +470,7 @@ Menu.prototype.lancer = function()
 		// terrain dans la vignette
 		if(!bDisponible)
 			ctx.globalAlpha = 0.5;
+			
 		ctx.beginPath();
 		ctx.lineWidth=1*((fRatioLargeur+fRatioHauteur)/2);
 		ctx.strokeStyle="white";
@@ -454,7 +509,6 @@ Menu.prototype.lancer = function()
 		{
 			if(oSauvegarde[j].id-1 == i)
 			{
-
 				iScore= oSauvegarde[j].score;
 				break;
 			}
@@ -467,10 +521,13 @@ Menu.prototype.lancer = function()
 		ctx.fillText(iScore, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 + 0.8*((fRatioLargeur+fRatioHauteur)/2) , this.aListeVignettes[i][1].y + this.iTailleVignettes + 7*((fRatioLargeur+fRatioHauteur)/2) -  0.8*((fRatioLargeur+fRatioHauteur)/2));
 		ctx.globalAlpha = 1;
 		
+		if(!bDisponible)
+			ctx.globalAlpha = 0.5;
 		ctx.font = 6*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
 		ctx.fillStyle = "white";
 		ctx.fillText(iScore, this.aListeVignettes[i][1].x + this.iTailleVignettes/2 , this.aListeVignettes[i][1].y + this.iTailleVignettes + 7*((fRatioLargeur+fRatioHauteur)/2));
 		ctx.textAlign = 'left';
+		ctx.globalAlpha = 1;
 	}
 }
 

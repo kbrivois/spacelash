@@ -58,30 +58,45 @@ Main menu
 
 var initMenu = function()
 {
-	mainMenu();
+	if(bChargementNiveauxComplet)
+	{
+		if(oMenu == null)
+		{
+			oMenu = new Menu(true, false);
+			canvas.addEventListener('mousedown', mouseClickAccueil, false);
+			window.addEventListener('resize', screenResizeMenu, false);
+		}
+
+		// si nous nous trouvons sur l'écran d'accueil
+		if(oMenu.bEcranAccueil)
+		{
+			if(iCompteurImages == iNombresImages)
+			{
+				oMenu.lancerAccueil();
+			}
+			requestAnimationFrame(initMenu);
+		}
+		else if(oMenu.bEcranNiveaux)
+		{
+			canvas.removeEventListener('mousedown', mouseClickAccueil, false);
+			// ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
+			// ------------------------ et lancement des fonctions.
+			canvas.addEventListener('mousemove', mouseMovementMenu, false);
+			canvas.addEventListener('mousedown', mouseClickMenu, false);
+			canvas.addEventListener('mouseup', mouseUnClickMenu, false);
+			canvas.addEventListener('mouseout', mouseOutCanvasMenu, false);
+			mainMenu();
+		}
+	}
+	else
+	{
+		requestAnimationFrame(initMenu);
+	}
 }
 
 var mainMenu = function ()
 {
-	// Si on aucun menu n'a encore été initialisé et si l'indexedDB a fini de charger les niveaux
-	if(oPartie == null && oMenu == null && bChargementNiveauxComplet)
-	{
-		fRatioLargeur = (document.documentElement.clientWidth) / fLargeurDeBase;
-		fRatioHauteur = (document.documentElement.clientHeight) / fHauteurDeBase;
-	
-		oMenu = new Menu(true, false);
-
-		// ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
-		// ------------------------ et lancement des fonctions.
-		canvas.addEventListener('mousemove', mouseMovementMenu, false);
-		canvas.addEventListener('mousedown', mouseClickMenu, false);
-		canvas.addEventListener('mouseup', mouseUnClickMenu, false);
-		canvas.addEventListener('mouseout', mouseOutCanvasMenu, false);
-		window.addEventListener('resize', screenResizeMenu, false);
-		
-		requestAnimationFrame(mainMenu);
-	}
-	else if(oMenu != null && bChargementNiveauxComplet)
+	if(oMenu != null && bChargementNiveauxComplet)
 	{
 		now = Date.now();
 		delta = now - then;
@@ -192,4 +207,4 @@ var mainPartie = function ()
 var then = Date.now();
 var now = then;
 var delta = 0;
-mainMenu();
+initMenu();

@@ -114,7 +114,7 @@ var mouseClickPartie = function(e)
 		}
 	}
 	//si le joueur a gagné
-	if(oPartie.bGagne)
+	else if(oPartie.bGagne)
 	{
 		// si on clique sur le bouton rejouer
 		if(oPartie.bSurBoutonReprendre)
@@ -385,6 +385,36 @@ Evénements pour le menu
 /*** ================================================================================================================================================
 Evénements souris
 ====================================================================================================================================================*/
+
+var mouseClickAccueil = function(e)
+{
+	// on récupère les coordonnées de la souris
+	if(e.offsetX || e.offsetY) 
+	{
+        x = e.pageX - getOffset(document.getElementById('menu')).left - window.pageXOffset;
+        y = e.pageY - getOffset(document.getElementById('menu')).top - window.pageYOffset;
+    }
+    else if(e.layerX || e.layerY) 
+	{
+        x = (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft)
+        - getOffset(document.getElementById('menu')).left - window.pageXOffset;
+        y = (e.clientY + document.body.scrollTop + document.documentElement.scrollTop)
+        - getOffset(document.getElementById('menu')).top;
+    }  
+
+	mouseDown = true;
+	
+	oPositionDepartSouris.x = x;
+	oPositionDepartSouris.y = y;
+	
+	// si le joueur clique sur le bouton "jouer"
+	if(y >= canvas.height/2-(oMenu.oBouton.height/2)*((fRatioLargeur+fRatioHauteur)/2)/2 && y <= canvas.height/2+(oMenu.oBouton.height/2)*((fRatioLargeur+fRatioHauteur)/2)/2
+	&& x >= canvas.width/2-(oMenu.oBouton.width/2)*((fRatioLargeur+fRatioHauteur)/2)/2 && x <= canvas.width/2+(oMenu.oBouton.width/2)*((fRatioLargeur+fRatioHauteur)/2)/2)
+	{
+		oMenu.bEcranAccueil = false;
+		oMenu.bEcranNiveaux = true;
+	}
+}
 
 var mouseClickMenu = function(e)
 {
