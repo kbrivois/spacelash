@@ -82,6 +82,7 @@ var mouseClickPartie = function(e)
 	// si on clique sur le bouton Rejouer
 	else if(oPartie.bSurBoutonRejouer)
 	{
+		oPartie.bGagne = false;
 		oPartie.reset();
 		//Reset du chrono
 		oPartie.oChrono.reset();
@@ -101,6 +102,8 @@ var mouseClickPartie = function(e)
 		// si on clique sur le bouton menu
 		else if(oPartie.bSurBoutonMenu)
 		{
+			oPartie.oSonPartie.pause();
+			oPartie.bSurBoutonMenu = false;
 			oPartie = null;
 			canvas.removeEventListener('mousemove', mouseMovementPartie, false);
 			canvas.removeEventListener('mousedown', mouseClickPartie, false);
@@ -131,7 +134,6 @@ var mouseClickPartie = function(e)
 			canvas.removeEventListener('mouseout', mouseOutCanvasPartie, false);
 			window.removeEventListener('resize', screenResizePartie, false);
 			mainMenu();
-			oPartie.bSurBoutonMenu = false;
 		}
 	}
 }

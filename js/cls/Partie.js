@@ -182,6 +182,10 @@ function Partie()
 
 	// ------------------------ barre d'avancement
 	this.oBarreAvancement = new Barre(new Point(20,370), new Point(270,370), 15, "black", this);
+	
+	// ------------------------ Chronometre
+	this.oChrono = new Chronometre();
+	this.oChrono.start();
 }
 
 
@@ -263,6 +267,11 @@ Partie.prototype.lancer = function()
 	
 	// on trace la barre d'avancement
 	this.oBarreAvancement.tracer(this.oTerrain);
+	
+	//on affiche le chrono
+	ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
+	ctx.fillStyle = "white";
+	ctx.fillText(this.oChrono.textMin + ":"+this.oChrono.textSec, 500, 40);	
 	
 	// Deplacement des ennemis, rebonds	
 	for(var i=0; i<this.aListeEnnemis.length; i++)
@@ -405,13 +414,49 @@ Partie.prototype.lancer = function()
 	{
 		this.bGagne = true;
 		
+		//On arrête le chrono et récupère le temps écoulé
+		this.oChrono.pause();
+		var temps=this.oChrono.getTemps();
+		
 		var niveau=iNiveauSelectionne+1;
 		if(niveau.toString().length==1)
 		{
 			niveau="0"+niveau.toString();
 		}
 		
-		saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100);//On garde le score en sauvegarde
+				var scoreTemps=3000-(temps*50);
+		if(scoreTemps<=0)
+		{
+			scoreTemps=0;
+		}
+		var iScore = ((100-Math.floor(this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100)) * 50) - (this.oTerrain.iNbCoupe * 200)+scoreTemps;
+
+		if(oSauvegarde.length!=0)
+		{
+			for(var i=0 ;i<oSauvegarde.length ; i++)
+			{
+				if(oSauvegarde[i].id==iNiveauSelectionne+1)
+				{
+					if(iScore>oSauvegarde[i].score)
+					{
+						saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);//On garde le score en sauvegarde
+					}
+					else
+					{
+						console.log("Gagné mais score de merde "+ iScore );
+					}
+					
+				}
+				else
+				{					
+					saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);
+				}
+			}
+		}
+		else{
+			saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);
+		}
+		
 		readAllSauvegarde();
 	}
 	
@@ -553,7 +598,9 @@ Partie.prototype.lancer = function()
 					this.fOpaciteGlobale = 0;
 					this.fGrandeurCercle = 0;
 					this.bAugmenterOpacite = true;
-					this.oTrait.reset();
+					this.oTrait.reset();					
+					//on relance le chrono
+					this.oChrono.reset();
 				}
 				else
 				{

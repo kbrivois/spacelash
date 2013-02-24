@@ -161,11 +161,12 @@ var mainPartie = function ()
 					oEnnemi.oPosition = oPositionEnnemi;
 					// on calcule le déplacement de l'ennemi
 					oEnnemi.calculerDeplacement();
+
 					oPartie.aListeEnnemis.push(oEnnemi);
 				}
 				bChargementComplet = true;
 			}
-				
+			
 			if(!oPartie.bPause && !oPartie.bGagne)
 			{
 				// on lance la partie
@@ -181,10 +182,11 @@ var mainPartie = function ()
 				// on lance le menu de pause
 				oPartie.lancerPause();
 			}
-		}
+		}	
 		requestAnimationFrame(mainPartie);
 	}
 };
+
 
 // On lance le jeu
 var then = Date.now();
