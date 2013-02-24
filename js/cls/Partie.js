@@ -7,8 +7,6 @@ function Partie()
 	iCompteurImages = 0;
 	iNombresImages = 0;
 	
-
-	
 	// Ratio pour les portes
 	this.fRatioLargeurPorte = fRatioLargeur;
 	this.fRatioHauteurPorte = fRatioHauteur;
@@ -103,6 +101,13 @@ function Partie()
 	this.oSonEnnemiTouche = new Audio('sons/ennemiTouche.wav');
 	this.oSonCoupe = new Audio('sons/swordCut.wav');
 	this.oSonStars = new Audio('sons/brake.wav');
+	this.oSonPartie = new Audio('sons/partie.wav');
+	this.oSonPartie.addEventListener('ended', function() {
+		this.currentTime = 0;
+		this.play();
+	}, false);
+	this.oSonPartie.volume = 1;
+	this.oSonPartie.play();
 	
 	this.fOpaciteGlobale = 0;
 	this.fGrandeurCercle = 0;
@@ -120,7 +125,7 @@ function Partie()
 	this.initStars();
 
 	// ------------------------ Variables liées à la victoire du joueur
-	this.GAGNE = false;
+	this.bGagne = false;
 	this.fLargeurFondVictoire = 0;
 	this.fHauteurFondVictoire = 25;
 	this.oPositionFondVictoire = new Point(canvas.width/2, canvas.height/2-this.fHauteurFondVictoire/2);
@@ -177,11 +182,6 @@ function Partie()
 
 	// ------------------------ barre d'avancement
 	this.oBarreAvancement = new Barre(new Point(20,370), new Point(270,370), 15, "black", this);
-	
-	this.oChrono = new Chronometre();
-	this.oChrono.start();
-
-	
 }
 
 
@@ -251,7 +251,6 @@ Partie.prototype.dessinerStars = function()
 **/
 Partie.prototype.lancer = function()
 {
-
 	// on crée le canvas
 	ctx.beginPath();
     ctx.fillStyle = "rgb(0,0,0)";
@@ -265,13 +264,6 @@ Partie.prototype.lancer = function()
 	// on trace la barre d'avancement
 	this.oBarreAvancement.tracer(this.oTerrain);
 	
-	//on affiche le chrono
-	ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
-	ctx.fillStyle = "white";
-	ctx.fillText(this.oChrono.textMin + ":"+this.oChrono.textSec, 500, 40);	
-	
-	
-
 	// Deplacement des ennemis, rebonds	
 	for(var i=0; i<this.aListeEnnemis.length; i++)
 	{	
@@ -409,13 +401,9 @@ Partie.prototype.lancer = function()
 	}
 	
 	// si l'aire minimale a été atteinte
-	if(!this.GAGNE && this.oTerrain.fAireTerrainActuel <= this.oTerrain.fAireMinimale)
+	if(!this.bGagne && this.oTerrain.fAireTerrainActuel <= this.oTerrain.fAireMinimale)
 	{
-		this.GAGNE = true;
-		
-		//On arrête le chrono et récupère le temps écoulé
-		this.oChrono.pause();
-		var temps=this.oChrono.getTemps();
+		this.bGagne = true;
 		
 		var niveau=iNiveauSelectionne+1;
 		if(niveau.toString().length==1)
@@ -423,44 +411,7 @@ Partie.prototype.lancer = function()
 			niveau="0"+niveau.toString();
 		}
 		
-		var scoreTemps=3000-(temps*50);
-		if(scoreTemps<=0)
-		{
-			scoreTemps=0;
-		}
-		var iScore = ((100-Math.floor(this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100)) * 50) - (this.oTerrain.iNbCoupe * 200)+scoreTemps;
-
-		if(oSauvegarde.length!=0)
-		{
-			for(var i=0 ;i<oSauvegarde.length ; i++)
-			{
-				if(oSauvegarde[i].id==iNiveauSelectionne+1)
-				{
-					if(iScore>oSauvegarde[i].score)
-					{
-						saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);//On garde le score en sauvegarde
-					}
-					else
-					{
-						console.log("Gagné mais score de merde "+ iScore );
-					}
-					
-				}
-				else
-				{
-					
-					saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);
-				}
-			}
-		}
-		else{
-			saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);
-		}
-		
-		
-		
-
-		
+		saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100);//On garde le score en sauvegarde
 		readAllSauvegarde();
 	}
 	
@@ -488,9 +439,6 @@ Partie.prototype.lancer = function()
 	// Trait a touché un ennemi
 	else if(this.oTrait.bToucheEnnemi)
 	{
-		//on relance le chrono
-		this.oChrono.reset();
-		
 		this.oTrait.disparaitre();
 	
 		// si les ennemis ne sont pas à l'arrêt, on ralenti les ennemis
@@ -861,8 +809,6 @@ Partie.prototype.lancerPause = function()
 	// on trace la barre d'avancement
 	this.oBarreAvancement.tracer(this.oTerrain);
 	
-
-	
 	// bouton Rejouer
 	ctx.drawImage(this.oBoutonRejouer, 
 					0, 
@@ -952,7 +898,6 @@ Partie.prototype.lancerPause = function()
 		ctx.restore();
 		this.fRotationCibles += 0.05;
 	}
-
 }
 
 /**
@@ -1156,7 +1101,6 @@ Partie.prototype.lancerVictoire = function()
 **/
 Partie.prototype.reset = function()
 {
-
 	for(var i=0; i<this.aListeEnnemis.length; i++)
 	{
 		this.aListeEnnemis[i].reset();
@@ -1170,7 +1114,5 @@ Partie.prototype.reset = function()
 	this.fOpaciteGlobale = 0;
 	this.oTrait.reset();
 	this.oTerrain.reset();
-	this.oBarreAvancement.reset;
-	
-	
-	}
+	this.oBarreAvancement.reset();
+}

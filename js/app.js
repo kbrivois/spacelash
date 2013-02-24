@@ -145,27 +145,27 @@ var mainPartie = function ()
 	now = Date.now();
 	delta = now - then;
 	
-	
-	if(iCompteurImages == iNombresImages && bChargementNiveauxComplet && iNiveauSelectionne != null)
+	if(oPartie != null)
 	{
-		if(!bChargementComplet)
+		if(iCompteurImages == iNombresImages && bChargementNiveauxComplet && iNiveauSelectionne != null)
 		{
-			// ennemis
-			for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Ennemis.length; i++)
+			if(!bChargementComplet)
 			{
-				var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[0], oNiveauPartie[iNiveauSelectionne].Ennemis[i].vitesse, new Point(0,0), oNiveauPartie[iNiveauSelectionne].Ennemis[i].rotation);
-				// On place l'ennemi sur le terrain (le Terrain)
-				// on récupére les coordonnées
-				var oPositionEnnemi = oPartie.oTerrain.placerEnnemi(oEnnemi);
-				oEnnemi.oPosition = oPositionEnnemi;
-				// on calcule le déplacement de l'ennemi
-				oEnnemi.calculerDeplacement();
-
+				// ennemis
+				for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Ennemis.length; i++)
+				{
+					var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[0], oNiveauPartie[iNiveauSelectionne].Ennemis[i].vitesse, new Point(0,0), oNiveauPartie[iNiveauSelectionne].Ennemis[i].rotation);
+					// On place l'ennemi sur le terrain (le Terrain)
+					// on récupére les coordonnées
+					var oPositionEnnemi = oPartie.oTerrain.placerEnnemi(oEnnemi);
+					oEnnemi.oPosition = oPositionEnnemi;
+					// on calcule le déplacement de l'ennemi
+					oEnnemi.calculerDeplacement();
 					oPartie.aListeEnnemis.push(oEnnemi);
 				}
 				bChargementComplet = true;
 			}
-			
+				
 			if(!oPartie.bPause && !oPartie.bGagne)
 			{
 				// on lance la partie
@@ -181,11 +181,9 @@ var mainPartie = function ()
 				// on lance le menu de pause
 				oPartie.lancerPause();
 			}
-		}	
+		}
 		requestAnimationFrame(mainPartie);
 	}
-	
-	requestAnimationFrame(mainPartie);
 };
 
 // On lance le jeu

@@ -436,7 +436,6 @@ Menu.prototype.lancer = function()
 			{
 
 				iScore= oSauvegarde[j].score;
-
 				break;
 			}
 		}
