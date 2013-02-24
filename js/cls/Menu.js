@@ -363,6 +363,20 @@ Menu.prototype.lancer = function()
 	
 	for(var i=0; i<this.aListeVignettes.length; i++)
 	{
+		var bDisponible = false;
+				
+		// on vérifie si le niveau est accessible
+		if(oSauvegarde.length != 0)
+		{
+			if(i >= 0 && i <= oSauvegarde[oSauvegarde.length-1].id)
+				bDisponible = true;
+		}
+		else
+		{
+			if(i == 0)
+				bDisponible = true;
+		}
+	
 		if(i == iNiveauSelectionne)
 		{
 			//ctx.rect(px,py,size,size);
@@ -383,20 +397,25 @@ Menu.prototype.lancer = function()
 							this.iTailleVignettes);
 		
 		// ombre du terrain
-		ctx.globalAlpha = 0.5;
-		ctx.beginPath();
-		ctx.fillStyle="rgb(90,90,90)";
-		ctx.moveTo(this.aListeVignettes[i][0][0].x+2*((fRatioLargeur+fRatioHauteur)/2), this.aListeVignettes[i][0][0].y+2*((fRatioLargeur+fRatioHauteur)/2));
-		
-		for(var j=1; j < this.aListeVignettes[i][0].length; j++)
+		if(bDisponible)
 		{
-			ctx.lineTo(this.aListeVignettes[i][0][j].x+2*((fRatioLargeur+fRatioHauteur)/2), this.aListeVignettes[i][0][j].y+2*((fRatioLargeur+fRatioHauteur)/2));
+			ctx.globalAlpha = 0.5;
+			ctx.beginPath();
+			ctx.fillStyle="rgb(90,90,90)";
+			ctx.moveTo(this.aListeVignettes[i][0][0].x+2*((fRatioLargeur+fRatioHauteur)/2), this.aListeVignettes[i][0][0].y+2*((fRatioLargeur+fRatioHauteur)/2));
+			
+			for(var j=1; j < this.aListeVignettes[i][0].length; j++)
+			{
+				ctx.lineTo(this.aListeVignettes[i][0][j].x+2*((fRatioLargeur+fRatioHauteur)/2), this.aListeVignettes[i][0][j].y+2*((fRatioLargeur+fRatioHauteur)/2));
+			}
+			ctx.closePath();
+			ctx.fill();
+			ctx.globalAlpha = 1;
 		}
-		ctx.closePath();
-		ctx.fill();
-		ctx.globalAlpha = 1;
-		
+			
 		// terrain dans la vignette
+		if(!bDisponible)
+			ctx.globalAlpha = 0.5;
 		ctx.beginPath();
 		ctx.lineWidth=1*((fRatioLargeur+fRatioHauteur)/2);
 		ctx.strokeStyle="white";
@@ -426,6 +445,7 @@ Menu.prototype.lancer = function()
 		ctx.font = 6*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
 		ctx.fillStyle = "white";
 		ctx.fillText(i+1, this.aListeVignettes[i][1].x + 15*((fRatioLargeur+fRatioHauteur)/2)/2 , this.aListeVignettes[i][1].y + 19*((fRatioLargeur+fRatioHauteur)/2)/2);
+		ctx.globalAlpha = 1;
 		
 		// score
 		var iScore = "-";
@@ -571,12 +591,28 @@ Menu.prototype.verifierSelectionVignette = function()
 	{
 		for(var i=0; i<this.aListeVignettes.length; i++)
 		{
-				if(oPositionDepartSouris.x <= this.aListeVignettes[i][1].x+this.iTailleVignettes && oPositionDepartSouris.x >= this.aListeVignettes[i][1].x
-					&& oPositionDepartSouris.y <= this.aListeVignettes[i][1].y+this.iTailleVignettes && oPositionDepartSouris.y >= this.aListeVignettes[i][1].y)
-				{
-					iNiveauSelectionne = i;
-					break;
-				}
+			var bDisponible = false;
+			
+			// on vérifie si le niveau est accessible
+			if(oSauvegarde.length != 0)
+			{
+				if(i >= 0 && i <= oSauvegarde[oSauvegarde.length-1].id)
+					bDisponible = true;
+			}
+			else
+			{
+				if(i == 0)
+					bDisponible = true;
+			}
+				
+			// si on clique sur la vignette
+			if(oPositionDepartSouris.x <= this.aListeVignettes[i][1].x+this.iTailleVignettes && oPositionDepartSouris.x >= this.aListeVignettes[i][1].x
+				&& oPositionDepartSouris.y <= this.aListeVignettes[i][1].y+this.iTailleVignettes && oPositionDepartSouris.y >= this.aListeVignettes[i][1].y
+				&& bDisponible)
+			{
+				iNiveauSelectionne = i;
+				break;
+			}
 		}
 	}
 	// si un mouse up et qu'il n'y a pas eu de mouseMove

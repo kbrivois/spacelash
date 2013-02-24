@@ -269,9 +269,9 @@ Partie.prototype.lancer = function()
 	this.oBarreAvancement.tracer(this.oTerrain);
 	
 	//on affiche le chrono
-	ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
+	ctx.font = 20*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
 	ctx.fillStyle = "white";
-	ctx.fillText(this.oChrono.textMin + ":"+this.oChrono.textSec, 500, 40);	
+	ctx.fillText(this.oChrono.textMin + ":"+this.oChrono.textSec, canvas.width-110*((fRatioHauteur+fRatioLargeur)/2), 30*((fRatioHauteur+fRatioLargeur)/2));	
 	
 	// Deplacement des ennemis, rebonds	
 	for(var i=0; i<this.aListeEnnemis.length; i++)
@@ -856,6 +856,11 @@ Partie.prototype.lancerPause = function()
 	// on trace la barre d'avancement
 	this.oBarreAvancement.tracer(this.oTerrain);
 	
+	//on affiche le chrono
+	ctx.font = 20*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+	ctx.fillStyle = "white";
+	ctx.fillText(this.oChrono.textMin + ":"+this.oChrono.textSec, canvas.width-110*((fRatioHauteur+fRatioLargeur)/2), 30*((fRatioHauteur+fRatioLargeur)/2));	
+	
 	// bouton Rejouer
 	ctx.drawImage(this.oBoutonRejouer, 
 					0, 
@@ -1019,6 +1024,12 @@ Partie.prototype.lancerVictoire = function()
 	// on trace la barre d'avancement
 	this.oBarreAvancement.tracer(this.oTerrain);
 	
+	//on affiche le chrono
+	ctx.font = 20*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+	ctx.fillStyle = "white";
+	ctx.fillText(this.oChrono.textMin + ":"+this.oChrono.textSec, canvas.width-110*((fRatioHauteur+fRatioLargeur)/2), 30*((fRatioHauteur+fRatioLargeur)/2));	
+	
+	
 	// bouton Rejouer
 	ctx.drawImage(this.oBoutonRejouer, 
 					0, 
@@ -1093,7 +1104,7 @@ Partie.prototype.lancerVictoire = function()
 		ctx.font = 12*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
 		ctx.fillText("Temps :",canvas.width/2, canvas.height/2 - 20*fRatioHauteur);
 		ctx.font = 10*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
-		ctx.fillText("01:05",canvas.width/2, canvas.height/2);
+		ctx.fillText(this.oChrono.textMin + ":"+this.oChrono.textSec,canvas.width/2, canvas.height/2);
 		
 		//
 		//// Bouton de menu et replay
