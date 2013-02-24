@@ -50,6 +50,8 @@ déclaration des variables pour la partie
 var oPartie;
 var bChargementComplet = false;
 
+
+
 /*** ================================================================================================================================================
 Main menu
 ====================================================================================================================================================*/
@@ -143,22 +145,21 @@ var mainPartie = function ()
 	now = Date.now();
 	delta = now - then;
 	
-	if(oPartie != null)
+	
+	if(iCompteurImages == iNombresImages && bChargementNiveauxComplet && iNiveauSelectionne != null)
 	{
-		if(iCompteurImages == iNombresImages && bChargementNiveauxComplet && iNiveauSelectionne != null)
+		if(!bChargementComplet)
 		{
-			if(!bChargementComplet)
+			// ennemis
+			for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Ennemis.length; i++)
 			{
-				// ennemis
-				for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Ennemis.length; i++)
-				{
-					var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[0], oNiveauPartie[iNiveauSelectionne].Ennemis[i].vitesse, new Point(0,0), oNiveauPartie[iNiveauSelectionne].Ennemis[i].rotation);
-					// On place l'ennemi sur le terrain (le Terrain)
-					// on récupére les coordonnées
-					var oPositionEnnemi = oPartie.oTerrain.placerEnnemi(oEnnemi);
-					oEnnemi.oPosition = oPositionEnnemi;
-					// on calcule le déplacement de l'ennemi
-					oEnnemi.calculerDeplacement();
+				var oEnnemi = new Ennemi(oPartie.aListeImagesEnnemis[0], oNiveauPartie[iNiveauSelectionne].Ennemis[i].vitesse, new Point(0,0), oNiveauPartie[iNiveauSelectionne].Ennemis[i].rotation);
+				// On place l'ennemi sur le terrain (le Terrain)
+				// on récupére les coordonnées
+				var oPositionEnnemi = oPartie.oTerrain.placerEnnemi(oEnnemi);
+				oEnnemi.oPosition = oPositionEnnemi;
+				// on calcule le déplacement de l'ennemi
+				oEnnemi.calculerDeplacement();
 
 					oPartie.aListeEnnemis.push(oEnnemi);
 				}
@@ -183,6 +184,8 @@ var mainPartie = function ()
 		}	
 		requestAnimationFrame(mainPartie);
 	}
+	
+	requestAnimationFrame(mainPartie);
 };
 
 // On lance le jeu

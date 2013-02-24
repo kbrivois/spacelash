@@ -428,16 +428,15 @@ Menu.prototype.lancer = function()
 		ctx.fillText(i+1, this.aListeVignettes[i][1].x + 15*((fRatioLargeur+fRatioHauteur)/2)/2 , this.aListeVignettes[i][1].y + 19*((fRatioLargeur+fRatioHauteur)/2)/2);
 		
 		// score
-		var iNbCoupes = "-";
-		var iAire = "-";
 		var iScore = "-";
+
 		for(var j=0; j<oSauvegarde.length; j++)
 		{
 			if(oSauvegarde[j].id-1 == i)
 			{
-				iNbCoupes = oSauvegarde[j].nbCoupe;
-				iAire = Math.floor(oSauvegarde[j].aireMinimaleAtteinte);
-				iScore = ((100-iAire) * 50) - (iNbCoupes * 200);
+
+				iScore= oSauvegarde[j].score;
+
 				break;
 			}
 		}

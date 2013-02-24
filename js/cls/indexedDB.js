@@ -17,7 +17,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:50,
 				Points:[
 					{
 						x:50,
@@ -65,7 +65,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:70,
 				Points:[
 					{
 						x:0,
@@ -104,6 +104,10 @@ var parametrageNiveau=
 				id:"03",
 				Ennemis:[
 					{
+						vitesse:2,
+						rotation:0.2
+					},
+					{
 						vitesse:1,
 						rotation:0.1
 					},
@@ -112,7 +116,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:50,
 				Points:[
 					{x:150,y:50},
 					{x:180,y:145},
@@ -137,11 +141,15 @@ var parametrageNiveau=
 						rotation:0.1
 					},
 					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:60,
 				Points:[
 					{x:135, y:60},
 					{x:95, y:137},
@@ -177,7 +185,7 @@ var parametrageNiveau=
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:50,
 				Points:[
 					{x:75,y:65},
 					{x:44,y:94},
@@ -226,9 +234,17 @@ var parametrageNiveau=
 					{
 						vitesse:2,
 						rotation:0.2
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:2,
+						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:60,
 				Points:[
 					{x:158,y:65},
 					{x:137,y:67},
@@ -294,11 +310,19 @@ var parametrageNiveau=
 						rotation:0.1
 					},
 					{
+						vitesse:3,
+						rotation:0.3
+					},					
+					{
+						vitesse:2,
+						rotation:0.2
+					},
+					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:50,
 				Points:[
 					{x:137,y:109},
 					{x:125,y:114},
@@ -371,15 +395,23 @@ var parametrageNiveau=
 				id:"08",
 				Ennemis:[
 					{
-						vitesse:1,
-						rotation:0.1
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:2,
+						rotation:0.2
+					},
+					{
+						vitesse:2,
+						rotation:0.2
 					},
 					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:50,
 				Points:[
 					{x:131,y:61},
 					{x:107,y:65},
@@ -421,9 +453,13 @@ var parametrageNiveau=
 					{
 						vitesse:2,
 						rotation:0.2
+					},
+					{
+						vitesse:2,
+						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:40,
 				Points:[
 					{x:204,y:59},
 					{x:192,y:102},
@@ -462,15 +498,24 @@ var parametrageNiveau=
 				id:"10",
 				Ennemis:[
 					{
+						vitesse:2,
+						rotation:0.2
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
 						vitesse:1,
 						rotation:0.1
 					},
+
 					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:40,
 				Points:[
 					{x:187,y:82},
 					{x:173,y:96},
@@ -542,15 +587,23 @@ var parametrageNiveau=
 				id:"11",
 				Ennemis:[
 					{
-						vitesse:1,
-						rotation:0.1
+						vitesse:2,
+						rotation:0.2
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:2,
+						rotation:0.2
 					},
 					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:50,
 				Points:[
 					{x:136,y:55},
 					{x:121,y:57},
@@ -639,15 +692,23 @@ var parametrageNiveau=
 				id:"12",
 				Ennemis:[
 					{
-						vitesse:1,
-						rotation:0.1
+						vitesse:2,
+						rotation:0.2
+					},
+					{
+						vitesse:2,
+						rotation:0.2
+					},
+					{
+						vitesse:3,
+						rotation:0.3
 					},
 					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:40,
 				Points:[
 									{x:212,y:147},
 					{x:204,y:134},
@@ -702,15 +763,23 @@ var parametrageNiveau=
 				id:"13",
 				Ennemis:[
 					{
-						vitesse:1,
-						rotation:0.1
+						vitesse:2,
+						rotation:0.2
 					},
 					{
 						vitesse:2,
 						rotation:0.2
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:3,
+						rotation:0.3
 					}
 				],
-				AireForme:56,
+				AireForme:50,
 				Points:[
 				{x:154,y:88},
 				{x:151,y:79},
@@ -757,15 +826,19 @@ var parametrageNiveau=
 				id:"14",
 				Ennemis:[
 					{
-						vitesse:1,
-						rotation:0.1
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:3,
+						rotation:0.3
 					},
 					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:50,
 				Points:[
 					{x:278,y:65},
 					{x:198,y:81},
@@ -795,15 +868,23 @@ var parametrageNiveau=
 				id:"15",
 				Ennemis:[
 					{
-						vitesse:1,
-						rotation:0.1
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:3,
+						rotation:0.3
 					},
 					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:40,
 				Points:[
 									{x:130,y:158},
 					{x:125,y:133},
@@ -870,15 +951,19 @@ var parametrageNiveau=
 				id:"16",
 				Ennemis:[
 					{
-						vitesse:1,
-						rotation:0.1
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:3,
+						rotation:0.3
 					},
 					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:30,
 				Points:[
 					{x:142,y:58},
 					{x:122,y:119},
@@ -914,15 +999,31 @@ var parametrageNiveau=
 				id:"17",
 				Ennemis:[
 					{
-						vitesse:1,
-						rotation:0.1
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:2,
+						rotation:0.2
+					},
+					{
+						vitesse:2,
+						rotation:0.2
 					},
 					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:30,
 				Points:[
 					{x:56,y:97},
 					{x:56,y:116},
@@ -984,15 +1085,23 @@ var parametrageNiveau=
 				id:"18",
 				Ennemis:[
 					{
-						vitesse:1,
-						rotation:0.1
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:4,
+						rotation:0.4
+					},
+					{
+						vitesse:3,
+						rotation:0.3
 					},
 					{
 						vitesse:2,
 						rotation:0.2
 					}
 				],
-				AireForme:56,
+				AireForme:20,
 				Points:[
 					{x:114,y:63},
 					{x:114,y:78},
@@ -1038,6 +1147,379 @@ var parametrageNiveau=
 				]
 				
 				
+		},
+		{
+				id:"19",
+				Ennemis:[
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:1,
+						rotation:0.1
+					},
+					{
+						vitesse:2,
+						rotation:0.2
+					}
+				],
+				AireForme:30,
+				Points:[
+					{x:93,y:69},
+
+					{x:93,y:91},
+
+					{x:114,y:91},
+
+					{x:114,y:115},
+
+					{x:94,y:115},
+
+					{x:94,y:138},
+
+					{x:73,y:139},
+
+					{x:72,y:164},
+
+					{x:51,y:164},
+
+					{x:51,y:140},
+
+					{x:28,y:140},
+
+					{x:28,y:165},
+
+					{x:50,y:165},
+
+					{x:50,y:187},
+
+					{x:73,y:188},
+
+					{x:73,y:211},
+
+					{x:50,y:212},
+
+					{x:50,y:235},
+
+					{x:31,y:235},
+
+					{x:31,y:259},
+
+					{x:7,y:259},
+
+					{x:7,y:284},
+
+					{x:51,y:285},
+
+					{x:51,y:261},
+
+					{x:73,y:261},
+
+					{x:73,y:237},
+
+					{x:95,y:237},
+
+					{x:95,y:260},
+
+					{x:116,y:260},
+
+					{x:116,y:285},
+
+					{x:140,y:285},
+
+					{x:140,y:261},
+
+					{x:117,y:261},
+
+					{x:117,y:238},
+
+					{x:183,y:238},
+
+					{x:183,y:260},
+
+					{x:161,y:260},
+
+					{x:161,y:285},
+
+					{x:184,y:285},
+
+					{x:184,y:261},
+
+					{x:205,y:261},
+
+					{x:205,y:238},
+
+					{x:227,y:238},
+
+					{x:227,y:259},
+
+					{x:247,y:259},
+
+					{x:247,y:285},
+
+					{x:292,y:285},
+
+					{x:292,y:262},
+
+					{x:270,y:262},
+
+					{x:270,y:237},
+
+					{x:248,y:237},
+
+					{x:248,y:213},
+
+					{x:227,y:213},
+
+					{x:227,y:188},
+
+					{x:246,y:188},
+
+					{x:246,y:166},
+
+					{x:269,y:166},
+
+					{x:269,y:140},
+
+					{x:246,y:140},
+
+					{x:245,y:165},
+
+					{x:224,y:165},
+
+					{x:224,y:141},
+
+					{x:202,y:141},
+
+					{x:202,y:117},
+
+					{x:180,y:117},
+
+					{x:180,y:94},
+
+					{x:202,y:94},
+
+					{x:202,y:69},
+
+					{x:179,y:69},
+
+					{x:179,y:93},
+
+					{x:159,y:93},
+
+					{x:159,y:115},
+
+					{x:137,y:115},
+
+					{x:137,y:92},
+
+					{x:115,y:92},
+
+					{x:115,y:69},
+
+					{x:93,y:69}
+				]
+				
+				
+		},
+		{
+				id:"20",
+				Ennemis:[
+					{
+						vitesse:2,
+						rotation:0.2
+					},
+					{
+						vitesse:2,
+						rotation:0.2
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:2,
+						rotation:0.2
+					}
+				],
+				AireForme:30,
+				Points:[
+					{x:118,y:62},
+
+					{x:118,y:87},
+
+					{x:92,y:87},
+
+					{x:92,y:115},
+
+					{x:64,y:115},
+
+					{x:64,y:145},
+
+					{x:35,y:145},
+
+					{x:35,y:207},
+
+					{x:92,y:207},
+
+					{x:92,y:229},
+
+					{x:70,y:229},
+
+					{x:70,y:263},
+
+					{x:35,y:263},
+
+					{x:35,y:292},
+
+					{x:71,y:292},
+
+					{x:71,y:264},
+
+					{x:92,y:264},
+
+					{x:92,y:292},
+
+					{x:125,y:292},
+
+					{x:125,y:264},
+
+					{x:167,y:264},
+
+					{x:167,y:292},
+
+					{x:199,y:292},
+
+					{x:199,y:264},
+
+					{x:221,y:264},
+
+					{x:221,y:292},
+
+					{x:259,y:292},
+
+					{x:259,y:265},
+
+					{x:222,y:265},
+
+					{x:222,y:232},
+
+					{x:199,y:232},
+
+					{x:199,y:209},
+
+					{x:259,y:209},
+
+					{x:259,y:148},
+
+					{x:232,y:148},
+
+					{x:232,y:116},
+
+					{x:201,y:116},
+
+					{x:201,y:89},
+
+					{x:174,y:89},
+
+					{x:174,y:62},
+
+					{x:118,y:62}
+				]
+				
+				
+		},
+				{
+				id:"21",
+				Ennemis:[
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:2,
+						rotation:0.2
+					},
+					{
+						vitesse:3,
+						rotation:0.3
+					},
+					{
+						vitesse:2,
+						rotation:0.2
+					}
+				],
+				AireForme:20,
+				Points:[
+					{x:103,y:63},
+
+					{x:103,y:88},
+
+					{x:58,y:88},
+
+					{x:58,y:223},
+
+					{x:114,y:223},
+
+					{x:114,y:248},
+
+					{x:89,y:248},
+
+					{x:89,y:285},
+
+					{x:109,y:285},
+
+					{x:109,y:261},
+
+					{x:139,y:261},
+
+					{x:139,y:285},
+
+					{x:162,y:285},
+
+					{x:162,y:261},
+
+					{x:193,y:261},
+
+					{x:193,y:285},
+
+					{x:215,y:285},
+
+					{x:215,y:248},
+
+					{x:187,y:248},
+
+					{x:187,y:223},
+
+					{x:244,y:223},
+
+					{x:244,y:88},
+
+					{x:200,y:88},
+
+					{x:199,y:63},
+
+					{x:178,y:63},
+
+					{x:178,y:88},
+
+					{x:127,y:88},
+
+					{x:127,y:63},
+
+					{x:103,y:63}
+				]
+				
+				
 		}
 		
 		
@@ -1052,7 +1534,7 @@ window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.ms
 
 majNiveaux();
 
-//saveSauvegarde("01",3,34,94);
+
  
 function createDatabase(event) {
     var db = event.target.transaction.db;
@@ -1077,14 +1559,15 @@ function errorOpen(event) {
  * .
  * ajoute ou remplace une sauvegarde dans la base
  */
-function saveSauvegarde(id,nbCoupe,aireAtteinte) {
+function saveSauvegarde(id,nbCoupe,aireAtteinte,temps,score) {
     // création d'un objet contenant les données
     // il sert d'"enregistrement" dans la base
     var sauvegarde = {
 		id:id,
         nbCoupe:  nbCoupe,
-        aireMinimaleAtteinte:   aireAtteinte
-		//temps:temps
+        aireMinimaleAtteinte:   aireAtteinte,
+		temps:temps,
+		score:score
     }
 
     // on ouvre la base, et on déclare les listeners

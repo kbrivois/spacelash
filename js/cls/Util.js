@@ -2,6 +2,34 @@
 /*========================= Fonctions utiles =========================*/
 /*====================================================================*/
 
+
+var calculChrono = function()
+{
+	oPartie.oChrono.iChronoCs++;
+	if (oPartie.oChrono.iChronoCs > 9) {
+		oPartie.oChrono.iChronoCs = 0;
+		oPartie.oChrono.iChronoS++;
+	}
+	if (oPartie.oChrono.iChronoS > 59) {
+		oPartie.oChrono.iChronoS = 0;
+		oPartie.oChrono.iChronoM++;
+	}
+	
+	if(oPartie.oChrono.iChronoS < 10)
+		oPartie.oChrono.textSec = "0" + oPartie.oChrono.iChronoS;
+	else
+		oPartie.oChrono.textSec = oPartie.oChrono.iChronoS;
+		
+	if(oPartie.oChrono.iChronoM < 10)
+		oPartie.oChrono.textMin = "0" + oPartie.oChrono.iChronoM;
+	else
+		oPartie.oChrono.textMin = oPartie.oChrono.iChronoM;
+		
+	
+	
+};
+
+
 // Fonction qui permet de trouver la distance entre 2 points
 // arg : 2 points -> oPoint1,oPoint2
 // return : distance
