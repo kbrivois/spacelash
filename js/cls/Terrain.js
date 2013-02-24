@@ -503,4 +503,5 @@ Terrain.prototype.reset = function()
 	this.bDisparitionPartie = false;
 	this.aPartie1 = new Array();
 	this.aPartie2 = new Array();
+	this.iNbCoupe=0;
 }

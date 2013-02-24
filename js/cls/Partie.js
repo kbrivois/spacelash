@@ -125,6 +125,8 @@ function Partie()
 	this.fLargeurFondVictoire = 0;
 	this.fHauteurFondVictoire = 25;
 	this.oPositionFondVictoire = new Point(canvas.width/2, canvas.height/2-this.fHauteurFondVictoire/2);
+	this.iScore = 0;
+	this.iScorePrecedent = 0;
 
 	// ------------------------ Segment tracé avec la souris
 	this.oTrait = new Trait("blue");
@@ -425,32 +427,31 @@ Partie.prototype.lancer = function()
 		{
 			scoreTemps=0;
 		}
-		var iScore = ((100-Math.floor(this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100)) * 50) - (this.oTerrain.iNbCoupe * 200)+scoreTemps;
+		this.iScore = ((100-Math.floor(this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100)) * 50) - (this.oTerrain.iNbCoupe * 200)+scoreTemps;
 
 		if(oSauvegarde.length!=0)
 		{
+			var bExiste = false;
+			
 			for(var i=0 ;i<oSauvegarde.length ; i++)
 			{
 				if(oSauvegarde[i].id==iNiveauSelectionne+1)
 				{
-					if(iScore>oSauvegarde[i].score)
+					bExiste = true;
+					this.iScorePrecedent = oSauvegarde[i].score;
+					if(this.iScore>oSauvegarde[i].score)
 					{
-						saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);//On garde le score en sauvegarde
+						saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,this.iScore);//On garde le score en sauvegarde
 					}
-					else
-					{
-						console.log("Gagné mais score de merde "+ iScore );
-					}
-					
 				}
-				else
-				{					
-					saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);
-				}
+			}
+			if(!bExiste)
+			{
+				saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,this.iScore);
 			}
 		}
 		else{
-			saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,iScore);
+			saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100,temps,this.iScore);
 		}
 		
 		readAllSauvegarde();
@@ -896,7 +897,7 @@ Partie.prototype.lancerPause = function()
 	}
 	
 	// fond de pause
-	ctx.globalAlpha = 0.5;
+	ctx.globalAlpha = 0.7;
 	ctx.fillStyle = "rgb(255,255,255)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 	ctx.globalAlpha = 1;
@@ -1050,9 +1051,9 @@ Partie.prototype.lancerVictoire = function()
 					this.iTailleBouton, 
 					this.iTailleBouton);
 	
-	// fond de pause
+	// fond de victtoire
 	
-	ctx.globalAlpha = 0.6;
+	ctx.globalAlpha = 0.7;
 	
 	ctx.beginPath();
 	ctx.fillStyle = "rgb(255,255,255)";
@@ -1101,26 +1102,47 @@ Partie.prototype.lancerVictoire = function()
 		ctx.fillText("Temps :",canvas.width/2, canvas.height/2 - 20*fRatioHauteur);
 		ctx.font = 10*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
 		ctx.fillText(this.oChrono.textMin + ":"+this.oChrono.textSec,canvas.width/2, canvas.height/2);
+		// score
+		var bRecord = false;
+		var bExiste = false;
+
+		if(this.iScorePrecedent != 0)
+		{
+			if(this.iScore>this.iScorePrecedent)
+			{
+				bRecord = true;
+			}
+		}
+		else
+			bRecord = true;
+			
+		ctx.font = 12*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+		if(bRecord)
+			ctx.fillText("Score : (Record !!)",canvas.width/2, canvas.height/2 + 40*fRatioHauteur);
+		else
+			ctx.fillText("Score :",canvas.width/2, canvas.height/2 + 40*fRatioHauteur);
+		ctx.font = 10*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillText(this.iScore,canvas.width/2, canvas.height/2 + 60*fRatioHauteur);
 		
 		//
 		//// Bouton de menu et replay
 		ctx.font = 15*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
 		
 		rectangleArrondi(canvas.width/2 - 120*((fRatioHauteur+fRatioLargeur)/2)/2,
-						 canvas.height/2 + 50*fRatioHauteur - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4,
+						 canvas.height/2 + 110*fRatioHauteur - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4,
 						 120*((fRatioHauteur+fRatioLargeur)/2),
 						 25*((fRatioHauteur+fRatioLargeur)/2), 
 						 5*((fRatioHauteur+fRatioLargeur)/2), "black", "white", true, true, 3*((fRatioHauteur+fRatioLargeur)/2));
 		ctx.fillStyle = "white";
-		ctx.fillText("rejouer", canvas.width/2, canvas.height/2 + 50*fRatioHauteur);
+		ctx.fillText("rejouer", canvas.width/2, canvas.height/2 + 110*fRatioHauteur);
 		
 		rectangleArrondi(canvas.width/2 - 75*((fRatioHauteur+fRatioLargeur)/2)/2,
-						 canvas.height/2 + 100*fRatioHauteur - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4,
+						 canvas.height/2 + 160*fRatioHauteur - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4,
 						 75*((fRatioHauteur+fRatioLargeur)/2),
 						 25*((fRatioHauteur+fRatioLargeur)/2), 
 						 5*((fRatioHauteur+fRatioLargeur)/2), "black", "white", true, true, 3*((fRatioHauteur+fRatioLargeur)/2));
 		ctx.fillStyle = "white";
-		ctx.fillText("menu", canvas.width/2, canvas.height/2 + 100*fRatioHauteur);
+		ctx.fillText("menu", canvas.width/2, canvas.height/2 + 160*fRatioHauteur);
 		
 		ctx.textAlign = 'left';
 		
@@ -1129,7 +1151,7 @@ Partie.prototype.lancerVictoire = function()
 	if(this.bSurBoutonReprendre)
 	{
 		ctx.save(); 
-		ctx.translate(canvas.width/2-110*((fRatioHauteur+fRatioLargeur)/2)-(this.fTailleBoutonDeSelection/2), this.oPositionBoutonReprendre.y-18*((fRatioHauteur+fRatioLargeur)/2)/2-(this.fTailleBoutonDeSelection/2)); 
+		ctx.translate(canvas.width/2-110*((fRatioHauteur+fRatioLargeur)/2)-(this.fTailleBoutonDeSelection/2), canvas.height/2 + 110*fRatioHauteur-18*((fRatioHauteur+fRatioLargeur)/2)/2-(this.fTailleBoutonDeSelection/2)); 
 		ctx.translate(this.fTailleBoutonDeSelection/2, this.fTailleBoutonDeSelection/2); 
 		ctx.rotate(this.fRotationCibles);
 		ctx.drawImage(this.oBoutonDeSelection, -(this.fTailleBoutonDeSelection/2), -(this.fTailleBoutonDeSelection/2), this.fTailleBoutonDeSelection, this.fTailleBoutonDeSelection);
@@ -1139,7 +1161,7 @@ Partie.prototype.lancerVictoire = function()
 	if(this.bSurBoutonMenu)
 	{
 		ctx.save(); 
-		ctx.translate(canvas.width/2-110*((fRatioHauteur+fRatioLargeur)/2)-(this.fTailleBoutonDeSelection/2), this.oPositionBoutonMenu.y-18*((fRatioHauteur+fRatioLargeur)/2)/2-(this.fTailleBoutonDeSelection/2)); 
+		ctx.translate(canvas.width/2-110*((fRatioHauteur+fRatioLargeur)/2)-(this.fTailleBoutonDeSelection/2), canvas.height/2 + 160*fRatioHauteur-18*((fRatioHauteur+fRatioLargeur)/2)/2-(this.fTailleBoutonDeSelection/2)); 
 		ctx.translate(this.fTailleBoutonDeSelection/2, this.fTailleBoutonDeSelection/2); 
 		ctx.rotate(this.fRotationCibles);
 		ctx.drawImage(this.oBoutonDeSelection, -(this.fTailleBoutonDeSelection/2), -(this.fTailleBoutonDeSelection/2), this.fTailleBoutonDeSelection, this.fTailleBoutonDeSelection);

@@ -110,6 +110,18 @@ var mouseClickPartie = function(e)
 			canvas.removeEventListener('mouseup', mouseUnClickPartie, false);
 			canvas.removeEventListener('mouseout', mouseOutCanvasPartie, false);
 			window.removeEventListener('resize', screenResizePartie, false);
+			
+			canvas.addEventListener('mousemove', mouseMovementMenu, false);
+			canvas.addEventListener('mousedown', mouseClickMenu, false);
+			canvas.addEventListener('mouseup', mouseUnClickMenu, false);
+			canvas.addEventListener('mouseout', mouseOutCanvasMenu, false);
+			window.addEventListener('resize', screenResizeMenu, false);
+			
+			canvas.width = document.documentElement.clientWidth;
+			canvas.height = document.documentElement.clientHeight;
+			fRatioLargeur = (document.documentElement.clientWidth) / fLargeurDeBase;
+			fRatioHauteur = (document.documentElement.clientHeight) / fHauteurDeBase;
+			oMenu = new Menu(false, true);
 			mainMenu();
 		}
 	}
@@ -120,19 +132,34 @@ var mouseClickPartie = function(e)
 		if(oPartie.bSurBoutonReprendre)
 		{
 			oPartie.bGagne = false;
-			oPartie.bSurBoutonReprendre = false;
+			oPartie.reset();
+			//Reset du chrono
+			oPartie.oChrono.reset();
+			oPartie.oChrono.start();
 		}
 		// si on clique sur le bouton menu
 		else if(oPartie.bSurBoutonMenu)
 		{
 			oPartie.oSonPartie.pause();
-			oPartie.bSurBoutonMenu = false;
 			oPartie = null;
 			canvas.removeEventListener('mousemove', mouseMovementPartie, false);
 			canvas.removeEventListener('mousedown', mouseClickPartie, false);
 			canvas.removeEventListener('mouseup', mouseUnClickPartie, false);
 			canvas.removeEventListener('mouseout', mouseOutCanvasPartie, false);
 			window.removeEventListener('resize', screenResizePartie, false);
+			
+			canvas.addEventListener('mousemove', mouseMovementMenu, false);
+			canvas.addEventListener('mousedown', mouseClickMenu, false);
+			canvas.addEventListener('mouseup', mouseUnClickMenu, false);
+			canvas.addEventListener('mouseout', mouseOutCanvasMenu, false);
+			window.addEventListener('resize', screenResizeMenu, false);
+			
+			canvas.width = document.documentElement.clientWidth;
+			canvas.height = document.documentElement.clientHeight;
+			fRatioLargeur = (document.documentElement.clientWidth) / fLargeurDeBase;
+			fRatioHauteur = (document.documentElement.clientHeight) / fHauteurDeBase;
+			oMenu = new Menu(false, true);
+			
 			mainMenu();
 		}
 	}
@@ -239,16 +266,16 @@ var mouseMovementPartie = function(e)
 	}
 	
 	// si le joueur a gagné
-	if(oPartie.bPause)
+	else if(oPartie.bGagne)
 	{
 		// si le curseur se trouve sur le bouton reprendre
-		if(y <= oPartie.oPositionBoutonReprendre.y && y >= oPartie.oPositionBoutonReprendre.y-oPartie.iTailleFontMenu*((fRatioHauteur+fRatioLargeur)/2))
+		if(y <= canvas.height/2 + 110*fRatioHauteur - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4 + 25*((fRatioHauteur+fRatioLargeur)/2) && y >= canvas.height/2 + 110*fRatioHauteur - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4)
 		{
 			oPartie.bSurBoutonReprendre = true;
 			oPartie.bSurBoutonMenu = false;
 		}
 		// si le curseur se trouve sur le bouton menu
-		else if(y <= oPartie.oPositionBoutonMenu.y && y >= oPartie.oPositionBoutonMenu.y-oPartie.iTailleFontMenu*((fRatioHauteur+fRatioLargeur)/2))
+		else if(y <= canvas.height/2 + 160*fRatioHauteur - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4 + 25*((fRatioHauteur+fRatioLargeur)/2) && y >= canvas.height/2 + 160*fRatioHauteur - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4)
 		{
 			oPartie.bSurBoutonMenu = true;
 			oPartie.bSurBoutonReprendre = false;
