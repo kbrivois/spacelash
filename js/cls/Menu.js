@@ -1,7 +1,11 @@
-function Menu()  
+function Menu(bEcranAccueil, bEcranNiveaux)  
 {
 	iCompteurImages = 0;
 	iNombresImages = 0;
+	
+	// ------------------------ Variables qui vont permettre de savoir si on est sur l'écran d'accueil ou des niveaux
+	this.bEcranAccueil = bEcranAccueil;
+	this.bEcranNiveaux = bEcranNiveaux;
 	
 	// ------------------------ Fond
 	this.oFond = new Image();
@@ -224,25 +228,27 @@ Menu.prototype.lancer = function()
 	// s'il est nécessaire de faire slider automatiquement les écrans après un click up
 	if(this.bSlideAuto)
 	{
+		var iPasSlide = 10;
+		
 		// si l'écran se trouve entre 0 et canvas.width/2
 		if(this.aEcransNiveaux[this.iEcranActuel][1].x >= 0 && this.aEcransNiveaux[this.iEcranActuel][1].x <= canvas.width/2)
 		{
 			// tant que le slide n'est pas fini
-			if(this.aEcransNiveaux[this.iEcranActuel][1].x-25*fRatioLargeur > 0)
+			if(this.aEcransNiveaux[this.iEcranActuel][1].x-iPasSlide*fRatioLargeur > 0)
 			{
 				// --- Les écrans
 				for(var i=0; i<this.aEcransNiveaux.length; i++)
-					this.aEcransNiveaux[i][1].x -= 25*fRatioLargeur;
+					this.aEcransNiveaux[i][1].x -= iPasSlide*fRatioLargeur;
 					
 				// --- Les vignettes
 				for(var i=0; i<this.aListeVignettes.length; i++)
 				{
-					this.aListeVignettes[i][1].x -= 25*fRatioLargeur;
+					this.aListeVignettes[i][1].x -= iPasSlide*fRatioLargeur;
 					
 					// le terrain	
 					for(var j=0; j<this.aListeVignettes[i][0].length; j++)
 					{
-						this.aListeVignettes[i][0][j].x -= 25*fRatioLargeur;
+						this.aListeVignettes[i][0][j].x -= iPasSlide*fRatioLargeur;
 					}
 				}
 			}
@@ -273,21 +279,21 @@ Menu.prototype.lancer = function()
 		else
 		{
 			// tant que le slide n'est pas fini
-			if(this.aEcransNiveaux[this.iEcranActuel][1].x+25*fRatioLargeur < 0)
+			if(this.aEcransNiveaux[this.iEcranActuel][1].x+iPasSlide*fRatioLargeur < 0)
 			{
 				// --- Les écrans
 				for(var i=0; i<this.aEcransNiveaux.length; i++)
-					this.aEcransNiveaux[i][1].x += 25*fRatioLargeur;
+					this.aEcransNiveaux[i][1].x += iPasSlide*fRatioLargeur;
 				
 				// --- Les vignettes
 				for(var i=0; i<this.aListeVignettes.length; i++)
 				{
-					this.aListeVignettes[i][1].x += 25*fRatioLargeur;
+					this.aListeVignettes[i][1].x += iPasSlide*fRatioLargeur;
 					
 					// le terrain	
 					for(var j=0; j<this.aListeVignettes[i][0].length; j++)
 					{
-						this.aListeVignettes[i][0][j].x += 25*fRatioLargeur;
+						this.aListeVignettes[i][0][j].x += iPasSlide*fRatioLargeur;
 					}
 				}
 			}
@@ -322,8 +328,8 @@ Menu.prototype.lancer = function()
 	* =======================
 	*/
 	
-	var fTailleBulle = 5 * fRatioLargeur;
-	var fEcartBulle = 15 * fRatioLargeur;
+	var fTailleBulle = 6 * (fRatioLargeur+fRatioHauteur)/2;
+	var fEcartBulle = 15 * (fRatioLargeur+fRatioHauteur)/2;
 	
 	for(var i=0; i<this.aEcransNiveaux.length; i++)
 	{
@@ -417,7 +423,7 @@ Menu.prototype.lancer = function()
 							22*((fRatioLargeur+fRatioHauteur)/2));
 	
 		ctx.textAlign = 'center';		
-		ctx.font = 5*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.font = 6*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
 		ctx.fillStyle = "white";
 		ctx.fillText(i+1, this.aListeVignettes[i][1].x + 15*((fRatioLargeur+fRatioHauteur)/2)/2 , this.aListeVignettes[i][1].y + 19*((fRatioLargeur+fRatioHauteur)/2)/2);
 		
@@ -579,6 +585,11 @@ Menu.prototype.verifierSelectionVignette = function()
 	else if(!mouseDown && iNiveauSelectionne != null)
 	{
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		canvas.removeEventListener('mousemove', mouseMovementMenu, false);
+		canvas.removeEventListener('mousedown', mouseClickMenu, false);
+		canvas.removeEventListener('mouseup', mouseUnClickMenu, false);
+		canvas.removeEventListener('mouseout', mouseOutCanvasMenu, false);
+		window.removeEventListener('resize', screenResizeMenu, false);
 		initPartie();
 	}
 }

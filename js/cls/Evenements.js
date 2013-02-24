@@ -91,6 +91,34 @@ var mouseClickPartie = function(e)
 			oPartie.oSonPartie.pause();
 			oPartie.bSurBoutonMenu = false;
 			oPartie = null;
+			canvas.removeEventListener('mousemove', mouseMovementPartie, false);
+			canvas.removeEventListener('mousedown', mouseClickPartie, false);
+			canvas.removeEventListener('mouseup', mouseUnClickPartie, false);
+			canvas.removeEventListener('mouseout', mouseOutCanvasPartie, false);
+			window.removeEventListener('resize', screenResizePartie, false);
+			mainMenu();
+		}
+	}
+	//si le joueur a gagné
+	if(oPartie.bGagne)
+	{
+		// si on clique sur le bouton rejouer
+		if(oPartie.bSurBoutonReprendre)
+		{
+			oPartie.bGagne = false;
+			oPartie.bSurBoutonReprendre = false;
+		}
+		// si on clique sur le bouton menu
+		else if(oPartie.bSurBoutonMenu)
+		{
+			oPartie.oSonPartie.pause();
+			oPartie.bSurBoutonMenu = false;
+			oPartie = null;
+			canvas.removeEventListener('mousemove', mouseMovementPartie, false);
+			canvas.removeEventListener('mousedown', mouseClickPartie, false);
+			canvas.removeEventListener('mouseup', mouseUnClickPartie, false);
+			canvas.removeEventListener('mouseout', mouseOutCanvasPartie, false);
+			window.removeEventListener('resize', screenResizePartie, false);
 			mainMenu();
 		}
 	}
@@ -195,6 +223,29 @@ var mouseMovementPartie = function(e)
 			oPartie.bSurBoutonMenu = false;
 		}
 	}
+	
+	// si le joueur a gagné
+	if(oPartie.bPause)
+	{
+		// si le curseur se trouve sur le bouton reprendre
+		if(y <= oPartie.oPositionBoutonReprendre.y && y >= oPartie.oPositionBoutonReprendre.y-oPartie.iTailleFontMenu*((fRatioHauteur+fRatioLargeur)/2))
+		{
+			oPartie.bSurBoutonReprendre = true;
+			oPartie.bSurBoutonMenu = false;
+		}
+		// si le curseur se trouve sur le bouton menu
+		else if(y <= oPartie.oPositionBoutonMenu.y && y >= oPartie.oPositionBoutonMenu.y-oPartie.iTailleFontMenu*((fRatioHauteur+fRatioLargeur)/2))
+		{
+			oPartie.bSurBoutonMenu = true;
+			oPartie.bSurBoutonReprendre = false;
+		}
+		// si le curseur se trouve sur le bouton menu
+		else
+		{
+			oPartie.bSurBoutonReprendre = false;
+			oPartie.bSurBoutonMenu = false;
+		}
+	}
 }
 
 
@@ -216,9 +267,6 @@ var screenResizePartie = function(e)
 	
 	var fNewRatioLargeur = canvas.width / fLargeurDeBase;
 	var fNewRatioHauteur = canvas.height / fHauteurDeBase;
-	
-	var fNewRatioLargeurPorte = fNewRatioLargeur;
-	var fNewRatioHauteurPorte = fNewRatioHauteur;
 	
 	if(fNewRatioLargeur < fNewRatioHauteur)
 	{		
@@ -297,26 +345,6 @@ var screenResizePartie = function(e)
 	/* === Redimensionnement des cibles ===*/
 	oPartie.fTailleCibles = (oPartie.fTailleCibles/((fRatioLargeur+fRatioHauteur)/2))*((fNewRatioLargeur+fNewRatioHauteur)/2);
 	
-	/* === Redimensionnement des portes ===*/
-	
-	// porte de gauche
-	oPartie.fLargeurPorteGauche = canvas.width/2;
-	oPartie.fHauteurPorteGauche = canvas.height;
-	oPartie.oPositionPorteGauche.x = (oPartie.oPositionPorteGauche.x/oPartie.fRatioLargeurPorte)*fNewRatioLargeurPorte;
-	oPartie.oPositionPorteGauche.y = (oPartie.oPositionPorteGauche.y/oPartie.fRatioHauteurPorte)*fNewRatioHauteurPorte;
-	
-	// porte de droite
-	oPartie.fLargeurPorteDroite = canvas.width/2;
-	oPartie.fHauteurPorteDroite = canvas.height;
-	oPartie.oPositionPorteDroite.x = (oPartie.oPositionPorteDroite.x/oPartie.fRatioLargeurPorte)*fNewRatioLargeurPorte;
-	oPartie.oPositionPorteDroite.y = (oPartie.oPositionPorteDroite.y/oPartie.fRatioHauteurPorte)*fNewRatioHauteurPorte;
-	
-	// porte du bas
-	oPartie.fLargeurPorteBas = oPartie.oPorteBas.width * (oPartie.fLargeurPorteDroite/oPartie.oPorteDroite.width);
-	oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
-	oPartie.oPositionPorteBas.x = (oPartie.oPositionPorteBas.x/oPartie.fRatioLargeurPorte)*fNewRatioLargeurPorte;
-	oPartie.oPositionPorteBas.y = (oPartie.oPositionPorteBas.y/oPartie.fRatioHauteurPorte)*fNewRatioHauteurPorte;
-	
 	/* === Redimensionnement des boutons ===*/
 	
 	oPartie.oPositionBoutonRejouer.x = oPartie.oPositionBoutonRejouer.x / fRatioLargeur * fNewRatioLargeur;
@@ -328,8 +356,6 @@ var screenResizePartie = function(e)
 	
 	fRatioLargeur = fNewRatioLargeur;
 	fRatioHauteur = fNewRatioHauteur;
-	oPartie.fRatioLargeurPorte = fNewRatioLargeurPorte;
-	oPartie.fRatioHauteurPorte = fNewRatioHauteurPorte;
 }
 
 

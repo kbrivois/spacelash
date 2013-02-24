@@ -54,6 +54,11 @@ var bChargementComplet = false;
 Main menu
 ====================================================================================================================================================*/
 
+var initMenu = function()
+{
+	mainMenu();
+}
+
 var mainMenu = function ()
 {
 	// Si on aucun menu n'a encore été initialisé et si l'indexedDB a fini de charger les niveaux
@@ -62,16 +67,10 @@ var mainMenu = function ()
 		fRatioLargeur = (document.documentElement.clientWidth) / fLargeurDeBase;
 		fRatioHauteur = (document.documentElement.clientHeight) / fHauteurDeBase;
 	
-		oMenu = new Menu();
+		oMenu = new Menu(true, false);
 
 		// ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
-		// ------------------------ et lancement des fonctions.		
-		canvas.removeEventListener('mousemove', mouseMovementPartie, false);
-		canvas.removeEventListener('mousedown', mouseClickPartie, false);
-		canvas.removeEventListener('mouseup', mouseUnClickPartie, false);
-		canvas.removeEventListener('mouseout', mouseOutCanvasPartie, false);
-		window.removeEventListener('resize', screenResizePartie, false);
-		
+		// ------------------------ et lancement des fonctions.
 		canvas.addEventListener('mousemove', mouseMovementMenu, false);
 		canvas.addEventListener('mousedown', mouseClickMenu, false);
 		canvas.addEventListener('mouseup', mouseUnClickMenu, false);
@@ -104,7 +103,7 @@ var mainMenu = function ()
 		requestAnimationFrame(mainMenu);
 	}
 	
-	if(!bChargementNiveauxComplet)
+	if(oPartie == null && !bChargementNiveauxComplet)
 	{
 		// Texte d'attente
 		ctx.font = 20*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
@@ -121,19 +120,15 @@ Main partie
 
 var initPartie = function ()
 {
+	fRatioLargeur = (document.documentElement.clientWidth) / fLargeurDeBase;
+	fRatioHauteur = (document.documentElement.clientHeight) / fHauteurDeBase;
+	
 	oMenu = null;
 	oPartie = new Partie();
 	bChargementComplet = false;
 
 	// ------------------------ Ajout des gestionnaires d'événements pour savoir ce qu'il se passe
-	// ------------------------ et lancement des fonctions.
-	
-	canvas.removeEventListener('mousemove', mouseMovementMenu, false);
-	canvas.removeEventListener('mousedown', mouseClickMenu, false);
-	canvas.removeEventListener('mouseup', mouseUnClickMenu, false);
-	canvas.removeEventListener('mouseout', mouseOutCanvasMenu, false);
-	window.removeEventListener('resize', screenResizeMenu, false);
-	
+	// ------------------------ et lancement des fonctions.	
 	canvas.addEventListener('mousemove', mouseMovementPartie, false);
 	canvas.addEventListener('mousedown', mouseClickPartie, false);
 	canvas.addEventListener('mouseup', mouseUnClickPartie, false);
@@ -167,21 +162,20 @@ var mainPartie = function ()
 
 					oPartie.aListeEnnemis.push(oEnnemi);
 				}
-				
-				// porte du bas
-				oPartie.fLargeurPorteBas = oPartie.oPorteBas.width * (oPartie.fLargeurPorteDroite/oPartie.oPorteDroite.width);
-				oPartie.fHauteurPorteBas = oPartie.oPorteBas.height * (oPartie.fHauteurPorteDroite/oPartie.oPorteDroite.height);
-				oPartie.oPositionPorteBas = new Point((canvas.width/2)-(oPartie.fLargeurPorteBas/2),canvas.height);
-				
 				bChargementComplet = true;
 			}
 			
-			if(!oPartie.bPause && !oPartie)
+			if(!oPartie.bPause && !oPartie.bGagne)
 			{
 				// on lance la partie
 				oPartie.lancer();
 			}
-			else
+			else if(oPartie.bGagne)
+			{
+				// on lance le menu de victoire
+				oPartie.lancerVictoire();
+			}
+			else if(oPartie.bPause)
 			{
 				// on lance le menu de pause
 				oPartie.lancerPause();

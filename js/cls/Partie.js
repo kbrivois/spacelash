@@ -28,7 +28,7 @@ function Partie()
 	
 	//Rejouer
 	this.oBoutonRejouer = new Image();
-	this.oBoutonRejouer.src = 'img/Replay.png';
+	this.oBoutonRejouer.src = 'img/replay.png';
 	iNombresImages++;
 	this.oBoutonRejouer.onload = function()
 	{
@@ -37,7 +37,7 @@ function Partie()
 	
 	//Rejouer hover
 	this.oBoutonRejouerHover = new Image();
-	this.oBoutonRejouerHover.src = 'img/Replay-hover.png';
+	this.oBoutonRejouerHover.src = 'img/replay-hover.png';
 	iNombresImages++;
 	this.oBoutonRejouerHover.onload = function()
 	{
@@ -94,7 +94,6 @@ function Partie()
 	this.bSurBoutonReprendre = false;
 	this.bSurBoutonMenu = false;
 	
-	
 	// ------------------------ sons
 	this.oSonMetal = new Audio('sons/metalhit.wav');
 	this.oSonSouffleExplosion = new Audio('sons/souffleExplosion2.wav');
@@ -127,38 +126,9 @@ function Partie()
 
 	// ------------------------ Variables liées à la victoire du joueur
 	this.bGagne = false;
-	
-	// Porte en metal
-	// gauche
-	this.oPorteGauche = new Image();
-	this.oPorteGauche.src = 'img/gauche_porte.png';
-	iNombresImages++;
-	this.oPorteGauche.onload = function()
-	{
-		iCompteurImages++;
-	}
-	this.fLargeurPorteGauche = canvas.width/2;
-	this.fHauteurPorteGauche = canvas.height;
-	this.oPositionPorteGauche = new Point(-this.fLargeurPorteGauche,0);
-	// droite
-	this.oPorteDroite = new Image();
-	this.oPorteDroite.src = 'img/droite_porte.png';
-	iNombresImages++;
-	this.oPorteDroite.onload = function()
-	{
-		iCompteurImages++;
-	}
-	this.fLargeurPorteDroite = canvas.width/2;
-	this.fHauteurPorteDroite = canvas.height;
-	this.oPositionPorteDroite = new Point(canvas.width,0);
-	// bas
-	this.oPorteBas = new Image();
-	this.oPorteBas.src = 'img/bas_porte.png';
-	iNombresImages++;
-	this.oPorteBas.onload = function()
-	{
-		iCompteurImages++;
-	}
+	this.fLargeurFondVictoire = 0;
+	this.fHauteurFondVictoire = 25;
+	this.oPositionFondVictoire = new Point(canvas.width/2, canvas.height/2-this.fHauteurFondVictoire/2);
 
 	// ------------------------ Segment tracé avec la souris
 	this.oTrait = new Trait("blue");
@@ -186,14 +156,6 @@ function Partie()
 	
 	for(var i=0; i<oNiveauPartie[iNiveauSelectionne].Points.length; i++)
 			aListePointsTemp.push(new Point(oNiveauPartie[iNiveauSelectionne].Points[i].x, oNiveauPartie[iNiveauSelectionne].Points[i].y));
-
-	// aListePointsTemp.push(new Point(0,300));
-	// aListePointsTemp.push(new Point(150,0));
-	// aListePointsTemp.push(new Point(300,300));
-	// aListePointsTemp.push(new Point(150,150));
-	// aListePointsTemp.push(new Point(150,300));
-	// aListePointsTemp.push(new Point(75,200));
-	// aListePointsTemp.push(new Point(0,300));
 	
 	var img = new Image();
 	img.src = 'img/textures/metal2.jpg';
@@ -208,7 +170,7 @@ function Partie()
 	this.aListeEnnemis = new Array();
 	this.aListeImagesEnnemis = new Array();
 
-	// Ennemi 1
+	// image de l'ennemi
 	var oEnnemiImage = new Image();
 	oEnnemiImage.src = "img/ennemis/fireball2.png";
 	this.aListeImagesEnnemis.push(oEnnemiImage);
@@ -291,8 +253,6 @@ Partie.prototype.lancer = function()
 {
 	// on crée le canvas
 	ctx.beginPath();
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillStyle = "rgb(0,0,0)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 		
@@ -452,38 +412,20 @@ Partie.prototype.lancer = function()
 		}
 		
 		saveSauvegarde(niveau.toString(),this.oTerrain.iNbCoupe,this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100);//On garde le score en sauvegarde
+		readAllSauvegarde();
 	}
 	
 	/*
 	--------------------------------------------------------------------------------------------------
 	** ----------------------------------------------------------------------- ***********************
 	** Autres actions que le déroulement de la partie :
-	** - Partie gagnée
 	** - Mauvaise coupe (coupe entre 2 ennemis)
 	** - Coupe d'une partie
 	** - Trait a touché un ennemi
 	** ----------------------------------------------------------------------- ***********************
 	--------------------------------------------------------------------------------------------------
 	*/
-	
-	// Si le joueur a gagné
-	if(this.bGagne)
-	{
-		if(this.oTerrain.bDisparitionPartie)
-		{
-			this.oTerrain.supprimerPartie();
-		}
-		
-		// si les ennemis ne sont pas à l'arrêt, on ralenti les ennemis
-		if(this.aListeEnnemis[0].fVitesse != 0)
-		{
-			for(var i=0; i<this.aListeEnnemis.length; i++)
-			{
-				this.aListeEnnemis[i].ralentir();
-			}
-		}
 
-	}
 	// Clignotement du trait si mauvaise coupe
 	else if(this.oTrait.iCompteurFaireClignoter != 0)
 	{
@@ -912,14 +854,30 @@ Partie.prototype.lancerPause = function()
 	ctx.globalAlpha = 1;
 	
 	ctx.textAlign = 'center';
-	ctx.font = this.iTailleFontMenu*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
-	ctx.fillStyle = "black";
+	ctx.font = this.iTailleFontMenu*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+	
+	rectangleArrondi(canvas.width/2 - 155*((fRatioHauteur+fRatioLargeur)/2)/2,
+					this.oPositionBoutonReprendre.y - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4,
+					 155*((fRatioHauteur+fRatioLargeur)/2),
+					 25*((fRatioHauteur+fRatioLargeur)/2), 
+					 5*((fRatioHauteur+fRatioLargeur)/2), "black", "white", true, true, 3*((fRatioHauteur+fRatioLargeur)/2));
+	ctx.fillStyle = "white";
 	ctx.fillText("reprendre", this.oPositionBoutonReprendre.x, this.oPositionBoutonReprendre.y);
+	
+	rectangleArrondi(canvas.width/2 - 75*((fRatioHauteur+fRatioLargeur)/2)/2,
+					this.oPositionBoutonMenu.y - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4,
+					 75*((fRatioHauteur+fRatioLargeur)/2),
+					 25*((fRatioHauteur+fRatioLargeur)/2), 
+					 5*((fRatioHauteur+fRatioLargeur)/2), "black", "white", true, true, 3*((fRatioHauteur+fRatioLargeur)/2));
+	ctx.fillStyle = "white";
 	ctx.fillText("menu",this.oPositionBoutonMenu.x, this.oPositionBoutonMenu.y);
+	
 	this.oPositionBoutonReprendre = new Point(canvas.width/2, canvas.height/2-25*((fRatioHauteur+fRatioLargeur)/2));
 	this.oPositionBoutonMenu = new Point(canvas.width/2, canvas.height/2+25*((fRatioHauteur+fRatioLargeur)/2));
 	ctx.textAlign = 'left';
 	
+	this.fTailleBoutonDeSelection = 30*((fRatioLargeur+fRatioHauteur)/2);
+		
 	if(this.bSurBoutonReprendre)
 	{
 		ctx.save(); 
@@ -929,7 +887,6 @@ Partie.prototype.lancerPause = function()
 		ctx.drawImage(this.oBoutonDeSelection, -(this.fTailleBoutonDeSelection/2), -(this.fTailleBoutonDeSelection/2), this.fTailleBoutonDeSelection, this.fTailleBoutonDeSelection);
 		ctx.restore();
 		this.fRotationCibles += 0.05;
-		this.fTailleBoutonDeSelection = 30*((fRatioLargeur+fRatioHauteur)/2);
 	}
 	if(this.bSurBoutonMenu)
 	{
@@ -940,7 +897,6 @@ Partie.prototype.lancerPause = function()
 		ctx.drawImage(this.oBoutonDeSelection, -(this.fTailleBoutonDeSelection/2), -(this.fTailleBoutonDeSelection/2), this.fTailleBoutonDeSelection, this.fTailleBoutonDeSelection);
 		ctx.restore();
 		this.fRotationCibles += 0.05;
-		this.fTailleBoutonDeSelection = 30*((fRatioLargeur+fRatioHauteur)/2);
 	}
 }
 
@@ -957,35 +913,61 @@ Partie.prototype.lancerVictoire = function()
 
     ctx.fillStyle = "rgb(0,0,0)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
+
+	// disparition de la partie coupée
+	if(this.oTerrain.bDisparitionPartie)
+	{
+		this.oTerrain.supprimerPartie();
+	}
 	
 	// les étoiles
-	for( var i = 0; i < this.stars.length; i++ ) 
-	{
-		if( this.stars[i].z <= 0 ) 
-		{
-			this.stars[i].x = randomRange(-25,25);
-			this.stars[i].y = randomRange(-25,25);
-			this.stars[i].z = this.MAX_DEPTH;
-		}
- 
-		var k  = 128.0 / this.stars[i].z;
-		var px = this.stars[i].x * k + canvas.width / 2;
-		var py = this.stars[i].y * k + canvas.height / 2;
- 
-		if( px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height ) 
-		{
-			var size = (1 - this.stars[i].z / 32.0) * this.SIZE_STARS;
-			var shade = parseInt((1 - this.stars[i].z / 32.0) * 255);
-			
-			ctx.beginPath();
-			ctx.arc(px,py, size/2, 0, 2 * Math.PI);
-			ctx.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
-			ctx.fill();
-		}
-	}
+	this.dessinerStars();
 	
 	// on trace le Terrain
 	this.oTerrain.tracer();
+	
+	// si les ennemis ne sont pas à l'arrêt, on ralenti les ennemis
+	if(this.aListeEnnemis[0].fVitesse != 0)
+	{
+		for(var i=0; i<this.aListeEnnemis.length; i++)
+		{
+			this.aListeEnnemis[i].ralentir();
+		}
+	}
+	
+	// Deplacement des ennemis, rebonds	
+	for(var i=0; i<this.aListeEnnemis.length; i++)
+	{	
+		this.aListeEnnemis[i].oPosition.x += this.aListeEnnemis[i].oDeplacement.x;
+		this.aListeEnnemis[i].oPosition.y += this.aListeEnnemis[i].oDeplacement.y;
+	
+		ctx.save(); 
+		ctx.translate(this.aListeEnnemis[i].oPosition.x, this.aListeEnnemis[i].oPosition.y); 
+		ctx.translate(this.aListeEnnemis[i].iTailleX/2, this.aListeEnnemis[i].iTailleY/2); 
+		ctx.rotate(this.aListeEnnemis[i].fRotationActuelle);
+		ctx.drawImage(this.aListeEnnemis[i].oImage, 
+						  -this.aListeEnnemis[i].iTailleX/2, 
+						  -this.aListeEnnemis[i].iTailleY/2, 
+						  this.aListeEnnemis[i].iTailleX, 
+						  this.aListeEnnemis[i].iTailleX);
+		ctx.restore();
+		
+		this.aListeEnnemis[i].fRotationActuelle = (this.aListeEnnemis[i].fRotationActuelle + this.aListeEnnemis[i].fRotation);
+		
+		// on vérifie si l'ennemi est toujours sur le terrain
+		// Rappel : si ennemiDansTerrain --> renvoie aIntersection=[0:Point1 cote terrain, 1:Point2 cote terrain, 2:Point intersection]	
+		var aListeIntersectionTerrainEnnemi = this.oTerrain.ennemiDansTerrain(this.aListeEnnemis[i]);
+
+		if(aListeIntersectionTerrainEnnemi != null)
+		{
+			// rebond
+			this.oTerrain.faireRebond(aListeIntersectionTerrainEnnemi, this.aListeEnnemis[i]);
+			// this.oSonMetal.pause();
+			// this.oSonMetal = new Audio('sons/metalhit.wav');
+			// this.oSonMetal.volume = 0.05;
+			// this.oSonMetal.play();
+		}
+	}
 	
 	// on trace la barre d'avancement
 	this.oBarreAvancement.tracer(this.oTerrain);
@@ -1013,35 +995,82 @@ Partie.prototype.lancerVictoire = function()
 					this.oPositionBoutonPause.y,
 					this.iTailleBouton, 
 					this.iTailleBouton);
-				
-	// les ennemis
-	for(var i=0; i<this.aListeEnnemis.length; i++)
-	{	
-		ctx.drawImage(this.aListeEnnemis[i].oImage, 
-						  0, 
-						  0, 
-						  this.aListeEnnemis[i].oImage.width, 
-						  this.aListeEnnemis[i].oImage.height,
-						  this.aListeEnnemis[i].oPosition.x,
-						  this.aListeEnnemis[i].oPosition.y,
-						  this.aListeEnnemis[i].iTailleX, 
-						  this.aListeEnnemis[i].iTailleX);
-	}
 	
 	// fond de pause
-	ctx.globalAlpha = 0.5;
+	
+	ctx.globalAlpha = 0.6;
+	
+	ctx.beginPath();
 	ctx.fillStyle = "rgb(255,255,255)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+	
+    ctx.rect(	this.oPositionFondVictoire.x, 
+					this.oPositionFondVictoire.y,
+					this.fLargeurFondVictoire,
+					this.fHauteurFondVictoire);
+	ctx.fill();	
 	ctx.globalAlpha = 1;
 	
-	ctx.textAlign = 'center';
-	ctx.font = this.iTailleFontMenu*(((canvas.height/fHauteurDeBase)+fRatioLargeur)/2)+'pt "SPACE"';
-	ctx.fillStyle = "black";
-	ctx.fillText("reprendre", this.oPositionBoutonReprendre.x, this.oPositionBoutonReprendre.y);
-	ctx.fillText("menu",this.oPositionBoutonMenu.x, this.oPositionBoutonMenu.y);
-	this.oPositionBoutonReprendre = new Point(canvas.width/2, canvas.height/2-25*((fRatioHauteur+fRatioLargeur)/2));
-	this.oPositionBoutonMenu = new Point(canvas.width/2, canvas.height/2+25*((fRatioHauteur+fRatioLargeur)/2));
-	ctx.textAlign = 'left';
+	var fPas = 12*((fRatioHauteur+fRatioLargeur)/2);
+	
+	if(this.oPositionFondVictoire.x > 0)
+	{
+		this.oPositionFondVictoire = new Point(this.oPositionFondVictoire.x-fPas, this.oPositionFondVictoire.y);
+		this.fLargeurFondVictoire = this.fLargeurFondVictoire + fPas*2;
+		// this.fHauteurFondVictoire = 50;
+	}
+	else if(this.oPositionFondVictoire.y > 0)
+	{
+		this.oPositionFondVictoire = new Point(this.oPositionFondVictoire.x, this.oPositionFondVictoire.y-fPas);
+		this.fHauteurFondVictoire = this.fHauteurFondVictoire + fPas*2;
+	}
+	else
+	{
+		this.fLargeurFondVictoire = canvas.width + 50;
+		this.fHauteurFondVictoire = canvas.height + 50;
+		
+		//
+		//// Stats
+		ctx.textAlign = 'center';
+		ctx.fillStyle = "black";
+		// aire restante
+		ctx.font = 12*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillText("Aire coupee :", canvas.width/2, canvas.height/2 - 140*fRatioHauteur);
+		ctx.font = 10*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillText(Math.floor(this.oTerrain.fAireTerrainActuel/this.oTerrain.fAireTerrainDepart*100)+"%", canvas.width/2, canvas.height/2 - 120*fRatioHauteur);
+		// nombre de coupes
+		ctx.font = 12*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillText("Nombre de coupes :",canvas.width/2, canvas.height/2 - 80*fRatioHauteur);
+		ctx.font = 10*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillText(this.oTerrain.iNbCoupe, canvas.width/2, canvas.height/2 - 60*fRatioHauteur);
+		// temps
+		ctx.font = 12*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillText("Temps :",canvas.width/2, canvas.height/2 - 20*fRatioHauteur);
+		ctx.font = 10*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+		ctx.fillText("01:05",canvas.width/2, canvas.height/2);
+		
+		//
+		//// Bouton de menu et replay
+		ctx.font = 15*((fRatioHauteur+fRatioLargeur)/2)+'pt "SPACE"';
+		
+		rectangleArrondi(canvas.width/2 - 120*((fRatioHauteur+fRatioLargeur)/2)/2,
+						 canvas.height/2 + 50*fRatioHauteur - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4,
+						 120*((fRatioHauteur+fRatioLargeur)/2),
+						 25*((fRatioHauteur+fRatioLargeur)/2), 
+						 5*((fRatioHauteur+fRatioLargeur)/2), "black", "white", true, true, 3*((fRatioHauteur+fRatioLargeur)/2));
+		ctx.fillStyle = "white";
+		ctx.fillText("rejouer", canvas.width/2, canvas.height/2 + 50*fRatioHauteur);
+		
+		rectangleArrondi(canvas.width/2 - 75*((fRatioHauteur+fRatioLargeur)/2)/2,
+						 canvas.height/2 + 100*fRatioHauteur - 25*((fRatioHauteur+fRatioLargeur)/2)/1.4,
+						 75*((fRatioHauteur+fRatioLargeur)/2),
+						 25*((fRatioHauteur+fRatioLargeur)/2), 
+						 5*((fRatioHauteur+fRatioLargeur)/2), "black", "white", true, true, 3*((fRatioHauteur+fRatioLargeur)/2));
+		ctx.fillStyle = "white";
+		ctx.fillText("menu", canvas.width/2, canvas.height/2 + 100*fRatioHauteur);
+		
+		ctx.textAlign = 'left';
+		
+	}
 	
 	if(this.bSurBoutonReprendre)
 	{
@@ -1052,7 +1081,6 @@ Partie.prototype.lancerVictoire = function()
 		ctx.drawImage(this.oBoutonDeSelection, -(this.fTailleBoutonDeSelection/2), -(this.fTailleBoutonDeSelection/2), this.fTailleBoutonDeSelection, this.fTailleBoutonDeSelection);
 		ctx.restore();
 		this.fRotationCibles += 0.05;
-		this.fTailleBoutonDeSelection = 30*((fRatioLargeur+fRatioHauteur)/2);
 	}
 	if(this.bSurBoutonMenu)
 	{
@@ -1063,7 +1091,6 @@ Partie.prototype.lancerVictoire = function()
 		ctx.drawImage(this.oBoutonDeSelection, -(this.fTailleBoutonDeSelection/2), -(this.fTailleBoutonDeSelection/2), this.fTailleBoutonDeSelection, this.fTailleBoutonDeSelection);
 		ctx.restore();
 		this.fRotationCibles += 0.05;
-		this.fTailleBoutonDeSelection = 30*((fRatioLargeur+fRatioHauteur)/2);
 	}
 }
 
@@ -1081,7 +1108,9 @@ Partie.prototype.reset = function()
 	
 	mouseDown = false;
 	mouseMove = false;
-	this.fTailleGrosseEtoile = 0;
+	this.fLargeurFondVictoire = 0;
+	this.fHauteurFondVictoire = 25;
+	this.oPositionFondVictoire = new Point(canvas.width/2, canvas.height/2-this.fHauteurFondVictoire/2);
 	this.fOpaciteGlobale = 0;
 	this.oTrait.reset();
 	this.oTerrain.reset();
